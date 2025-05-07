@@ -7,9 +7,9 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { tokenTypes } from "@eslint/css-tree";
 import * as TailwindFunction from "./node/tailwind-function.js";
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
+import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -33,7 +33,7 @@ export const tailwind4 = {
         },
         theme: {
             prelude: null,
-            descriptors: {},
+            descriptors: defaultSyntax.properties,
         },
         source: {
             prelude: "<string>",
@@ -43,6 +43,7 @@ export const tailwind4 = {
         },
         variant: {
             prelude: "<ident>",
+            descriptors: defaultSyntax.properties,
         },
         "custom-variant": {
             prelude: "<ident> <parentheses-block>",

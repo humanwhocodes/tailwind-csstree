@@ -1,0 +1,39 @@
+
+@config 'tailwind.config.js';
+@plugin 'tailwindcss/typography';
+
+@layer base {
+  h1 {
+    @apply text-2xl font-bold;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 bg-blue-500 text-white;
+  }
+}
+
+@layer utilities {
+  .custom-utility {
+    @apply border border-gray-300;
+  }
+}
+
+@theme {
+  --primary: #ff0000;
+}
+
+.my-element {
+    background: white;
+
+    @variant dark {
+        background: black;
+    }
+}
+
+/* @custom-variant theme-midnight (&:where([data-theme="midnight"] *)); */
+
+@source "../node_modules/@my-company/ui-lib";
+
+@reference "tailwindcss";

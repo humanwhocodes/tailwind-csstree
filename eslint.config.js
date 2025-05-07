@@ -1,24 +1,16 @@
+import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
+import css from "@eslint/css";
+import { tailwind3 } from "./src/tailwind3.js";
+import { tailwind4 } from "./src/tailwind4.js";
 
-export default [
+export default defineConfig([
 	{
-		ignores: ["tests/fixtures"],
-	},
-	js.configs.recommended,
-	{
-		languageOptions: {
-			globals: {
-				process: false,
-				URL: false,
-				console: false,
-			},
+		files: ["**/*.js"],
+		plugins: {
+			js
 		},
-	},
-	{
-		files: ["src/*/*.js", "src/client.js"],
-		rules: {
-			"no-console": "error",
-		},
+		extends: ["js/recommended"]
 	},
 	{
 		files: ["tests/**/*.js"],
@@ -34,4 +26,24 @@ export default [
 			},
 		},
 	},
-];
+	{
+		files: ["**/*.css"],
+		plugins: {
+			css
+		},
+		language: "css/css",
+		extends: ["css/recommended"],
+	},
+	{
+		files: ["tests/fixtures/tailwind3.css"],
+		languageOptions: {
+			customSyntax: tailwind3,
+		}
+	},
+	{
+		files: ["tests/fixtures/tailwind4.css"],
+		languageOptions: {
+			customSyntax: tailwind4,
+		}
+	},
+]);

@@ -374,7 +374,7 @@ describe("Tailwind 3", function () {
             });
         });
         
-        it.only("should parse theme() with spacing[2.5]", () => {
+        it("should parse theme() with spacing[2.5]", () => {
             const tree = toPlainObject(parse("a { margin: theme(spacing[2.5]); }"));
             assert.deepStrictEqual(tree, {
                 type: "StyleSheet",
