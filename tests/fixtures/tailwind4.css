@@ -37,3 +37,15 @@
 @source "../node_modules/@my-company/ui-lib";
 
 @reference "tailwindcss";
+
+.my-element {
+  color: --alpha(var(--color-lime-300) / 50%);
+}
+
+.my-element {
+  margin: --spacing(4);
+}
+
+.my-element {
+  margin: theme(spacing.12);
+}

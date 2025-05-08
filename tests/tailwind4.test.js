@@ -24,9 +24,9 @@ const filename = "./tests/fixtures/tailwind4.css";
 
 describe("Tailwind 4", function () {
     
-    let parse, toPlainObject;
+    let parse, toPlainObject, lexer;
     beforeEach(() => {
-        ({ parse, toPlainObject } = fork(tailwind4));
+        ({ parse, toPlainObject, lexer } = fork(tailwind4));
     });
 
     it("tests that tailwind4 is a valid SyntaxExtension", () => {
@@ -525,6 +525,26 @@ describe("Tailwind 4", function () {
                     }
                 ]
             });
+        });
+    });
+    
+    describe.only("Validation", () => {
+        it("should validate margin: --spacing(4)", () => {
+            const tree = toPlainObject(parse("a { margin: --spacing(4); }"));
+            const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+            assert.strictEqual(error, null);
+        });
+        
+        it("should validate margin: theme(spacing.4)", () => {
+            const tree = toPlainObject(parse("a { margin: theme(spacing.4); }"));
+            const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+            assert.strictEqual(error, null);
+        });
+        
+        it("should validate color: --alpha(#000 / 50%)", () => {
+            const tree = toPlainObject(parse("a { color: --alpha(#000 / 50%); }"));
+            const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+            assert.strictEqual(error, null);
         });
     });
 

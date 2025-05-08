@@ -13,6 +13,9 @@ import { tokenTypes } from "@eslint/css-tree";
 // Type Definitions
 //-----------------------------------------------------------------------------
 
+/**
+ * @import { TokenStream, List } from "@eslint/css-tree"
+ */
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -25,7 +28,13 @@ const SLASH = 47; // ASCII code for '/'
 // Exports
 //-----------------------------------------------------------------------------
 
-// theme( <ident>.<ident> , <value>? )
+/**
+ * 
+ * @param {*} readSequence 
+ * @param {*} recognizer 
+ * @returns {List}
+ * @this {TokenStream}
+ */
 export default function (readSequence, recognizer) {
     const children = this.createList();
 

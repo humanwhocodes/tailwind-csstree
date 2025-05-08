@@ -20,7 +20,6 @@ import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
  * @import { StructureDefinition, SyntaxConfig } from "@eslint/css-tree"
  */
 
-
 /** @type {SyntaxConfig} */
 export const tailwind4 = {
     atrules: {
@@ -56,17 +55,24 @@ export const tailwind4 = {
         },
     },
     
+    types: {
+        "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-spacing()>`,
+        "color": `${defaultSyntax.types.color} | <tw-alpha()>`,
+        "parentheses-block": "(<any-value>)",
+        "tw-alpha()": `--alpha(<color> / <percentage>)`,
+        "tw-any-spacing()": "<tw-spacing()> | <tw-theme-spacing()>",
+        "tw-spacing()": "--spacing(<number>)",
+        "tw-theme-spacing()": "theme(<ident-token>.<number>)"
+    },
+    
     functions: {
         theme: {
             prelude: "<any-value>",
         },
-        "--alpha": {
-            prelude: "<parentheses-block>",
-        },
-        "--spacing": {
-            prelude: "<parentheses-block>",
-        },
+
     },
+    
+
     
     node: {
         Function: TailwindFunction,
