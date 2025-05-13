@@ -7,35 +7,51 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import * as TailwindFunction from "./node/tailwind-function.js";
+import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
+import * as TailwindUtilityClass from "./node/tailwind-class.js";
+import tailwindApply from "./atrule/tailwind-apply.js";
+import theme from "./scope/theme.js";
+import { themeTypes } from "./types/theme-types.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("@eslint/css-tree").SyntaxExtension} SyntaxExtension
  * @typedef {import("@eslint/css-tree").NodeSyntaxConfig} NodeSyntaxConfig
+ * @import { SyntaxConfig } from "@eslint/css-tree"
  */
 
-
-/** @type {SyntaxExtension} */
+/** @type {Partial<SyntaxConfig>} */
 export const tailwind3 = {
+    atrule: {
+        apply: tailwindApply,
+    },
     atrules: {
-
         apply: {
-            prelude: "<ident>+",
+            prelude: "<tw-apply-ident>+",
         },
         tailwind: {
             prelude: "base | components | utilities",
         },
         config: {
             prelude: "<string>",
-        },
+        }
+    },
+    types: {
+        "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-theme-spacing>`,
+        "color": `${defaultSyntax.types.color} | <tw-theme-color>`,
+        "tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
+        ...themeTypes
     },
     node: {
-        Function: TailwindFunction,
-        TailwindThemeKey
+        TailwindThemeKey,
+        TailwindUtilityClass
+    },
+    scope: {
+        Value: {
+            theme
+        }
     }
 };

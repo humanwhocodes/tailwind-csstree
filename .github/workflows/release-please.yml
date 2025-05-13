@@ -49,7 +49,7 @@ jobs:
             - run: npx @humanwhocodes/social-changelog --org humanwhocodes --repo tailwind-csstree --tag ${{ steps.release.outputs.tag_name }} > social-post.txt
               if: ${{ steps.release.outputs.release_created }}
               env:
-                  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             # Tweets out release announcement
             - run: npx @humanwhocodes/crosspost -t -b -m -l --file social-post.txt

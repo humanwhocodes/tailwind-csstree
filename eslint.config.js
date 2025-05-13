@@ -1,10 +1,11 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import js from "@eslint/js";
 import css from "@eslint/css";
 import { tailwind3 } from "./src/tailwind3.js";
 import { tailwind4 } from "./src/tailwind4.js";
 
 export default defineConfig([
+	globalIgnores(["dist"]),
 	{
 		files: ["**/*.js"],
 		plugins: {

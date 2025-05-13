@@ -11,6 +11,7 @@ import assert from "node:assert";
 import { tailwind4 } from "../src/tailwind4.js";
 import { fork } from "@eslint/css-tree";
 import fs from "node:fs/promises";
+import { createThemeFunctionTests } from "./helpers/theme-function-tests.js";
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -32,6 +33,8 @@ describe("Tailwind 4", function () {
     it("tests that tailwind4 is a valid SyntaxExtension", () => {
         parse("a { color: var(--foo); }");
     });
+    
+    createThemeFunctionTests(fork(tailwind4));
 
     describe("@config", () => {
         it("should parse @config with a string value", () => {
@@ -85,95 +88,6 @@ describe("Tailwind 4", function () {
                         },
                         block: null,
                         loc: null
-                    }
-                ]
-            });
-        });
-    });
-
-    describe("theme()", () => {
-        it("should parse theme() with colors.green.500", () => {
-            const tree = toPlainObject(parse("a { color: theme(colors.green.500); }"));
-            assert.deepStrictEqual(tree, {
-                type: "StyleSheet",
-                loc: null,
-                children: [
-                    {
-                        type: "Rule",
-                        loc: null,
-                        prelude: {
-                            type: "SelectorList",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Selector",
-                                    loc: null,
-                                    children: [
-                                        {
-                                            type: "TypeSelector",
-                                            name: "a",
-                                            loc: null
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        block: {
-                            type: "Block",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Declaration",
-                                    loc: null,
-                                    property: "color",
-                                    value: {
-                                        type: "Value",
-                                        children: [
-                                            {
-                                                type: "Function",
-                                                name: "theme",
-                                                children: [
-                                                    {
-                                                        type: "TailwindThemeKey",
-                                                        children: [
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "colors",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: ".",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "green",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: ".",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Number",
-                                                                value: "500",
-                                                                loc: null
-                                                            }
-                                                        ],
-                                                        loc: null
-                                                    }
-                                                ],
-                                                loc: null
-                                            }
-                                        ],
-                                        loc: null
-                                    },
-                                    important: false
-                                }
-                            ]
-                        }
                     }
                 ]
             });
@@ -528,23 +442,55 @@ describe("Tailwind 4", function () {
         });
     });
     
-    describe.only("Validation", () => {
-        it("should validate margin: --spacing(4)", () => {
-            const tree = toPlainObject(parse("a { margin: --spacing(4); }"));
-            const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
-            assert.strictEqual(error, null);
+    describe("Validation", () => {
+        describe("Type Validation", () => {
+            [
+                "--alpha(#000 / 50%)",
+                "--alpha(white / 70%)",
+                "--alpha(rgba(0, 0, 0, 0.5) / 1%)",
+            ].forEach((value) => {
+                it(`should validate type <tw-alpha> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-alpha", tree).error, null);
+                });
+
+                it(`should validate type <tw-any-color> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-any-color", tree).error, null);
+                });
+            });
+            
+            [
+                "--spacing(4)",
+                "--spacing(12)",
+                "--spacing(0.5)",
+            ].forEach((value) => {
+                it(`should validate type <tw-spacing> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-spacing", tree).error, null);
+                });
+
+                it(`should validate type <tw-any-spacing> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-any-spacing", tree).error, null);
+                });
+            });
         });
         
-        it("should validate margin: theme(spacing.4)", () => {
-            const tree = toPlainObject(parse("a { margin: theme(spacing.4); }"));
-            const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
-            assert.strictEqual(error, null);
-        });
-        
-        it("should validate color: --alpha(#000 / 50%)", () => {
-            const tree = toPlainObject(parse("a { color: --alpha(#000 / 50%); }"));
-            const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
-            assert.strictEqual(error, null);
+        describe("Property Validation", () => {
+            
+            it("should validate margin: --spacing(4)", () => {
+                const tree = toPlainObject(parse("a { margin: --spacing(4); }"));
+                const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+                assert.strictEqual(error, null);
+            });
+            
+            it("should validate color: --alpha(#000 / 50%)", () => {
+                const tree = toPlainObject(parse("a { color: --alpha(#000 / 50%); }"));
+                const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+                assert.strictEqual(error, null);
+            });
+            
         });
     });
 

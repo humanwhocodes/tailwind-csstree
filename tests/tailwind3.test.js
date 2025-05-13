@@ -11,6 +11,7 @@ import assert from "node:assert";
 import { tailwind3 } from "../src/tailwind3.js";
 import { fork } from "@eslint/css-tree";
 import fs from "node:fs/promises";
+import { createThemeFunctionTests } from "./helpers/theme-function-tests.js";
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -24,14 +25,17 @@ const filename = "./tests/fixtures/tailwind3.css";
 
 describe("Tailwind 3", function () {
     
-    let parse, toPlainObject;
+    let parse, toPlainObject, lexer;
     beforeEach(() => {
-        ({ parse, toPlainObject } = fork(tailwind3));
+        ({ parse, toPlainObject, lexer } = fork(tailwind3));
     });
     
     it("tests that tailwind3 is a valid SyntaxExtension", () => {
         parse("a { color: var(-foo); }");
     });
+    
+    createThemeFunctionTests(fork(tailwind3));
+    
 
     describe("@config", () => {
         it("should parse @config with a string value", () => {
@@ -186,272 +190,183 @@ describe("Tailwind 3", function () {
                 ]
             });
         });
+        
+        it("should parse @apply with a variant", () => {
+            const tree = toPlainObject(parse("a { @apply hover:bg-blue-500; }"));
+            
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "TypeSelector",
+                                            name: "a",
+                                            loc: null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: {
+                                                    type: "Identifier",
+                                                    name: "hover",
+                                                    loc: null
+                                                },
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "bg-blue-500",
+                                                    loc: null
+                                                },
+                                            }
+                                        ]
+                                    },
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
+        
+        it("should parse @apply with a variant and multiple identifiers", () => {
+            const tree = toPlainObject(parse("a { @apply hover:bg-blue-500 focus:ring-blue-500; }"));
+            
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "TypeSelector",
+                                            name: "a",
+                                            loc: null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: {
+                                                    type: "Identifier",
+                                                    name: "hover",
+                                                    loc: null
+                                                },
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "bg-blue-500",
+                                                    loc: null
+                                                },
+                                            },
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: {
+                                                    type: "Identifier",
+                                                    name: "focus",
+                                                    loc: null
+                                                },
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "ring-blue-500",
+                                                    loc: null
+                                                },
+                                            }
+                                        ]
+                                    },
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
     });
     
-    describe("theme()", () => {
-        
-        it("should parse theme() with colors.red.500", () => {
-            const tree = toPlainObject(parse("a { color: theme(colors.red.500); }"));
-            assert.deepStrictEqual(tree, {
-                type: "StyleSheet",
-                loc: null,
-                children: [
-                    {
-                        type: "Rule",
-                        loc: null,
-                        prelude: {
-                            type: "SelectorList",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Selector",
-                                    loc: null,
-                                    children: [
-                                        {
-                                            type: "TypeSelector",
-                                            name: "a",
-                                            loc: null
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        block: {
-                            type: "Block",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Declaration",
-                                    loc: null,
-                                    property: "color",
-                                    value: {
-                                        type: "Value",
-                                        children: [
-                                            {
-                                                type: "Function",
-                                                name: "theme",
-                                                children: [
-                                                    {
-                                                        type: "TailwindThemeKey",
-                                                        children: [
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "colors",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: ".",
-                                                                loc: null,
-                                                            },
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "red",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: ".",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Number",
-                                                                value: "500",
-                                                                loc: null
-                                                            }
-                                                        ],
-                                                        loc: null
-                                                    }
-                                                ],
-                                                loc: null
-                                            }
-                                        ],
-                                        loc: null
-                                    },
-                                    important: false
-                                }
-                            ]
-                        }
-                    }
-                ]
+    describe("Validation", () => {
+        describe("Type Validation", () => {
+            [
+                "bg-blue-500",
+                "hover:bg-blue-700",
+                "focus:ring-blue-500",
+            ].forEach((value) => {
+                it(`should validate type <tw-apply-ident> with ${value}`, () => {
+                    assert.strictEqual(lexer.matchType("tw-apply-ident", value).error, null);
+                });
             });
+            
         });
         
-        it("should parse theme() with colors.gray.900/75%", () => {
-            const tree = toPlainObject(parse("a { color: theme(colors.gray.900/75%); }"));
-            assert.deepStrictEqual(tree, {
-                type: "StyleSheet",
-                loc: null,
-                children: [
-                    {
-                        type: "Rule",
-                        loc: null,
-                        prelude: {
-                            type: "SelectorList",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Selector",
-                                    loc: null,
-                                    children: [
-                                        {
-                                            type: "TypeSelector",
-                                            name: "a",
-                                            loc: null
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        block: {
-                            type: "Block",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Declaration",
-                                    loc: null,
-                                    property: "color",
-                                    value: {
-                                        type: "Value",
-                                        children: [
-                                            {
-                                                type: "Function",
-                                                name: "theme",
-                                                children: [
-                                                    {
-                                                        type: "TailwindThemeKey",
-                                                        children: [
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "colors",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: ".",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "gray",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: ".",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Number",
-                                                                value: "900",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Operator",
-                                                                value: "/",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Percentage",
-                                                                value: "75",
-                                                                loc: null
-                                                            }
-                                                        ],
-                                                        loc: null
-                                                    }
-                                                ],
-                                                loc: null
-                                            }
-                                        ],
-                                        loc: null
-                                    },
-                                    important: false
-                                }
-                            ]
-                        }
-                    }
-                ]
+        describe("Property Validation", () => {
+            
+            [
+                "bg-blue-500",
+                "hover:bg-blue-700",
+                "bg-blue-500 focus:ring-blue-500",
+            ].forEach((value) => {
+                it(`should validate @apply ${value}`, () => {
+                    assert.strictEqual(lexer.matchAtrulePrelude("apply", value).error, null);
+                });
             });
-        });
-        
-        it("should parse theme() with spacing[2.5]", () => {
-            const tree = toPlainObject(parse("a { margin: theme(spacing[2.5]); }"));
-            assert.deepStrictEqual(tree, {
-                type: "StyleSheet",
-                loc: null,
-                children: [
-                    {
-                        type: "Rule",
-                        loc: null,
-                        prelude: {
-                            type: "SelectorList",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Selector",
-                                    loc: null,
-                                    children: [
-                                        {
-                                            type: "TypeSelector",
-                                            name: "a",
-                                            loc: null
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        block: {
-                            type: "Block",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Declaration",
-                                    loc: null,
-                                    property: "margin",
-                                    value: {
-                                        type: "Value",
-                                        children: [
-                                            {
-                                                type: "Function",
-                                                name: "theme",
-                                                children: [
-                                                    {
-                                                        type: "TailwindThemeKey",
-                                                        children: [
-                                                            {
-                                                                type: "Identifier",
-                                                                name: "spacing",
-                                                                loc: null
-                                                            },
-                                                            {
-                                                                type: "Brackets",
-                                                                loc: null,
-                                                                children: [
-                                                                    {
-                                                                        type: "Number",
-                                                                        value: "2.5",
-                                                                        loc: null
-                                                                    },
-                                                                ]
-                                                            }
-                                                        ],
-                                                        loc: null
-                                                    }
-                                                ],
-                                                loc: null
-                                            }
-                                        ],
-                                        loc: null
-                                    },
-                                    important: false
-                                }
-                            ]
-                        }
-                    }
-                ]
+            
+            it(`should validate @container `, () => {
+                assert.strictEqual(lexer.matchAtrulePrelude("container", "(min-width: 400px)").error, null);
             });
+
         });
     });
+    
     
     describe("Canonical Tailwind 3 File", () => {
         it("should parse a canonical Tailwind 3 file", async () => {
