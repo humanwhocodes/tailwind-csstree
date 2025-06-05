@@ -32,7 +32,7 @@
     }
 }
 
-@custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+/* @custom-variant theme-midnight (&:where([data-theme="midnight"] *)); */
 
 @source "../node_modules/@my-company/ui-lib";
 

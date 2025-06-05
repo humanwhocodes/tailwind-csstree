@@ -4,17 +4,18 @@
  */
 
 //-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
-import { tokenTypes } from "@eslint/css-tree";
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { CssNode, ParserContext } from "@eslint/css-tree"
+ * @import { CssNode, List, ParserContext, Recognizer } from "@eslint/css-tree";
+ * 
+ * @typedef {Object} TailwindParserContextThemeExtensions
+ * @property {(recognizer: Recognizer) => CssNode} TailwindThemeKey - Parses the key of the theme function.
+ * @property {() => CssNode} Operator - Parses the operator (slash).
+ * @property {() => CssNode} Percentage - Parses a percentage value.
+ * 
+ * @typedef {ParserContext & TailwindParserContextThemeExtensions} TailwindParserThemeContext
  */
 
 //-----------------------------------------------------------------------------
@@ -28,10 +29,10 @@ const SLASH = 47; // ASCII code for '/'
 //-----------------------------------------------------------------------------
 
 /**
- * 
- * @param {*} recognizer 
- * @returns {CssNode}
- * @this {ParserContext}
+ * Reads a sequence of tokens that represent a Tailwind theme() function argument.
+ * @this {TailwindParserThemeContext}
+ * @param {Recognizer} recognizer - The recognizer instance used to parse tokens.
+ * @returns {List<CssNode>} An array of CSS nodes representing the parsed theme function argument.
  */
 export default function (recognizer) {
     const children = this.createList();

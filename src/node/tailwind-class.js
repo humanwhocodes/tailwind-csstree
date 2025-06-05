@@ -19,6 +19,19 @@ import { tokenTypes } from "@eslint/css-tree";
  * @import { NodeSyntaxConfig } from "@eslint/css-tree";
  */
 
+/**
+ * @import { CssNode, CssNodeCommon, ParserContext, Recognizer, Identifier } from "@eslint/css-tree";
+ * 
+ * @typedef {Object} TailwindParserContextApplyExtensions
+ * @property {(recognizer: Recognizer) => CssNode} TailwindThemeKey - Parses the key of the theme function.
+ * @property {() => CssNode} TailwindUtilityClass - Parses a Tailwind utility class.
+ * @property {() => Identifier} Identifier - Parses an identifier.
+ * 
+ * @typedef {CssNodeCommon & { name: Identifier, variant: Identifier | null }} TailwindUtilityClassNode
+ * 
+ * @typedef {ParserContext & TailwindParserContextApplyExtensions} TailwindParserApplyContext
+ */
+
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
@@ -41,7 +54,8 @@ export const structure = {
 /**
  * Parse method for Tailwind theme key node.
  * Handles Tailwind functions such as theme(colors.gray.900/75%) and theme(spacing[2.5]).
- * @type {NodeSyntaxConfig["parse"]}
+ * @this {TailwindParserApplyContext} 
+ * @type {NodeSyntaxConfig<TailwindUtilityClassNode>["parse"]}
  */
 export function parse() {
     this.skipSC();
@@ -68,8 +82,17 @@ export function parse() {
 
 /**
  * Generate method for Tailwind theme key node.
- * @type {NodeSyntaxConfig["generate"]}
+ * @type {NodeSyntaxConfig<TailwindUtilityClassNode>["generate"]}
  */
 export function generate(node) {
-    this.children(node);
+    
+    if (node.variant) {
+        // @ts-ignore
+        this.token(tokenTypes.Ident, node.variant.name);
+        // @ts-ignore
+        this.token(tokenTypes.Colon, ':');
+    }
+    
+    // @ts-ignore
+    this.token(tokenTypes.Ident, node.name.name);
 }

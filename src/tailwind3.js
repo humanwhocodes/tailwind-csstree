@@ -33,7 +33,7 @@ export const tailwind3 = {
             prelude: "<tw-apply-ident>+",
         },
         tailwind: {
-            prelude: "base | components | utilities",
+            prelude: "base | components | utilities | variants",
         },
         config: {
             prelude: "<string>",

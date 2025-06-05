@@ -14,7 +14,8 @@ import { tokenTypes } from "@eslint/css-tree";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { ParserContext } from "@eslint/css-tree"
+ * @import { ParserContext, ConsumerFunction } from "@eslint/css-tree";
+ * 
  */
 
 //-----------------------------------------------------------------------------
@@ -33,9 +34,9 @@ export default {
             while (this.tokenType === tokenTypes.Ident) {
                 
                 if (this.lookupType(1) === tokenTypes.Colon) {
-                    children.push(this.TailwindUtilityClass());
+                    children.push(/** @type {ConsumerFunction} */ (this.TailwindUtilityClass)());
                 } else {
-                    children.push(this.Identifier());
+                    children.push(/** @type {ConsumerFunction} */ (this.Identifier)());
                 }
                 
                 this.skipSC();

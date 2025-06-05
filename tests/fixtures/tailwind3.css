@@ -40,10 +40,6 @@
     @apply bg-blue-500 text-white hover:bg-blue-700 focus:ring-blue-500;
   }
   
-  /* Using !important with @apply */
-  .btn-important {
-    @apply font-bold py-2 px-4 rounded !important;
-  }
   
   /* For Sass/SCSS, you'd use: .btn-important { @apply font-bold py-2 px-4 rounded #{!important}; } */
   
@@ -101,7 +97,7 @@
 }
 
 /* Using the screen() function for media queries */
-@media screen(sm) {
+/* @media screen(sm) {
   .sidebar {
     display: none;
   }
@@ -111,7 +107,7 @@
   .container {
     max-width: theme(screens.md);
   }
-}
+} */
 
 /* Custom styles outside of layers (not processed by Tailwind) */
 .legacy-component {
