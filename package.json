@@ -1,6 +1,6 @@
 {
   "name": "tailwind-csstree",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CSSTree syntax for parsing Tailwind custom syntax.",
   "type": "module",
   "main": "dist/index.js",
