@@ -9,8 +9,27 @@ on:
             - main
 
 jobs:
+    lint:
+        runs-on: ubuntu-latest
+        
+        steps:
+            - uses: actions/checkout@v4
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "lts/*"
+            - name: npm install and build
+              run: |
+                  npm ci
+                  npm run build --if-present
+                  
+            - name: Lint
+              run: npm run lint
+        
     test:
         runs-on: ${{ matrix.os }}
+        env:
+            CI: true
 
         strategy:
             matrix:
@@ -27,8 +46,9 @@ jobs:
               run: |
                   npm ci
                   npm run build --if-present
-                  npm test
-              env:
-                  CI: true
+                  
+            - name: Unit Tests
+              run: npm test
+              
             - name: JSR Publish Test
               run: npm run test:jsr

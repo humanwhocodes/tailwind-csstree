@@ -46,12 +46,10 @@
     "fmt": "prettier --write .",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
-    "test:unit": "mocha tests/**/*.{js,mjs} --exit --forbid-only",
-    "test:build": "node tests/pkg.test.mjs",
+    "test:unit": "mocha tests/*.{js,mjs} --exit --forbid-only",
     "test:jsr": "npx jsr@latest publish --dry-run",
     "test:attw": "attw --pack --profile esm-only",
-    "test": "npm run test:unit && npm run test:build && npm run test:attw",
-    "mcp:inspect": "npm run build && cross-env CROSSPOST_DOTENV=1 npx @modelcontextprotocol/inspector node dist/bin.js --mcp"
+    "test": "npm run test:unit && npm run test:attw"
   },
   "repository": {
     "type": "git",
