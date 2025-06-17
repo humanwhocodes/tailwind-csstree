@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.0...tailwind-csstree-v0.1.0) (2025-06-17)
+
+
+### Bug Fixes
+
+* Remove accidental bin entry from package.json ([59038fe](https://github.com/humanwhocodes/tailwind-csstree/commit/59038febf78cee501aff22b33aa33a75cfbe02e0))
+
 ## 0.1.0 (2025-06-05)
 
 
