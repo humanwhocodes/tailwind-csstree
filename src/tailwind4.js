@@ -24,9 +24,6 @@ import { themeTypes } from "./types/theme-types.js";
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
     atrules: {
-        import: {
-            prelude: "[ <string> | <url> ]\n        [ layer | layer(<layer-name>) | prefix(<ident>) ]?\n        [ supports( [ <supports-condition> | <declaration> ] ) ]?\n        <media-query-list>?",
-        },
         apply: {
             prelude: "<ident>+",
         },
@@ -60,8 +57,6 @@ export const tailwind4 = {
     types: {
         "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-any-spacing>`,
         "color": `${defaultSyntax.types.color} | <tw-any-color>`,
-        "prefix()": "prefix( <ident> )",
-        "import-prelude": "[ <string> | <url> ] [ layer | layer(<layer-name>) | prefix(<ident>) | <function> | <ident> ]* <media-query-list>?",
         "tw-alpha": `--alpha(<color> / <percentage>)`,
         "tw-spacing": "--spacing(<number>)",
         "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
