@@ -36,6 +36,47 @@ describe("Tailwind 4", function () {
     
     createThemeFunctionTests(fork(tailwind4));
 
+    describe("@import", () => {
+        it("should parse @import with a string value", () => {
+            const tree = toPlainObject(parse("@import 'tailwindcss';"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "import",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "String",
+                                    value: "tailwindcss",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: null,
+                        loc: null
+                    }
+                ]
+            });
+        });
+
+        it("should parse @import with prefix function", () => {
+            const tree = toPlainObject(parse("@import 'tailwindcss' prefix(foo);"));
+            // For now, we expect this to be properly structured, not Raw
+            assert.strictEqual(tree.children[0].prelude.type, "AtrulePrelude");
+            // Check that it contains both the string and the prefix function
+            assert.strictEqual(tree.children[0].prelude.children.length, 2);
+            assert.strictEqual(tree.children[0].prelude.children[0].type, "String");
+            assert.strictEqual(tree.children[0].prelude.children[0].value, "tailwindcss");
+            assert.strictEqual(tree.children[0].prelude.children[1].type, "Function");
+            assert.strictEqual(tree.children[0].prelude.children[1].name, "prefix");
+        });
+    });
+
     describe("@config", () => {
         it("should parse @config with a string value", () => {
             const tree = toPlainObject(parse("@config 'tailwind.config.js';"));
