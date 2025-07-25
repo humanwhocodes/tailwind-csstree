@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.1...tailwind-csstree-v0.1.2) (2025-07-25)
+
+
+### Bug Fixes
+
+* Prevent parsing errors with [@import](https://github.com/import) prefix() function in TailwindCSS ([#14](https://github.com/humanwhocodes/tailwind-csstree/issues/14)) ([f6123e5](https://github.com/humanwhocodes/tailwind-csstree/commit/f6123e50485678e314c8b2f575d5ac061d1ca7c1))
+
 ## [0.1.1](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.0...tailwind-csstree-v0.1.1) (2025-06-17)
 
 
