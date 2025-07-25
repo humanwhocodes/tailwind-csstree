@@ -368,6 +368,23 @@ describe("Tailwind 3", function () {
     });
     
     
+    describe("@import", () => {
+        it("should parse @import with prefix function without crashing", () => {
+            // This is a regression test for the issue where prefix() functions
+            // cause parsing to crash. While the prefix function isn't parsed
+            // into a structured format, it should not crash and should preserve
+            // the original content.
+            const tree = toPlainObject(parse("@import 'tailwindcss' prefix(foo);"));
+            
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "import");
+            
+            // The prefix function content should be preserved
+            assert.ok(tree.children[0].prelude.value.includes("'tailwindcss'"));
+            assert.ok(tree.children[0].prelude.value.includes("prefix(foo)"));
+        });
+    });
+
     describe("Canonical Tailwind 3 File", () => {
         it("should parse a canonical Tailwind 3 file", async () => {
             const file = await fs.readFile(filename, "utf8");
