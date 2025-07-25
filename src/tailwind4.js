@@ -57,7 +57,6 @@ export const tailwind4 = {
     types: {
         "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-any-spacing>`,
         "color": `${defaultSyntax.types.color} | <tw-any-color>`,
-        "parentheses-block": "(<any-value>)",
         "tw-alpha": `--alpha(<color> / <percentage>)`,
         "tw-spacing": "--spacing(<number>)",
         "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",

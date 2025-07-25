@@ -36,6 +36,50 @@ describe("Tailwind 4", function () {
     
     createThemeFunctionTests(fork(tailwind4));
 
+    describe("@import", () => {
+        it("should parse @import with a string value", () => {
+            const tree = toPlainObject(parse("@import 'tailwindcss';"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "import",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "String",
+                                    value: "tailwindcss",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: null,
+                        loc: null
+                    }
+                ]
+            });
+        });
+
+        it("should parse @import with prefix function without crashing", () => {
+            // This is a regression test for the issue where prefix() functions
+            // cause parsing to crash. While the prefix function isn't parsed
+            // into a structured format, it should not crash and should preserve
+            // the original content.
+            const tree = toPlainObject(parse("@import 'tailwindcss' prefix(foo);"));
+            
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "import");
+            
+            // The prefix function content should be preserved
+            assert.ok(tree.children[0].prelude.value.includes("'tailwindcss'"));
+            assert.ok(tree.children[0].prelude.value.includes("prefix(foo)"));
+        });
+    });
+
     describe("@config", () => {
         it("should parse @config with a string value", () => {
             const tree = toPlainObject(parse("@config 'tailwind.config.js';"));
