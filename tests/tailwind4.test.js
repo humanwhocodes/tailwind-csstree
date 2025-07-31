@@ -372,6 +372,28 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
+
+        it("should parse @custom-variant single-line form", () => {
+            const tree = toPlainObject(parse("@custom-variant theme-midnight (&:where([data-theme=\"midnight\"] *));"));
+            assert.strictEqual(tree.type, "StyleSheet");
+            assert.strictEqual(tree.children.length, 1);
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "custom-variant");
+            assert.ok(tree.children[0].prelude);
+            assert.strictEqual(tree.children[0].block, null);
+        });
+
+        it("should parse @custom-variant block form with @slot", () => {
+            const tree = toPlainObject(parse("@custom-variant theme-midnight { &:where([data-theme=\"midnight\"] *) { @slot; } }"));
+            assert.strictEqual(tree.type, "StyleSheet");
+            assert.strictEqual(tree.children.length, 1);
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "custom-variant");
+            assert.strictEqual(tree.children[0].prelude.type, "AtrulePrelude");
+            assert.strictEqual(tree.children[0].prelude.children[0].type, "Identifier");
+            assert.strictEqual(tree.children[0].prelude.children[0].name, "theme-midnight");
+            assert.ok(tree.children[0].block);
+        });
     });
 
     describe("@apply", () => {
