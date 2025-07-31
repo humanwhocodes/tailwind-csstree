@@ -24,8 +24,18 @@ export default {
         block: function() {
             return this.Block(function() {
                 while (!this.eof) {
-                    // For now, let's just try custom parsing for everything
-                    this.push(parseWildcardDeclaration.call(this));
+                    // Always try to parse as wildcard first
+                    try {
+                        this.push(parseWildcardDeclaration.call(this));
+                    } catch (e) {
+                        // If wildcard parsing fails, try regular declaration
+                        try {
+                            this.Declaration();
+                        } catch (e2) {
+                            // If all parsing fails, parse as raw
+                            this.Raw(this.tokenIndex, null, false);
+                        }
+                    }
                 }
             });
         }
