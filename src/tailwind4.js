@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------------
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
+import TailwindTheme from "./atrule/tailwind-theme.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
@@ -30,10 +31,7 @@ export const tailwind4 = {
         config: {
             prelude: "<string>",
         },
-        theme: {
-            prelude: null,
-            descriptors: defaultSyntax.properties,
-        },
+        theme: TailwindTheme,
         source: {
             prelude: "<string>",
         },
