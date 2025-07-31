@@ -538,6 +538,89 @@ describe("Tailwind 4", function () {
         });
     });
 
+    describe("@media with screen() function", () => {
+        it("should parse @media screen(sm) with a simple rule", () => {
+            const tree = toPlainObject(parse("@media screen(sm) { .sidebar { display: none; } }"));
+            
+            assert.strictEqual(tree.type, "StyleSheet");
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "media");
+            
+            // Check the screen() function is parsed correctly
+            const condition = tree.children[0].prelude.children[0].children[0].condition;
+            const generalEnclosed = condition.children[0];
+            assert.strictEqual(generalEnclosed.type, "GeneralEnclosed");
+            assert.strictEqual(generalEnclosed.function, "screen");
+            assert.strictEqual(generalEnclosed.children[0].type, "Identifier");
+            assert.strictEqual(generalEnclosed.children[0].name, "sm");
+        });
+
+        it("should parse @media screen(md) with theme() function", () => {
+            const tree = toPlainObject(parse("@media screen(md) { .container { max-width: theme(screens.md); } }"));
+            
+            assert.strictEqual(tree.type, "StyleSheet");
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "media");
+            
+            // Check the screen() function
+            const condition = tree.children[0].prelude.children[0].children[0].condition;
+            const generalEnclosed = condition.children[0];
+            assert.strictEqual(generalEnclosed.type, "GeneralEnclosed");
+            assert.strictEqual(generalEnclosed.function, "screen");
+            assert.strictEqual(generalEnclosed.children[0].name, "md");
+            
+            // Check the theme(screens.md) function
+            const declaration = tree.children[0].block.children[0].block.children[0];
+            const themeFunction = declaration.value.children[0];
+            assert.strictEqual(themeFunction.type, "Function");
+            assert.strictEqual(themeFunction.name, "theme");
+            assert.strictEqual(themeFunction.children[0].type, "TailwindThemeKey");
+        });
+
+        it("should parse @media screen() with different breakpoint names", () => {
+            const testCases = [
+                { breakpoint: "xs", expectedType: "Identifier", expectedValue: "xs" },
+                { breakpoint: "sm", expectedType: "Identifier", expectedValue: "sm" },
+                { breakpoint: "md", expectedType: "Identifier", expectedValue: "md" },
+                { breakpoint: "lg", expectedType: "Identifier", expectedValue: "lg" },
+                { breakpoint: "xl", expectedType: "Identifier", expectedValue: "xl" },
+                { breakpoint: "2xl", expectedType: "Dimension", expectedValue: "2", expectedUnit: "xl" }
+            ];
+            
+            testCases.forEach(({ breakpoint, expectedType, expectedValue, expectedUnit }) => {
+                const css = `@media screen(${breakpoint}) { .test { display: block; } }`;
+                const tree = toPlainObject(parse(css));
+                
+                const generalEnclosed = tree.children[0].prelude.children[0].children[0].condition.children[0];
+                assert.strictEqual(generalEnclosed.function, "screen");
+                
+                const child = generalEnclosed.children[0];
+                assert.strictEqual(child.type, expectedType);
+                
+                if (expectedType === "Identifier") {
+                    assert.strictEqual(child.name, expectedValue);
+                } else if (expectedType === "Dimension") {
+                    assert.strictEqual(child.value, expectedValue);
+                    assert.strictEqual(child.unit, expectedUnit);
+                }
+            });
+        });
+
+        it("should validate @media screen() with lexer", () => {
+            const mediaQueries = [
+                "screen(sm)",
+                "screen(md)",
+                "screen(lg)",
+                "screen(xl)"
+            ];
+            
+            mediaQueries.forEach(query => {
+                const { error } = lexer.matchAtrulePrelude("media", query);
+                assert.strictEqual(error, null, `Failed to validate @media ${query}`);
+            });
+        });
+    });
+
     describe("Canonical Tailwind 4 File", () => {
         it("should parse a canonical Tailwind 4 file", async () => {
             const file = await fs.readFile(filename, "utf8");

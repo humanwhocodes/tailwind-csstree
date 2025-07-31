@@ -29,22 +29,11 @@ export default defineConfig([
 	},
 	{
 		files: ["**/*.css"],
+		ignores: ["tests/fixtures/*.css"],
 		plugins: {
 			css
 		},
 		language: "css/css",
 		extends: ["css/recommended"],
-	},
-	{
-		files: ["tests/fixtures/tailwind3.css"],
-		languageOptions: {
-			customSyntax: tailwind3,
-		}
-	},
-	{
-		files: ["tests/fixtures/tailwind4.css"],
-		languageOptions: {
-			customSyntax: tailwind4,
-		}
 	},
 ]);
