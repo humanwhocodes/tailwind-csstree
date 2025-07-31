@@ -202,6 +202,19 @@ describe("Tailwind 4", function () {
             assert.strictEqual(declaration.type, "Declaration", "Should be Declaration, not Raw");
             assert.strictEqual(declaration.property, "--color-*");
         });
+
+        it("should not allow --color-* in regular rules", () => {
+            const css = `.test {
+  --color-*: initial;
+}`;
+            const tree = toPlainObject(parse(css));
+            
+            const rule = tree.children[0];
+            assert.strictEqual(rule.type, "Rule");
+            
+            const declaration = rule.block.children[0];
+            assert.strictEqual(declaration.type, "Raw", "Wildcard properties should parse as Raw in regular rules");
+        });
     });
 
     describe("@source", () => {

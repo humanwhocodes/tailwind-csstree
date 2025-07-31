@@ -61,7 +61,6 @@ export const tailwind4 = {
         "tw-spacing": "--spacing(<number>)",
         "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
         "tw-any-color": "<tw-alpha> | <tw-theme-color>",
-        "tw-wildcard-property": "--<ident>-*",
         ...themeTypes
     },
     node: {
