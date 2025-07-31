@@ -190,8 +190,10 @@ describe("Tailwind 4", function () {
     });
 
     describe("@source", () => {
-        it("should parse @source with a valid URL", () => {
-            const tree = toPlainObject(parse("@source url('https://example.com/styles.css');"));
+
+
+        it("should parse @source with inline function", () => {
+            const tree = toPlainObject(parse("@source inline('{hover:,focus:,}underline');"));
             assert.deepStrictEqual(tree, {
                 type: "StyleSheet",
                 loc: null,
@@ -204,8 +206,15 @@ describe("Tailwind 4", function () {
                             loc: null,
                             children: [
                                 {
-                                    type: "Url",
-                                    value: "https://example.com/styles.css",
+                                    type: "Function",
+                                    name: "inline",
+                                    children: [
+                                        {
+                                            type: "String",
+                                            value: "{hover:,focus:,}underline",
+                                            loc: null
+                                        }
+                                    ],
                                     loc: null
                                 }
                             ]
@@ -215,6 +224,61 @@ describe("Tailwind 4", function () {
                     }
                 ]
             });
+        });
+
+        it("should parse @source with not inline function", () => {
+            const tree = toPlainObject(parse("@source not inline('container');"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "source",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "not",
+                                    loc: null
+                                },
+                                {
+                                    type: "Function",
+                                    name: "inline",
+                                    children: [
+                                        {
+                                            type: "String",
+                                            value: "container",
+                                            loc: null
+                                        }
+                                    ],
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: null,
+                        loc: null
+                    }
+                ]
+            });
+        });
+
+
+
+        it("should validate @source with inline function", () => {
+            const tree = parse("@source inline('{hover:,focus:,}underline');");
+            const atrule = tree.children.toArray()[0];
+            const validation = lexer.matchAtrulePrelude(atrule.name, atrule.prelude);
+            assert.strictEqual(validation.error, null);
+        });
+
+        it("should validate @source with not inline function", () => {
+            const tree = parse("@source not inline('container');");
+            const atrule = tree.children.toArray()[0];
+            const validation = lexer.matchAtrulePrelude(atrule.name, atrule.prelude);
+            assert.strictEqual(validation.error, null);
         });
     });
 

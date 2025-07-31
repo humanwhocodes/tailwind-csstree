@@ -35,7 +35,7 @@ export const tailwind4 = {
             descriptors: defaultSyntax.properties,
         },
         source: {
-            prelude: "<string>",
+            prelude: "inline( <string># ) | not inline( <string># )",
         },
         utility: {
             prelude: "<ident>",
