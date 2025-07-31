@@ -10,6 +10,15 @@
 import { tokenTypes } from "@eslint/css-tree";
 
 //-----------------------------------------------------------------------------
+// Type Definitions
+//-----------------------------------------------------------------------------
+
+/**
+ * @import { ParserContext, ConsumerFunction } from "@eslint/css-tree";
+ * 
+ */
+
+//-----------------------------------------------------------------------------
 // Helpers
 //-----------------------------------------------------------------------------
 
@@ -37,7 +46,7 @@ function parseWildcardDeclaration() {
     this.eat(tokenTypes.Colon);
     this.skipSC();
     
-    const value = this.Value();
+    const value = /** @type {any} */ (this).Value();
     
     return {
         type: 'Declaration',
@@ -61,18 +70,19 @@ export default {
          * @this {ParserContext}
          */
         block: function() {
-            return this.Block(function() {
-                while (!this.eof) {
+            const self = /** @type {any} */ (this);
+            return self.Block(function() {
+                while (!self.eof) {
                     // Always try to parse as wildcard first
                     try {
-                        this.push(parseWildcardDeclaration.call(this));
+                        self.push(parseWildcardDeclaration.call(self));
                     } catch {
                         // If wildcard parsing fails, try regular declaration
                         try {
-                            this.Declaration();
+                            self.Declaration();
                         } catch {
                             // If all parsing fails, parse as raw
-                            this.Raw(this.tokenIndex, null, false);
+                            self.Raw(self.tokenIndex, null, false);
                         }
                     }
                 }

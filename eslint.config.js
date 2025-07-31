@@ -45,6 +45,9 @@ export default defineConfig([
 		files: ["tests/fixtures/tailwind4.css"],
 		languageOptions: {
 			customSyntax: tailwind4,
+		},
+		rules: {
+			"css/no-invalid-at-rules": "off"
 		}
 	},
 ]);
