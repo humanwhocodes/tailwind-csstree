@@ -78,6 +78,19 @@ describe("Tailwind 4", function () {
             assert.ok(tree.children[0].prelude.value.includes("'tailwindcss'"));
             assert.ok(tree.children[0].prelude.value.includes("prefix(foo)"));
         });
+
+        it("should parse @import with source function without crashing", () => {
+            // Test for the issue reported in #16 where source() functions
+            // cause parsing to fail with "Semicolon or block is expected"
+            const tree = toPlainObject(parse("@import 'tailwindcss' source(none);"));
+            
+            assert.strictEqual(tree.children[0].type, "Atrule");
+            assert.strictEqual(tree.children[0].name, "import");
+            
+            // The source function content should be preserved
+            assert.ok(tree.children[0].prelude.value.includes("'tailwindcss'"));
+            assert.ok(tree.children[0].prelude.value.includes("source(none)"));
+        });
     });
 
     describe("@config", () => {
