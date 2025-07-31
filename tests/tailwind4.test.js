@@ -433,6 +433,66 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
+        
+        it("should parse @apply with !important", () => {
+            const tree = toPlainObject(parse(".example { @apply bg-red-500 text-white !important; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "ClassSelector",
+                                            name: "example",
+                                            loc: null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    important: true,
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "bg-red-500",
+                                                loc: null
+                                            },
+                                            {
+                                                type: "Identifier",
+                                                name: "text-white",
+                                                loc: null
+                                            }
+                                        ]
+                                    },
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
     });
 
     describe("@reference", () => {

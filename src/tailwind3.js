@@ -10,6 +10,7 @@
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
+import * as TailwindApplyAtrule from "./node/tailwind-apply-atrule.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
@@ -30,7 +31,7 @@ export const tailwind3 = {
     },
     atrules: {
         apply: {
-            prelude: "<tw-apply-ident>+",
+            prelude: "<tw-apply-ident>+ [ '!' important ]?",
         },
         tailwind: {
             prelude: "base | components | utilities | variants",

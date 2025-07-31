@@ -332,6 +332,146 @@ describe("Tailwind 3", function () {
                 ]
             });
         });
+        
+        it("should parse @apply with !important", () => {
+            const tree = toPlainObject(parse("a { @apply text-center bg-blue-500 !important; }"));
+            
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "TypeSelector",
+                                            loc: null,
+                                            name: "a"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    important: true,
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                loc: null,
+                                                name: "text-center"
+                                            },
+                                            {
+                                                type: "Identifier",
+                                                loc: null,
+                                                name: "bg-blue-500"
+                                            }
+                                        ]
+                                    },
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
+        
+        it("should parse @apply with variant and !important", () => {
+            const tree = toPlainObject(parse("a { @apply hover:bg-blue-500 focus:ring-blue-500 !important; }"));
+            
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "TypeSelector",
+                                            loc: null,
+                                            name: "a"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    important: true,
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: {
+                                                    type: "Identifier",
+                                                    name: "hover",
+                                                    loc: null
+                                                },
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "bg-blue-500",
+                                                    loc: null
+                                                },
+                                            },
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: {
+                                                    type: "Identifier",
+                                                    name: "focus",
+                                                    loc: null
+                                                },
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "ring-blue-500",
+                                                    loc: null
+                                                },
+                                            }
+                                        ]
+                                    },
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
     });
     
     describe("Validation", () => {
@@ -354,6 +494,9 @@ describe("Tailwind 3", function () {
                 "bg-blue-500",
                 "hover:bg-blue-700",
                 "bg-blue-500 focus:ring-blue-500",
+                "bg-blue-500 !important",
+                "hover:bg-blue-700 !important",
+                "bg-blue-500 focus:ring-blue-500 !important",
             ].forEach((value) => {
                 it(`should validate @apply ${value}`, () => {
                     assert.strictEqual(lexer.matchAtrulePrelude("apply", value).error, null);

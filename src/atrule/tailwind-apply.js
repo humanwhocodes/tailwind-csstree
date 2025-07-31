@@ -24,12 +24,12 @@ import { tokenTypes } from "@eslint/css-tree";
 
 export default {
     parse: {
-        
         /**
          * @this {ParserContext}
          */
         prelude: function() {
             const children = this.createList();
+            let hasImportant = false;
 
             while (this.tokenType === tokenTypes.Ident) {
                 
@@ -40,6 +40,17 @@ export default {
                 }
                 
                 this.skipSC();
+            }
+            
+            // Check for !important at the end
+            if (this.tokenType === tokenTypes.Delim && this.source.charCodeAt(this.tokenStart) === 33) { // 33 is '!'
+                this.next(); // consume !
+                this.skipSC();
+                
+                if (this.tokenType === tokenTypes.Ident && this.source.slice(this.tokenStart, this.tokenEnd) === "important") {
+                    this.next(); // consume important
+                    hasImportant = true;
+                }
             }
             
             return children;
