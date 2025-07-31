@@ -1,0 +1,258 @@
+
+> tailwind-csstree@0.1.2 test:unit
+> mocha tests/*.{js,mjs} --exit --forbid-only
+
+
+
+  Tailwind 3
+    ✔ tests that tailwind3 is a valid SyntaxExtension
+    theme() function
+      Parsing
+        ✔ should parse theme() with colors.green.500
+        ✔ should parse theme() with colors.red.500 / 50%
+        ✔ should parse theme() with colors.gray.900/75%
+        ✔ should parse theme() with spacing[2.5]
+      Validation
+        Type Validation
+          ✔ should validate type <tw-theme-spacing> with theme(spacing.12)
+          ✔ should validate type <tw-theme-spacing> with theme(spacing.4)
+          ✔ should validate type <tw-theme-color> with theme(colors.gray.900)
+          ✔ should validate type <tw-theme-color> with theme(colors.red.500 / 50%)
+          ✔ should validate type <tw-theme-color> with theme(colors.green.225)
+        Property Validation
+          ✔ should validate margin: theme(spacing.4)
+          ✔ should validate color: theme(colors.red.500 / 50%)
+    @config
+      ✔ should parse @config with a string value
+    @tailwind
+      ✔ should parse @tailwind with valid prelude
+      ✔ should parse @tailwind with multiple values
+    @apply
+      ✔ should parse @apply with multiple identifiers
+      ✔ should parse @apply with a variant
+      ✔ should parse @apply with a variant and multiple identifiers
+      1) should parse @apply with !important
+      2) should parse @apply with variant and !important
+    Validation
+      Type Validation
+        ✔ should validate type <tw-apply-ident> with bg-blue-500
+        ✔ should validate type <tw-apply-ident> with hover:bg-blue-700
+        ✔ should validate type <tw-apply-ident> with focus:ring-blue-500
+      Property Validation
+        ✔ should validate @apply bg-blue-500
+        ✔ should validate @apply hover:bg-blue-700
+        ✔ should validate @apply bg-blue-500 focus:ring-blue-500
+        ✔ should validate @apply bg-blue-500 !important
+        ✔ should validate @apply hover:bg-blue-700 !important
+        ✔ should validate @apply bg-blue-500 focus:ring-blue-500 !important
+        ✔ should validate @container 
+    @import
+      ✔ should parse @import with prefix function without crashing
+    Canonical Tailwind 3 File
+      ✔ should parse a canonical Tailwind 3 file
+
+  Tailwind 4
+    ✔ tests that tailwind4 is a valid SyntaxExtension
+    theme() function
+      Parsing
+        ✔ should parse theme() with colors.green.500
+        ✔ should parse theme() with colors.red.500 / 50%
+        ✔ should parse theme() with colors.gray.900/75%
+        ✔ should parse theme() with spacing[2.5]
+      Validation
+        Type Validation
+          ✔ should validate type <tw-theme-spacing> with theme(spacing.12)
+          ✔ should validate type <tw-theme-spacing> with theme(spacing.4)
+          ✔ should validate type <tw-theme-color> with theme(colors.gray.900)
+          ✔ should validate type <tw-theme-color> with theme(colors.red.500 / 50%)
+          ✔ should validate type <tw-theme-color> with theme(colors.green.225)
+        Property Validation
+          ✔ should validate margin: theme(spacing.4)
+          ✔ should validate color: theme(colors.red.500 / 50%)
+    @import
+      ✔ should parse @import with a string value
+      ✔ should parse @import with prefix function without crashing
+    @config
+      ✔ should parse @config with a string value
+    @plugin
+      ✔ should parse @plugin with a string value
+    @theme
+      ✔ should parse @theme with a valid prelude
+    @source
+      ✔ should parse @source with a valid URL
+    @variant
+      ✔ should parse @variant with a valid prelude
+    @custom-variant
+      ✔ should parse @custom-variant with a valid prelude
+    @apply
+      ✔ should parse @apply with valid classes
+      3) should parse @apply with !important
+    @reference
+      ✔ should parse @reference with a valid prelude
+    Validation
+      Type Validation
+        ✔ should validate type <tw-alpha> with --alpha(#000 / 50%)
+        ✔ should validate type <tw-any-color> with --alpha(#000 / 50%)
+        ✔ should validate type <tw-alpha> with --alpha(white / 70%)
+        ✔ should validate type <tw-any-color> with --alpha(white / 70%)
+        ✔ should validate type <tw-alpha> with --alpha(rgba(0, 0, 0, 0.5) / 1%)
+        ✔ should validate type <tw-any-color> with --alpha(rgba(0, 0, 0, 0.5) / 1%)
+        ✔ should validate type <tw-spacing> with --spacing(4)
+        ✔ should validate type <tw-any-spacing> with --spacing(4)
+        ✔ should validate type <tw-spacing> with --spacing(12)
+        ✔ should validate type <tw-any-spacing> with --spacing(12)
+        ✔ should validate type <tw-spacing> with --spacing(0.5)
+        ✔ should validate type <tw-any-spacing> with --spacing(0.5)
+      Property Validation
+        ✔ should validate margin: --spacing(4)
+        ✔ should validate color: --alpha(#000 / 50%)
+    Canonical Tailwind 4 File
+      ✔ should parse a canonical Tailwind 4 file
+
+
+  67 passing (412ms)
+  3 failing
+
+  1) Tailwind 3
+       @apply
+         should parse @apply with !important:
+
+      AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected ... Lines skipped
+
+  {
+    children: [
+...
+            {
+              block: null,
+-             important: true,
+              loc: null,
+...
+    loc: null,
+    type: 'StyleSheet'
+  }
+      + expected - actual
+
+             "block": {
+               "children": [
+                 {
+                   "block": [null]
+      +            "important": true
+                   "loc": [null]
+                   "name": "apply"
+                   "prelude": {
+                     "children": [
+      
+      at Context.<anonymous> (file:///home/runner/work/tailwind-csstree/tailwind-csstree/tests/tailwind3.test.js:339:20)
+      at process.processImmediate (node:internal/timers:483:21)
+
+  2) Tailwind 3
+       @apply
+         should parse @apply with variant and !important:
+
+      AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected ... Lines skipped
+
+  {
+    children: [
+...
+            {
+              block: null,
+-             important: true,
+              loc: null,
+...
+    loc: null,
+    type: 'StyleSheet'
+  }
+      + expected - actual
+
+             "block": {
+               "children": [
+                 {
+                   "block": [null]
+      +            "important": true
+                   "loc": [null]
+                   "name": "apply"
+                   "prelude": {
+                     "children": [
+      
+      at Context.<anonymous> (file:///home/runner/work/tailwind-csstree/tailwind-csstree/tests/tailwind3.test.js:400:20)
+      at process.processImmediate (node:internal/timers:483:21)
+
+  3) Tailwind 4
+       @apply
+         should parse @apply with !important:
+
+      AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected ... Lines skipped
+
+  {
+    children: [
+...
+            {
+              block: null,
++             loc: null,
++             name: 'apply',
++             prelude: {
++               loc: null,
++               type: 'Raw',
++               value: 'bg-red-500 text-white !important'
+-             important: true,
+-             loc: null,
+-             name: 'apply',
+-             prelude: {
+-               children: [
+-                 {
+-                   loc: null,
+-                   name: 'bg-red-500',
+-                   type: 'Identifier'
+-                 },
+-                 {
+-                   loc: null,
+-                   name: 'text-white',
+-                   type: 'Identifier'
+-                 }
+-               ],
+-               loc: null,
+-               type: 'AtrulePrelude'
+              },
+...
+    loc: null,
+    type: 'StyleSheet'
+  }
+      + expected - actual
+
+             "block": {
+               "children": [
+                 {
+                   "block": [null]
+      +            "important": true
+                   "loc": [null]
+                   "name": "apply"
+                   "prelude": {
+      +              "children": [
+      +                {
+      +                  "loc": [null]
+      +                  "name": "bg-red-500"
+      +                  "type": "Identifier"
+      +                }
+      +                {
+      +                  "loc": [null]
+      +                  "name": "text-white"
+      +                  "type": "Identifier"
+      +                }
+      +              ]
+                     "loc": [null]
+      -              "type": "Raw"
+      -              "value": "bg-red-500 text-white !important"
+      +              "type": "AtrulePrelude"
+                   }
+                   "type": "Atrule"
+                 }
+               ]
+      
+      at Context.<anonymous> (file:///home/runner/work/tailwind-csstree/tailwind-csstree/tests/tailwind4.test.js:439:20)
+      at process.processImmediate (node:internal/timers:483:21)
+
+
+

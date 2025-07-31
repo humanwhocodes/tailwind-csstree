@@ -25,7 +25,7 @@ import { themeTypes } from "./types/theme-types.js";
 export const tailwind4 = {
     atrules: {
         apply: {
-            prelude: "<ident>+",
+            prelude: "<ident>+ [ '!' important ]?",
         },
         config: {
             prelude: "<string>",
