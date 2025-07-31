@@ -187,6 +187,34 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
+
+        it("should parse --color-* as Declaration in @theme", () => {
+            const css = `@theme {
+  --color-*: initial;
+}`;
+            const tree = toPlainObject(parse(css));
+            
+            const atrule = tree.children[0];
+            assert.strictEqual(atrule.type, "Atrule");
+            assert.strictEqual(atrule.name, "theme");
+            
+            const declaration = atrule.block.children[0];
+            assert.strictEqual(declaration.type, "Declaration", "Should be Declaration, not Raw");
+            assert.strictEqual(declaration.property, "--color-*");
+        });
+
+        it("should not allow --color-* in regular rules", () => {
+            const css = `.test {
+  --color-*: initial;
+}`;
+            const tree = toPlainObject(parse(css));
+            
+            const rule = tree.children[0];
+            assert.strictEqual(rule.type, "Rule");
+            
+            const declaration = rule.block.children[0];
+            assert.strictEqual(declaration.type, "Raw", "Wildcard properties should parse as Raw in regular rules");
+        });
     });
 
     describe("@source", () => {
