@@ -32,7 +32,17 @@
     }
 }
 
-/* @custom-variant theme-midnight (&:where([data-theme="midnight"] *)); */
+/* 
+   @custom-variant examples (commented out due to ESLint parsing limitations):
+   
+   @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+
+   @custom-variant theme-midnight {
+       &:where([data-theme="midnight"] *) {
+           color: inherit;
+       }
+   }
+*/
 
 @source "../node_modules/@my-company/ui-lib";
 

@@ -11,6 +11,7 @@ import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
+import tailwindCustomVariant from "./atrule/tailwind-custom-variant.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -23,6 +24,9 @@ import { themeTypes } from "./types/theme-types.js";
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
+    atrule: {
+        "custom-variant": tailwindCustomVariant,
+    },
     atrules: {
         apply: {
             prelude: "<ident>+",
@@ -45,7 +49,7 @@ export const tailwind4 = {
             descriptors: defaultSyntax.properties,
         },
         "custom-variant": {
-            prelude: "<ident> <parentheses-block>",
+            prelude: null, // Use custom parser instead
         },
         plugin: {
             prelude: "<string>",
