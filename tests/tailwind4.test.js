@@ -190,32 +190,7 @@ describe("Tailwind 4", function () {
     });
 
     describe("@source", () => {
-        it("should parse @source with a valid URL", () => {
-            const tree = toPlainObject(parse("@source url('https://example.com/styles.css');"));
-            assert.deepStrictEqual(tree, {
-                type: "StyleSheet",
-                loc: null,
-                children: [
-                    {
-                        type: "Atrule",
-                        name: "source",
-                        prelude: {
-                            type: "AtrulePrelude",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Url",
-                                    value: "https://example.com/styles.css",
-                                    loc: null
-                                }
-                            ]
-                        },
-                        block: null,
-                        loc: null
-                    }
-                ]
-            });
-        });
+
 
         it("should parse @source with inline function", () => {
             const tree = toPlainObject(parse("@source inline('{hover:,focus:,}underline');"));
@@ -290,12 +265,7 @@ describe("Tailwind 4", function () {
             });
         });
 
-        it("should validate @source with URL syntax", () => {
-            const tree = parse("@source url('https://example.com/styles.css');");
-            const atrule = tree.children.toArray()[0];
-            const validation = lexer.matchAtrulePrelude(atrule.name, atrule.prelude);
-            assert.strictEqual(validation.error, null);
-        });
+
 
         it("should validate @source with inline function", () => {
             const tree = parse("@source inline('{hover:,focus:,}underline');");
