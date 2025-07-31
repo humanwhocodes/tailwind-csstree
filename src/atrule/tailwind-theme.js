@@ -7,15 +7,6 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-/**
- * @fileoverview Tailwind 4 @theme rule parser
- * @author Nicholas C. Zakas
- */
-
-//-----------------------------------------------------------------------------
-// Imports
-//-----------------------------------------------------------------------------
-
 import { tokenTypes } from "@eslint/css-tree";
 
 //-----------------------------------------------------------------------------
@@ -33,12 +24,8 @@ export default {
         block: function() {
             return this.Block(function() {
                 while (!this.eof) {
-                    // Check if this looks like a wildcard custom property
-                    if (this.isWildcardProperty()) {
-                        this.parseWildcardDeclaration();
-                    } else {
-                        this.Declaration();
-                    }
+                    // For now, let's just try custom parsing for everything
+                    this.push(parseWildcardDeclaration.call(this));
                 }
             });
         }

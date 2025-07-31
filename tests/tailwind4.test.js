@@ -187,6 +187,21 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
+
+        it("should parse --color-* as Declaration in @theme", () => {
+            const css = `@theme {
+  --color-*: initial;
+}`;
+            const tree = toPlainObject(parse(css));
+            
+            const atrule = tree.children[0];
+            assert.strictEqual(atrule.type, "Atrule");
+            assert.strictEqual(atrule.name, "theme");
+            
+            const declaration = atrule.block.children[0];
+            assert.strictEqual(declaration.type, "Declaration", "Should be Declaration, not Raw");
+            assert.strictEqual(declaration.property, "--color-*");
+        });
     });
 
     describe("@source", () => {

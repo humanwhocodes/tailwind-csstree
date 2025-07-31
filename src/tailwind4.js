@@ -34,10 +34,6 @@ export const tailwind4 = {
         config: {
             prelude: "<string>",
         },
-        theme: {
-            prelude: null,
-            descriptors: defaultSyntax.properties,
-        },
         source: {
             prelude: "<string>",
         },
