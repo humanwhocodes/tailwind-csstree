@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------------
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
-import TailwindTheme from "./atrule/tailwind-theme.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
@@ -31,7 +30,20 @@ export const tailwind4 = {
         config: {
             prelude: "<string>",
         },
-        theme: TailwindTheme,
+        theme: {
+            prelude: null,
+            descriptors: {
+                ...defaultSyntax.properties,
+                // Try escaped asterisks and explicit wildcard properties
+                "--color-\\*": "<declaration-value>",
+                "--spacing-\\*": "<declaration-value>", 
+                "--font-size-\\*": "<declaration-value>",
+                // Also try without escaping
+                "--color-*": "<declaration-value>",
+                "--spacing-*": "<declaration-value>",
+                "--font-size-*": "<declaration-value>",
+            },
+        },
         source: {
             prelude: "<string>",
         },
@@ -59,6 +71,7 @@ export const tailwind4 = {
         "tw-spacing": "--spacing(<number>)",
         "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
         "tw-any-color": "<tw-alpha> | <tw-theme-color>",
+        "tw-wildcard-property": "--<ident>-*",
         ...themeTypes
     },
     node: {
