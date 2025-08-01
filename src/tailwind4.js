@@ -9,6 +9,7 @@
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
+import tailwindImport from "./atrule/tailwind-import.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
@@ -17,13 +18,18 @@ import { themeTypes } from "./types/theme-types.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("@eslint/css-tree").NodeSyntaxConfig} NodeSyntaxConfig
  * @import { SyntaxConfig } from "@eslint/css-tree"
  */
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
+    atrule: {
+        import: tailwindImport,
+    },
     atrules: {
+        import: {
+            prelude: "[ <string> | <url> ] [ [ source( [ <string> | none ] ) ]? || [ prefix( <ident> ) ]? || [ layer | layer( <layer-name> ) ]? ] [ supports( [ <supports-condition> | <declaration> ] ) ]? <media-query-list>?",
+        },
         apply: {
             prelude: "<ident>+",
         },
