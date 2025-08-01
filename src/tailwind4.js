@@ -9,6 +9,7 @@
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
+import tailwindImport from "./atrule/tailwind-import.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
@@ -23,6 +24,9 @@ import { themeTypes } from "./types/theme-types.js";
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
+    atrule: {
+        import: tailwindImport,
+    },
     atrules: {
         apply: {
             prelude: "<ident>+",
