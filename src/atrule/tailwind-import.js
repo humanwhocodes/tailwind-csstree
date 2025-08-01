@@ -14,7 +14,7 @@ import { tokenTypes } from "@eslint/css-tree";
 //-----------------------------------------------------------------------------
 
 /**
- * @import { ParserContext as BaseParserContext, ConsumerFunction, CssNode } from "@eslint/css-tree";
+ * @import { ParserContext as BaseParserContext, ConsumerFunction, SyntaxConfig } from "@eslint/css-tree";
  */
  
  /**
@@ -128,7 +128,9 @@ export default {
         
         /**
          * @this {ParserContext}
+         * @type {SyntaxConfig['atrule']['import']['parse']['prelude']}
          */
+        // @ts-expect-error it doesn't like that we extend ParserContext
         prelude: function() {
             const children = this.createList();
 
