@@ -20,7 +20,6 @@ import { themeTypes } from "./types/theme-types.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("@eslint/css-tree").NodeSyntaxConfig} NodeSyntaxConfig
  * @import { SyntaxConfig } from "@eslint/css-tree"
  */
 
@@ -31,6 +30,9 @@ export const tailwind4 = {
         import: tailwindImport,
     },
     atrules: {
+        import: {
+            prelude: "[ <string> | <url> ] [ [ source( [ <string> | none ] ) ]? || [ prefix( <ident> ) ]? || [ layer | layer( <layer-name> ) ]? ] [ supports( [ <supports-condition> | <declaration> ] ) ]? <media-query-list>?",
+        },
         apply: {
             prelude: "<tw-apply-ident>+",
         },
