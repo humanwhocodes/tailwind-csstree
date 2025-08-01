@@ -7,8 +7,10 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
+import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
+import * as TailwindUtilityClass from "./node/tailwind-class.js";
+import tailwindApply from "./atrule/tailwind-apply.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
@@ -23,9 +25,12 @@ import { themeTypes } from "./types/theme-types.js";
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
+    atrule: {
+        apply: tailwindApply,
+    },
     atrules: {
         apply: {
-            prelude: "<ident>+",
+            prelude: "<tw-apply-ident>+",
         },
         config: {
             prelude: "<string>",
@@ -61,10 +66,12 @@ export const tailwind4 = {
         "tw-spacing": "--spacing(<number>)",
         "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
         "tw-any-color": "<tw-alpha> | <tw-theme-color>",
+        "tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
         ...themeTypes
     },
     node: {
-        TailwindThemeKey
+        TailwindThemeKey,
+        TailwindUtilityClass
     },
     scope: {
         Value: {
