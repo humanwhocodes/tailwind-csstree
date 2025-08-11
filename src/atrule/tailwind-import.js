@@ -149,35 +149,24 @@ export default {
                     this.error('String or url() is expected');
             }
 
-            let matched = true;
-            while (matched) {
-                matched = false;
+            while (true) {
                 this.skipSC();
                 
                 if (
-                    this.tokenType === tokenTypes.Function &&
-                    this.cmpStr(this.tokenStart, this.tokenEnd, 'source(')
+                    this.tokenType === tokenTypes.Function && (
+                        this.cmpStr(this.tokenStart, this.tokenEnd, 'source(') ||
+                        this.cmpStr(this.tokenStart, this.tokenEnd, 'prefix(') ||
+                        this.cmpStr(this.tokenStart, this.tokenEnd, 'layer(')
+                    )
                 ) {
                     children.push(this.Function(null, parseFunctions));
-                    matched = true;
-                } else if (
-                    this.tokenType === tokenTypes.Function &&
-                    this.cmpStr(this.tokenStart, this.tokenEnd, 'prefix(')
-                ) {
-                    children.push(this.Function(null, parseFunctions));
-                    matched = true;
-                } else if (
-                    this.tokenType === tokenTypes.Function &&
-                    this.cmpStr(this.tokenStart, this.tokenEnd, 'layer(')
-                ) {
-                    children.push(this.Function(null, parseFunctions));
-                    matched = true;
                 } else if (
                     this.tokenType === tokenTypes.Ident &&
                     this.cmpStr(this.tokenStart, this.tokenEnd, 'layer')
                 ) {
                     children.push(this.Identifier());
-                    matched = true;
+                } else {
+                    break;
                 }
             }
     
