@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.3...tailwind-csstree-v0.1.4) (2025-09-01)
+
+
+### Bug Fixes
+
+* Support `[@import](https://github.com/import)` source parsing ([#30](https://github.com/humanwhocodes/tailwind-csstree/issues/30)) ([8d5cd4c](https://github.com/humanwhocodes/tailwind-csstree/commit/8d5cd4c6d396c2289e216d7865f7d39ae6996cdb))
+
 ## [0.1.3](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.2...tailwind-csstree-v0.1.3) (2025-08-08)
 
 
