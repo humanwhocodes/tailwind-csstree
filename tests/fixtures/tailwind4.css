@@ -53,3 +53,16 @@
 .my-element {
   margin: theme(spacing.12);
 }
+
+/* Using the screen() function for media queries */
+@media screen(sm) {
+  .sidebar {
+    display: none;
+  }
+}
+
+@media screen(md) {
+  .container {
+    max-width: theme(screens.md);
+  }
+}

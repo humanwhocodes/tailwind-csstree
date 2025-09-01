@@ -97,7 +97,7 @@
 }
 
 /* Using the screen() function for media queries */
-/* @media screen(sm) {
+@media screen(sm) {
   .sidebar {
     display: none;
   }
@@ -107,7 +107,7 @@
   .container {
     max-width: theme(screens.md);
   }
-} */
+}
 
 /* Custom styles outside of layers (not processed by Tailwind) */
 .legacy-component {
