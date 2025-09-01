@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.2...tailwind-csstree-v0.1.3) (2025-08-08)
+
+
+### Bug Fixes
+
+* parsing `[@apply](https://github.com/apply)` in Tailwind 4 ([#25](https://github.com/humanwhocodes/tailwind-csstree/issues/25)) ([1756fd1](https://github.com/humanwhocodes/tailwind-csstree/commit/1756fd13cc6fa9f2feee323dba7cff56c41b5ef6))
+* parsing `[@source](https://github.com/source) inline()` ([#26](https://github.com/humanwhocodes/tailwind-csstree/issues/26)) ([94f0966](https://github.com/humanwhocodes/tailwind-csstree/commit/94f09666c201fa7d37bf2332de793da40a5a4760))
+
 ## [0.1.2](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.1...tailwind-csstree-v0.1.2) (2025-07-25)
 
 

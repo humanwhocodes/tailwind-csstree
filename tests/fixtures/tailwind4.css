@@ -10,7 +10,7 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 bg-blue-500 text-white;
+    @apply px-4 py-2 bg-blue-500 text-white dark:text-black;
   }
 }
 
@@ -35,6 +35,10 @@
 /* @custom-variant theme-midnight (&:where([data-theme="midnight"] *)); */
 
 @source "../node_modules/@my-company/ui-lib";
+
+@source inline("{hover:,}bg-red-{50,{100..900..100},950}");
+
+@source not inline('container');
 
 @reference "tailwindcss";
 

@@ -7,9 +7,12 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
-import TailwindTheme from "./atrule/tailwind-theme.js";
 import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
+import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
+import * as TailwindUtilityClass from "./node/tailwind-class.js";
+import tailwindApply from "./atrule/tailwind-apply.js";
+import tailwindImport from "./atrule/tailwind-import.js";
+import tailwindTheme from "./atrule/tailwind-theme.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
@@ -18,24 +21,28 @@ import { themeTypes } from "./types/theme-types.js";
 //-----------------------------------------------------------------------------
 
 /**
- * @typedef {import("@eslint/css-tree").NodeSyntaxConfig} NodeSyntaxConfig
  * @import { SyntaxConfig } from "@eslint/css-tree"
  */
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
     atrule: {
-        theme: TailwindTheme,
+        theme: tailwindTheme,
+        apply: tailwindApply,
+        import: tailwindImport,
     },
     atrules: {
+        import: {
+            prelude: "[ <string> | <url> ] [ [ source( [ <string> | none ] ) ]? || [ prefix( <ident> ) ]? || [ layer | layer( <layer-name> ) ]? ] [ supports( [ <supports-condition> | <declaration> ] ) ]? <media-query-list>?",
+        },
         apply: {
-            prelude: "<ident>+",
+            prelude: "<tw-apply-ident>+",
         },
         config: {
             prelude: "<string>",
         },
         source: {
-            prelude: "<string>",
+            prelude: "not? [ <string> | inline(<string>) ]",
         },
         utility: {
             prelude: "<ident>",
@@ -61,10 +68,12 @@ export const tailwind4 = {
         "tw-spacing": "--spacing(<number>)",
         "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
         "tw-any-color": "<tw-alpha> | <tw-theme-color>",
+        "tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
         ...themeTypes
     },
     node: {
-        TailwindThemeKey
+        TailwindThemeKey,
+        TailwindUtilityClass
     },
     scope: {
         Value: {
