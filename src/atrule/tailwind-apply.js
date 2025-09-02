@@ -34,8 +34,10 @@ export default {
             while (this.tokenType === tokenTypes.Ident) {
                 
                 if (this.lookupType(1) === tokenTypes.Colon) {
+                    // This is a variant like hover: - use TailwindUtilityClass
                     children.push(/** @type {ConsumerFunction} */ (this.TailwindUtilityClass)());
                 } else {
+                    // Simple identifier - use Identifier parser
                     children.push(/** @type {ConsumerFunction} */ (this.Identifier)());
                 }
                 
