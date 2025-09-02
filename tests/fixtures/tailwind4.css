@@ -1,35 +1,34 @@
-
 @config 'tailwind.config.js';
 @plugin 'tailwindcss/typography';
 
 @layer base {
-  h1 {
-    @apply text-2xl font-bold;
-  }
+	h1 {
+		@apply text-2xl font-bold;
+	}
 }
 
 @layer components {
-  .btn {
-    @apply px-4 py-2 bg-blue-500 text-white dark:text-black;
-  }
+	.btn {
+		@apply px-4 py-2 bg-blue-500 text-white dark:text-black;
+	}
 }
 
 @layer utilities {
-  .custom-utility {
-    @apply border border-gray-300;
-  }
+	.custom-utility {
+		@apply border border-gray-300;
+	}
 }
 
 @theme {
-  --primary: #ff0000;
+	--primary: #ff0000;
 }
 
 .my-element {
-    background: white;
+	background: white;
 
-    @variant dark {
-        background: black;
-    }
+	@variant dark {
+		background: black;
+	}
 }
 
 /* @custom-variant theme-midnight (&:where([data-theme="midnight"] *)); */
@@ -43,13 +42,13 @@
 @reference "tailwindcss";
 
 .my-element {
-  color: --alpha(var(--color-lime-300) / 50%);
+	color: --alpha(var(--color-lime-300) / 50%);
 }
 
 .my-element {
-  margin: --spacing(4);
+	margin: --spacing(4);
 }
 
 .my-element {
-  margin: theme(spacing.12);
+	margin: theme(spacing.12);
 }

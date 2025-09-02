@@ -16,84 +16,83 @@
 
 /* @layer directive for adding custom styles to Tailwind's layers */
 @layer base {
-  /* Base styles for HTML elements */
-  h1 {
-    @apply text-2xl font-bold mb-4;
-  }
-  
-  h2 {
-    @apply text-xl font-semibold mb-3;
-  }
-  
-  a {
-    @apply text-blue-600 hover:text-blue-800;
-  }
+	/* Base styles for HTML elements */
+	h1 {
+		@apply text-2xl font-bold mb-4;
+	}
+
+	h2 {
+		@apply text-xl font-semibold mb-3;
+	}
+
+	a {
+		@apply text-blue-600 hover:text-blue-800;
+	}
 }
 
 @layer components {
-  /* Custom component classes */
-  .btn {
-    @apply py-2 px-4 rounded font-medium focus:outline-none focus:ring-2 focus:ring-opacity-50;
-  }
-  
-  .btn-primary {
-    @apply bg-blue-500 text-white hover:bg-blue-700 focus:ring-blue-500;
-  }
-  
-  
-  /* For Sass/SCSS, you'd use: .btn-important { @apply font-bold py-2 px-4 rounded #{!important}; } */
-  
-  /* Example card component */
-  .card {
-    @apply bg-white rounded-lg shadow-md overflow-hidden;
-  }
-  
-  .card-header {
-    @apply px-6 py-4 border-b border-gray-200;
-  }
-  
-  .card-body {
-    @apply px-6 py-4;
-  }
+	/* Custom component classes */
+	.btn {
+		@apply py-2 px-4 rounded font-medium focus:outline-none focus:ring-2 focus:ring-opacity-50;
+	}
+
+	.btn-primary {
+		@apply bg-blue-500 text-white hover:bg-blue-700 focus:ring-blue-500;
+	}
+
+	/* For Sass/SCSS, you'd use: .btn-important { @apply font-bold py-2 px-4 rounded #{!important}; } */
+
+	/* Example card component */
+	.card {
+		@apply bg-white rounded-lg shadow-md overflow-hidden;
+	}
+
+	.card-header {
+		@apply px-6 py-4 border-b border-gray-200;
+	}
+
+	.card-body {
+		@apply px-6 py-4;
+	}
 }
 
 @layer utilities {
-  /* Custom utility classes */
-  .filter-none {
-    filter: none;
-  }
-  
-  .filter-grayscale {
-    filter: grayscale(100%);
-  }
-  
-  /* Advanced filters */
-  .filter-blur-sm {
-    filter: blur(4px);
-  }
-  
-  /* These custom utilities can be used with modifiers */
-  /* Example usage in HTML: <div class="hover:filter-grayscale"> */
+	/* Custom utility classes */
+	.filter-none {
+		filter: none;
+	}
+
+	.filter-grayscale {
+		filter: grayscale(100%);
+	}
+
+	/* Advanced filters */
+	.filter-blur-sm {
+		filter: blur(4px);
+	}
+
+	/* These custom utilities can be used with modifiers */
+	/* Example usage in HTML: <div class="hover:filter-grayscale"> */
 }
 
 /* Using the theme() function to access config values */
 .content-area {
-  /* Basic theme usage */
-  padding: theme(spacing.4);
-  margin-bottom: theme(spacing.8);
-  
-  /* Using square brackets for values with dots */
-  width: theme(spacing[2.5]);
-  
-  /* Accessing nested color values with dot notation */
-  color: theme(colors.blue.500);
-  
-  /* Using theme with calculations */
-  height: calc(100vh - theme(spacing.16));
-  
-  /* Color opacity syntax */
-  background-color: theme(colors.gray.900/75%);
-  border-color: theme(colors.purple.500/50%);
+	/* Basic theme usage */
+	padding: theme(spacing.4);
+	margin-bottom: theme(spacing.8);
+
+	/* Using square brackets for values with dots */
+	width: theme(spacing[2.5]);
+
+	/* Accessing nested color values with dot notation */
+	color: theme(colors.blue.500);
+
+	/* Using theme with calculations */
+	height: calc(100vh - theme(spacing.16));
+
+	/* Color opacity syntax */
+	background-color: theme(colors.gray.900/75%);
+	border-color: theme(colors.purple.500/50%);
 }
 
 /* Using the screen() function for media queries */
@@ -111,6 +110,6 @@
 
 /* Custom styles outside of layers (not processed by Tailwind) */
 .legacy-component {
-  display: block;
-  position: relative;
+	display: block;
+	position: relative;
 }
