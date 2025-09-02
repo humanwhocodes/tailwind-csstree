@@ -43,7 +43,7 @@ export const tailwind3 = {
         "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-theme-spacing>`,
         "color": `${defaultSyntax.types.color} | <tw-theme-color>`,
         "tw-apply-ident": "<ident> | <tw-utility-with-variant> | <tw-utility-with-opacity>",
-        "tw-utility-with-variant": "[ <ident> ':' <ident> ]",
+        "tw-utility-with-variant": "[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
         "tw-utility-with-opacity": "[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
         ...themeTypes
     },

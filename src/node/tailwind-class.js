@@ -69,6 +69,31 @@ export function parse() {
         variant = className;
         className = this.Identifier();
     }
+    
+    // Handle slash notation for opacity (e.g., bg-red-500/50 or hover:bg-red-500/50)
+    if (this.tokenType === tokenTypes.Delim && this.tokenValue === '/') {
+        this.next(); // consume the '/'
+        
+        let opacityValue;
+        if (this.tokenType === tokenTypes.Ident) {
+            opacityValue = this.Identifier();
+            // Merge the opacity into the class name
+            className = {
+                ...className,
+                name: className.name + '/' + opacityValue.name
+            };
+        } else if (this.tokenType === tokenTypes.Number) {
+            // For numbers, get the token value and advance
+            opacityValue = this.tokenValue;
+            this.next(); // consume the number token
+            // Merge the opacity into the class name
+            className = {
+                ...className,
+                name: className.name + '/' + opacityValue
+            };
+        }
+        // If neither Ident nor Number, leave the slash unconsumed and let it fail naturally
+    }
 
     this.skipSC();
     
