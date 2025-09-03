@@ -25,33 +25,33 @@ import { themeTypes } from "./types/theme-types.js";
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind3 = {
-	atrule: {
-		apply: tailwindApply,
-	},
-	atrules: {
-		apply: {
-			prelude: "<tw-apply-ident>+",
-		},
-		tailwind: {
-			prelude: "base | components | utilities | variants",
-		},
-		config: {
-			prelude: "<string>",
-		},
-	},
-	types: {
-		"length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-theme-spacing>`,
-		color: `${defaultSyntax.types.color} | <tw-theme-color>`,
-		"tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
-		...themeTypes,
-	},
-	node: {
-		TailwindThemeKey,
-		TailwindUtilityClass,
-	},
-	scope: {
-		Value: {
-			theme,
-		},
-	},
+    atrule: {
+        apply: tailwindApply,
+    },
+    atrules: {
+        apply: {
+            prelude: "<tw-apply-ident>+",
+        },
+        tailwind: {
+            prelude: "base | components | utilities | variants",
+        },
+        config: {
+            prelude: "<string>",
+        }
+    },
+    types: {
+        "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-theme-spacing>`,
+        "color": `${defaultSyntax.types.color} | <tw-theme-color>`,
+        "tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
+        ...themeTypes
+    },
+    node: {
+        TailwindThemeKey,
+        TailwindUtilityClass
+    },
+    scope: {
+        Value: {
+            theme
+        }
+    }
 };

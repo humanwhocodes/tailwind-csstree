@@ -25,62 +25,61 @@ import { themeTypes } from "./types/theme-types.js";
 
 /** @type {Partial<SyntaxConfig>} */
 export const tailwind4 = {
-	atrule: {
-		apply: tailwindApply,
-		import: tailwindImport,
-	},
-	atrules: {
-		import: {
-			prelude:
-				"[ <string> | <url> ] [ [ source( [ <string> | none ] ) ]? || [ prefix( <ident> ) ]? || [ layer | layer( <layer-name> ) ]? ] [ supports( [ <supports-condition> | <declaration> ] ) ]? <media-query-list>?",
-		},
-		apply: {
-			prelude: "<tw-apply-ident>+",
-		},
-		config: {
-			prelude: "<string>",
-		},
-		theme: {
-			prelude: null,
-			descriptors: defaultSyntax.properties,
-		},
-		source: {
-			prelude: "not? [ <string> | inline(<string>) ]",
-		},
-		utility: {
-			prelude: "<ident>",
-		},
-		variant: {
-			prelude: "<ident>",
-			descriptors: defaultSyntax.properties,
-		},
-		"custom-variant": {
-			prelude: "<ident> <parentheses-block>",
-		},
-		plugin: {
-			prelude: "<string>",
-		},
-		reference: {
-			prelude: "<string>",
-		},
-	},
-	types: {
-		"length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-any-spacing>`,
-		color: `${defaultSyntax.types.color} | <tw-any-color>`,
-		"tw-alpha": `--alpha(<color> / <percentage>)`,
-		"tw-spacing": "--spacing(<number>)",
-		"tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
-		"tw-any-color": "<tw-alpha> | <tw-theme-color>",
-		"tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
-		...themeTypes,
-	},
-	node: {
-		TailwindThemeKey,
-		TailwindUtilityClass,
-	},
-	scope: {
-		Value: {
-			theme,
-		},
-	},
+    atrule: {
+        apply: tailwindApply,
+        import: tailwindImport,
+    },
+    atrules: {
+        import: {
+            prelude: "[ <string> | <url> ] [ [ source( [ <string> | none ] ) ]? || [ prefix( <ident> ) ]? || [ layer | layer( <layer-name> ) ]? ] [ supports( [ <supports-condition> | <declaration> ] ) ]? <media-query-list>?",
+        },
+        apply: {
+            prelude: "<tw-apply-ident>+",
+        },
+        config: {
+            prelude: "<string>",
+        },
+        theme: {
+            prelude: null,
+            descriptors: defaultSyntax.properties,
+        },
+        source: {
+            prelude: "not? [ <string> | inline(<string>) ]",
+        },
+        utility: {
+            prelude: "<ident>",
+        },
+        variant: {
+            prelude: "<ident>",
+            descriptors: defaultSyntax.properties,
+        },
+        "custom-variant": {
+            prelude: "<ident> <parentheses-block>",
+        },
+        plugin: {
+            prelude: "<string>",
+        },
+        reference: {
+            prelude: "<string>",
+        },
+    },
+    types: {
+        "length-percentage": `${defaultSyntax.types["length-percentage"]} | <tw-any-spacing>`,
+        "color": `${defaultSyntax.types.color} | <tw-any-color>`,
+        "tw-alpha": `--alpha(<color> / <percentage>)`,
+        "tw-spacing": "--spacing(<number>)",
+        "tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
+        "tw-any-color": "<tw-alpha> | <tw-theme-color>",
+        "tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
+        ...themeTypes
+    },
+    node: {
+        TailwindThemeKey,
+        TailwindUtilityClass
+    },
+    scope: {
+        Value: {
+            theme
+        }
+    }
 };

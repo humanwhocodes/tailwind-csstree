@@ -24,1184 +24,1111 @@ const filename = "./tests/fixtures/tailwind4.css";
 //-----------------------------------------------------------------------------
 
 describe("Tailwind 4", function () {
-	let parse, toPlainObject, lexer;
-	beforeEach(() => {
-		({ parse, toPlainObject, lexer } = fork(tailwind4));
-	});
+    
+    let parse, toPlainObject, lexer;
+    beforeEach(() => {
+        ({ parse, toPlainObject, lexer } = fork(tailwind4));
+    });
 
-	it("tests that tailwind4 is a valid SyntaxExtension", () => {
-		parse("a { color: var(--foo); }");
-	});
+    it("tests that tailwind4 is a valid SyntaxExtension", () => {
+        parse("a { color: var(--foo); }");
+    });
+    
+    createThemeFunctionTests(fork(tailwind4));
 
-	createThemeFunctionTests(fork(tailwind4));
+    describe("@import", () => {
+        describe("Parsing", () => {
+            it("should parse @import", () => {
+                const tree = toPlainObject(parse("@import 'tailwindcss';"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "tailwindcss",
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with prefix()", () => {
+                const tree = toPlainObject(parse("@import 'tailwindcss' prefix(tw);"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "tailwindcss",
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "prefix",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "tw",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with source()", () => {
+                const tree = toPlainObject(parse("@import 'tailwindcss' source('..');"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "tailwindcss",
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "source",
+                                        children: [
+                                            {
+                                                type: "String",
+                                                value: "..",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with source(none)", () => {
+                const tree = toPlainObject(parse("@import 'tailwindcss' source(none);"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "tailwindcss",
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "source",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "none",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with source and prefix", () => {
+                const tree = toPlainObject(parse("@import 'tailwindcss' source(none) prefix(tw);"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "tailwindcss",
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "source",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "none",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "prefix",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "tw",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with source, prefix and layer", () => {
+                const tree = toPlainObject(parse('@import "tailwindcss/utilities.css" source(none) prefix(tw) layer(utilities);'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "tailwindcss/utilities.css",
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "source",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "none",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "prefix",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "tw",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    },
+                                    {
+                                        type: "Function",
+                                        name: "layer",
+                                        children: [
+                                            {
+                                                type: "Layer",
+                                                name: "utilities",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with layer", () => {
+                const tree = toPlainObject(parse('@import "./foo.css" layer;'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                children: [
+                                    {
+                                        loc: null,
+                                        type: "String",
+                                        value: "./foo.css"
+                                    },
+                                    {
+                                        loc: null,
+                                        name: "layer",
+                                        type: "Identifier"
+                                    }
+                                ],
+                                loc: null,
+                                type: "AtrulePrelude"
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with layer()", () => {
+                const tree = toPlainObject(parse('@import "./foo.css" layer(utilities);'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                children: [
+                                    {
+                                        loc: null,
+                                        type: "String",
+                                        value: "./foo.css"
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                loc: null,
+                                                name: "utilities",
+                                                type: "Layer"
+                                            }
+                                        ],
+                                        loc: null,
+                                        name: "layer",
+                                        type: "Function"
+                                    }
+                                ],
+                                loc: null,
+                                type: "AtrulePrelude"
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with media query list", () => {
+                const tree = toPlainObject(parse('@import url("bluish.css") print, screen;'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                children: [
+                                    {
+                                        loc: null,
+                                        type: "Url",
+                                        value: "bluish.css"
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                condition: null,
+                                                loc: null,
+                                                mediaType: "print",
+                                                modifier: null,
+                                                type: "MediaQuery"
+                                            },
+                                            {
+                                                condition: null,
+                                                loc: null,
+                                                mediaType: "screen",
+                                                modifier: null,
+                                                type: "MediaQuery"
+                                            }
+                                        ],
+                                        loc: null,
+                                        type: "MediaQueryList"
+                                    }
+                                ],
+                                loc: null,
+                                type: "AtrulePrelude"
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+    
+            it("should parse @import with complex media query", () => {
+                const tree = toPlainObject(parse('@import url("landscape.css") screen and (orientation: landscape);'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "import",
+                            prelude: {
+                                children: [
+                                    {
+                                        loc: null,
+                                        type: "Url",
+                                        value: "landscape.css"
+                                    },
+                                    {
+                                        children: [
+                                            {
+                                                condition: {
+                                                    children: [
+                                                        {
+                                                            kind: "media",
+                                                            loc: null,
+                                                            name: "orientation",
+                                                            type: "Feature",
+                                                            value: {
+                                                                loc: null,
+                                                                name: "landscape",
+                                                                type: "Identifier"
+                                                            }
+                                                        }
+                                                    ],
+                                                    kind: "media",
+                                                    loc: null,
+                                                    type: "Condition"
+                                                },
+                                                loc: null,
+                                                mediaType: "screen",
+                                                modifier: null,
+                                                type: "MediaQuery"
+                                            }
+                                        ],
+                                        loc: null,
+                                        type: "MediaQueryList"
+                                    }
+                                ],
+                                loc: null,
+                                type: "AtrulePrelude"
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+        });
+        
+        describe('Validation', () => {
+            [
+                "@import 'tailwindcss';",
+                "@import url('test.css');",
+                "@import 'tailwindcss' prefix(tw);",
+                "@import 'tailwindcss' source('..');",
+                "@import 'tailwindcss' source(none);",
+                "@import 'tailwindcss' source(none) prefix(tw);",
+                '@import "tailwindcss/utilities.css" source(none) prefix(tw) layer(utilities);',
+                '@import "./foo.css" layer;',
+                '@import "./foo.css" layer(utilities);',
+                '@import url("bluish.css") print, screen;',
+                '@import url("landscape.css") screen and (orientation: landscape);',
+            ].forEach((prelude) => {
+                it("should allow valid prelude", () => {
+                    const tree = toPlainObject(parse(prelude));
+                    const { error } = lexer.matchAtrulePrelude("import", tree.children[0].prelude);
+                    assert.equal(error, null);
+                });
+            });
 
-	describe("@import", () => {
-		describe("Parsing", () => {
-			it("should parse @import", () => {
-				const tree = toPlainObject(parse("@import 'tailwindcss';"));
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "tailwindcss",
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+            [
+                "@import 'foo' 'bar';",
+                "@import 'tailwindcss' print, screen prefix(tw);",
+                '@import url("landscape.css") screen and (orientation: landscape) layer(base);',
+                // todo: fail with these
+                // "@import 'tailwindcss' prefix(foo) prefix(bar);",
+                // "@import 'tailwindcss' prefix('foo');",
+                // "@import 'tailwindcss' prefix();",
+                // "@import 'tailwindcss' prefix;",
+                // "@import 'tailwindcss' source(foo);",
+                // "@import 'tailwindcss' source;",
+            ].forEach((prelude) => {
+                it("should fail with invalid prelude", () => {
+                    const tree = toPlainObject(parse(prelude));
+                    const { error } = lexer.matchAtrulePrelude("import", tree.children[0].prelude);
+                    assert.notEqual(error, null);
+                });
+            });
+        });
+    });
 
-			it("should parse @import with prefix()", () => {
-				const tree = toPlainObject(
-					parse("@import 'tailwindcss' prefix(tw);"),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "tailwindcss",
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "prefix",
-										children: [
-											{
-												type: "Identifier",
-												name: "tw",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+    describe("@config", () => {
+        it("should parse @config with a string value", () => {
+            const tree = toPlainObject(parse("@config 'tailwind.config.js';"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "config",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "String",
+                                    value: "tailwind.config.js",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: null,
+                        loc: null
+                    }
+                ]
+            });
+        });
+    });
 
-			it("should parse @import with source()", () => {
-				const tree = toPlainObject(
-					parse("@import 'tailwindcss' source('..');"),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "tailwindcss",
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "source",
-										children: [
-											{
-												type: "String",
-												value: "..",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+    describe("@plugin", () => {
+        it("should parse @plugin with a string value", () => {
+            const tree = toPlainObject(parse("@plugin 'tailwindcss/typography';"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "plugin",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "String",
+                                    value: "tailwindcss/typography",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: null,
+                        loc: null
+                    }
+                ]
+            });
+        });
+    });
 
-			it("should parse @import with source(none)", () => {
-				const tree = toPlainObject(
-					parse("@import 'tailwindcss' source(none);"),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "tailwindcss",
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "source",
-										children: [
-											{
-												type: "Identifier",
-												name: "none",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+    describe("@theme", () => {
+        it("should parse @theme with a valid prelude", () => {
+            const tree = toPlainObject(parse("@theme colors { primary: #ff0000; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "theme",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "colors",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Declaration",
+                                    loc: null,
+                                    property: "primary",
+                                    value: {
+                                        type: "Value",
+                                        children: [
+                                            {
+                                                type: "Hash",
+                                                value: "ff0000",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    },
+                                    important: false
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
+    });
 
-			it("should parse @import with source and prefix", () => {
-				const tree = toPlainObject(
-					parse("@import 'tailwindcss' source(none) prefix(tw);"),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "tailwindcss",
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "source",
-										children: [
-											{
-												type: "Identifier",
-												name: "none",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "prefix",
-										children: [
-											{
-												type: "Identifier",
-												name: "tw",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+    describe("@source", () => {
+        describe("Parsing", () => {
+            it("should parse @source", () => {
+                const tree = toPlainObject(parse("@source '../node_modules/@acmecorp/ui-lib';"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "source",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "String",
+                                        value: "../node_modules/@acmecorp/ui-lib",
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
 
-			it("should parse @import with source, prefix and layer", () => {
-				const tree = toPlainObject(
-					parse(
-						'@import "tailwindcss/utilities.css" source(none) prefix(tw) layer(utilities);',
-					),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "tailwindcss/utilities.css",
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "source",
-										children: [
-											{
-												type: "Identifier",
-												name: "none",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "prefix",
-										children: [
-											{
-												type: "Identifier",
-												name: "tw",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-									{
-										type: "Function",
-										name: "layer",
-										children: [
-											{
-												type: "Layer",
-												name: "utilities",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+            it("should parse @source not", () => {
+                const tree = toPlainObject(parse('@source not "../src/components/legacy";'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "source",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        type: "Identifier",
+                                        name: "not",
+                                        loc: null
+                                    },
+                                    {
+                                        type: "String",
+                                        value: "../src/components/legacy",
+                                        loc: null
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
 
-			it("should parse @import with layer", () => {
-				const tree = toPlainObject(parse('@import "./foo.css" layer;'));
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								children: [
-									{
-										loc: null,
-										type: "String",
-										value: "./foo.css",
-									},
-									{
-										loc: null,
-										name: "layer",
-										type: "Identifier",
-									},
-								],
-								loc: null,
-								type: "AtrulePrelude",
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+            it("should parse @source inline()", () => {
+                const tree = toPlainObject(parse("@source inline('{hover:,}bg-red-{50,{100..900..100},950}');"));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "source",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        "children": [
+                                            {
+                                                "loc": null,
+                                                "type": "String",
+                                                "value": "{hover:,}bg-red-{50,{100..900..100},950}"
+                                            }
+                                        ],
+                                        "loc": null,
+                                        "name": "inline",
+                                        "type": "Function"
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
 
-			it("should parse @import with layer()", () => {
-				const tree = toPlainObject(
-					parse('@import "./foo.css" layer(utilities);'),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								children: [
-									{
-										loc: null,
-										type: "String",
-										value: "./foo.css",
-									},
-									{
-										children: [
-											{
-												loc: null,
-												name: "utilities",
-												type: "Layer",
-											},
-										],
-										loc: null,
-										name: "layer",
-										type: "Function",
-									},
-								],
-								loc: null,
-								type: "AtrulePrelude",
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+            it("should parse @source not inline()", () => {
+                const tree = toPlainObject(parse('@source not inline("container");'));
+                assert.deepStrictEqual(tree, {
+                    type: "StyleSheet",
+                    loc: null,
+                    children: [
+                        {
+                            type: "Atrule",
+                            name: "source",
+                            prelude: {
+                                type: "AtrulePrelude",
+                                loc: null,
+                                children: [
+                                    {
+                                        "loc": null,
+                                        "name": "not",
+                                        "type": "Identifier"
+                                    },
+                                    {
+                                        "children": [
+                                            {
+                                                "loc": null,
+                                                "type": "String",
+                                                "value": "container"
+                                            }
+                                        ],
+                                        "loc": null,
+                                        "name": "inline",
+                                        "type": "Function"
+                                    }
+                                ]
+                            },
+                            block: null,
+                            loc: null
+                        }
+                    ]
+                });
+            });
+        });
 
-			it("should parse @import with media query list", () => {
-				const tree = toPlainObject(
-					parse('@import url("bluish.css") print, screen;'),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								children: [
-									{
-										loc: null,
-										type: "Url",
-										value: "bluish.css",
-									},
-									{
-										children: [
-											{
-												condition: null,
-												loc: null,
-												mediaType: "print",
-												modifier: null,
-												type: "MediaQuery",
-											},
-											{
-												condition: null,
-												loc: null,
-												mediaType: "screen",
-												modifier: null,
-												type: "MediaQuery",
-											},
-										],
-										loc: null,
-										type: "MediaQueryList",
-									},
-								],
-								loc: null,
-								type: "AtrulePrelude",
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+        describe('Validation', () => {
+            [
+                "@source '../foo';",
+                '@source not "./bar";',
+                "@source inline('container');",
+                "@source not inline('container');",
+            ].forEach((prelude) => {
+                it("should allow valid prelude", () => {
+                    const tree = toPlainObject(parse(prelude));
+                    const { error } = lexer.matchAtrulePrelude("source", tree.children[0].prelude);
+                    assert.equal(error, null);
+                });
+            });
 
-			it("should parse @import with complex media query", () => {
-				const tree = toPlainObject(
-					parse(
-						'@import url("landscape.css") screen and (orientation: landscape);',
-					),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "import",
-							prelude: {
-								children: [
-									{
-										loc: null,
-										type: "Url",
-										value: "landscape.css",
-									},
-									{
-										children: [
-											{
-												condition: {
-													children: [
-														{
-															kind: "media",
-															loc: null,
-															name: "orientation",
-															type: "Feature",
-															value: {
-																loc: null,
-																name: "landscape",
-																type: "Identifier",
-															},
-														},
-													],
-													kind: "media",
-													loc: null,
-													type: "Condition",
-												},
-												loc: null,
-												mediaType: "screen",
-												modifier: null,
-												type: "MediaQuery",
-											},
-										],
-										loc: null,
-										type: "MediaQueryList",
-									},
-								],
-								loc: null,
-								type: "AtrulePrelude",
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
-		});
+            [
+                "@source foo;",
+                "@source 10;",
+                "@source foo 'bar';",
+                "@source foo inline('bar');",
+                "@source not inline('bar') 'baz';",
+                "@source foo('bar');",
+            ].forEach((prelude) => {
+                it("should fail with invalid prelude", () => {
+                    const tree = toPlainObject(parse(prelude));
+                    const { error } = lexer.matchAtrulePrelude("source", tree.children[0].prelude);
+                    assert.notEqual(error, null);
+                });
+          });
+      });
+    });
 
-		describe("Validation", () => {
-			[
-				"@import 'tailwindcss';",
-				"@import url('test.css');",
-				"@import 'tailwindcss' prefix(tw);",
-				"@import 'tailwindcss' source('..');",
-				"@import 'tailwindcss' source(none);",
-				"@import 'tailwindcss' source(none) prefix(tw);",
-				'@import "tailwindcss/utilities.css" source(none) prefix(tw) layer(utilities);',
-				'@import "./foo.css" layer;',
-				'@import "./foo.css" layer(utilities);',
-				'@import url("bluish.css") print, screen;',
-				'@import url("landscape.css") screen and (orientation: landscape);',
-			].forEach(prelude => {
-				it("should allow valid prelude", () => {
-					const tree = toPlainObject(parse(prelude));
-					const { error } = lexer.matchAtrulePrelude(
-						"import",
-						tree.children[0].prelude,
-					);
-					assert.equal(error, null);
-				});
-			});
+    describe("@variant", () => {
+        it("should parse @variant with a valid prelude", () => {
+            const tree = toPlainObject(parse("@variant hover { .example { color: blue; } }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "variant",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "hover",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Rule",
+                                    loc: null,
+                                    prelude: {
+                                        type: "SelectorList",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Selector",
+                                                loc: null,
+                                                children: [
+                                                    {
+                                                        type: "ClassSelector",
+                                                        name: "example",
+                                                        loc: null
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    block: {
+                                        type: "Block",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Declaration",
+                                                loc: null,
+                                                property: "color",
+                                                value: {
+                                                    type: "Value",
+                                                    children: [
+                                                        {
+                                                            type: "Identifier",
+                                                            name: "blue",
+                                                            loc: null
+                                                        }
+                                                    ],
+                                                    loc: null
+                                                },
+                                                important: false
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
+    });
 
-			[
-				"@import 'foo' 'bar';",
-				"@import 'tailwindcss' print, screen prefix(tw);",
-				'@import url("landscape.css") screen and (orientation: landscape) layer(base);',
-				// todo: fail with these
-				// "@import 'tailwindcss' prefix(foo) prefix(bar);",
-				// "@import 'tailwindcss' prefix('foo');",
-				// "@import 'tailwindcss' prefix();",
-				// "@import 'tailwindcss' prefix;",
-				// "@import 'tailwindcss' source(foo);",
-				// "@import 'tailwindcss' source;",
-			].forEach(prelude => {
-				it("should fail with invalid prelude", () => {
-					const tree = toPlainObject(parse(prelude));
-					const { error } = lexer.matchAtrulePrelude(
-						"import",
-						tree.children[0].prelude,
-					);
-					assert.notEqual(error, null);
-				});
-			});
-		});
-	});
+    describe("@custom-variant", () => {
+        it("should parse @custom-variant with a valid prelude", () => {
+            const tree = toPlainObject(parse("@custom-variant my-variant { .example { color: green; } }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "custom-variant",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "my-variant",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Rule",
+                                    loc: null,
+                                    prelude: {
+                                        type: "SelectorList",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Selector",
+                                                loc: null,
+                                                children: [
+                                                    {
+                                                        type: "ClassSelector",
+                                                        name: "example",
+                                                        loc: null
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    block: {
+                                        type: "Block",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Declaration",
+                                                loc: null,
+                                                property: "color",
+                                                value: {
+                                                    type: "Value",
+                                                    children: [
+                                                        {
+                                                            type: "Identifier",
+                                                            name: "green",
+                                                            loc: null
+                                                        }
+                                                    ],
+                                                    loc: null
+                                                },
+                                                important: false
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
+    });
 
-	describe("@config", () => {
-		it("should parse @config with a string value", () => {
-			const tree = toPlainObject(parse("@config 'tailwind.config.js';"));
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Atrule",
-						name: "config",
-						prelude: {
-							type: "AtrulePrelude",
-							loc: null,
-							children: [
-								{
-									type: "String",
-									value: "tailwind.config.js",
-									loc: null,
-								},
-							],
-						},
-						block: null,
-						loc: null,
-					},
-				],
-			});
-		});
-	});
+    describe("@apply", () => {
+        it("should parse @apply with valid classes", () => {
+            const tree = toPlainObject(parse(".example { @apply bg-red-500 text-white focus:ring-3; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "ClassSelector",
+                                            name: "example",
+                                            loc: null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "bg-red-500",
+                                                loc: null
+                                            },
+                                            {
+                                                type: "Identifier",
+                                                name: "text-white",
+                                                loc: null
+                                            },
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: {
+                                                    type: "Identifier",
+                                                    name: "focus",
+                                                    loc: null
+                                                },
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "ring-3",
+                                                    loc: null
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
+    });
 
-	describe("@plugin", () => {
-		it("should parse @plugin with a string value", () => {
-			const tree = toPlainObject(
-				parse("@plugin 'tailwindcss/typography';"),
-			);
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Atrule",
-						name: "plugin",
-						prelude: {
-							type: "AtrulePrelude",
-							loc: null,
-							children: [
-								{
-									type: "String",
-									value: "tailwindcss/typography",
-									loc: null,
-								},
-							],
-						},
-						block: null,
-						loc: null,
-					},
-				],
-			});
-		});
-	});
+    describe("@reference", () => {
+        it("should parse @reference with a valid prelude", () => {
+            const tree = toPlainObject(parse("@reference colors { primary: #00ff00; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "reference",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "colors",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Declaration",
+                                    loc: null,
+                                    property: "primary",
+                                    value: {
+                                        type: "Value",
+                                        children: [
+                                            {
+                                                type: "Hash",
+                                                value: "00ff00",
+                                                loc: null
+                                            }
+                                        ],
+                                        loc: null
+                                    },
+                                    important: false
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
+    });
+    
+    describe("Validation", () => {
+        describe("Type Validation", () => {
+            [
+                "--alpha(#000 / 50%)",
+                "--alpha(white / 70%)",
+                "--alpha(rgba(0, 0, 0, 0.5) / 1%)",
+            ].forEach((value) => {
+                it(`should validate type <tw-alpha> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-alpha", tree).error, null);
+                });
 
-	describe("@theme", () => {
-		it("should parse @theme with a valid prelude", () => {
-			const tree = toPlainObject(
-				parse("@theme colors { primary: #ff0000; }"),
-			);
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Atrule",
-						name: "theme",
-						prelude: {
-							type: "AtrulePrelude",
-							loc: null,
-							children: [
-								{
-									type: "Identifier",
-									name: "colors",
-									loc: null,
-								},
-							],
-						},
-						block: {
-							type: "Block",
-							loc: null,
-							children: [
-								{
-									type: "Declaration",
-									loc: null,
-									property: "primary",
-									value: {
-										type: "Value",
-										children: [
-											{
-												type: "Hash",
-												value: "ff0000",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-									important: false,
-								},
-							],
-						},
-						loc: null,
-					},
-				],
-			});
-		});
-	});
+                it(`should validate type <tw-any-color> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-any-color", tree).error, null);
+                });
+            });
+            
+            [
+                "--spacing(4)",
+                "--spacing(12)",
+                "--spacing(0.5)",
+            ].forEach((value) => {
+                it(`should validate type <tw-spacing> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-spacing", tree).error, null);
+                });
 
-	describe("@source", () => {
-		describe("Parsing", () => {
-			it("should parse @source", () => {
-				const tree = toPlainObject(
-					parse("@source '../node_modules/@acmecorp/ui-lib';"),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "source",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "String",
-										value: "../node_modules/@acmecorp/ui-lib",
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
+                it(`should validate type <tw-any-spacing> with ${value}`, () => {
+                    const tree = parse(value, { context: 'value' });
+                    assert.strictEqual(lexer.matchType("tw-any-spacing", tree).error, null);
+                });
+            });
+        });
+        
+        describe("Property Validation", () => {
+            
+            it("should validate margin: --spacing(4)", () => {
+                const tree = toPlainObject(parse("a { margin: --spacing(4); }"));
+                const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+                assert.strictEqual(error, null);
+            });
+            
+            it("should validate color: --alpha(#000 / 50%)", () => {
+                const tree = toPlainObject(parse("a { color: --alpha(#000 / 50%); }"));
+                const { error } = lexer.matchDeclaration(tree.children[0].block.children[0]);
+                assert.strictEqual(error, null);
+            });
+            
+        });
+    });
 
-			it("should parse @source not", () => {
-				const tree = toPlainObject(
-					parse('@source not "../src/components/legacy";'),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "source",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										type: "Identifier",
-										name: "not",
-										loc: null,
-									},
-									{
-										type: "String",
-										value: "../src/components/legacy",
-										loc: null,
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
-
-			it("should parse @source inline()", () => {
-				const tree = toPlainObject(
-					parse(
-						"@source inline('{hover:,}bg-red-{50,{100..900..100},950}');",
-					),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "source",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										children: [
-											{
-												loc: null,
-												type: "String",
-												value: "{hover:,}bg-red-{50,{100..900..100},950}",
-											},
-										],
-										loc: null,
-										name: "inline",
-										type: "Function",
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
-
-			it("should parse @source not inline()", () => {
-				const tree = toPlainObject(
-					parse('@source not inline("container");'),
-				);
-				assert.deepStrictEqual(tree, {
-					type: "StyleSheet",
-					loc: null,
-					children: [
-						{
-							type: "Atrule",
-							name: "source",
-							prelude: {
-								type: "AtrulePrelude",
-								loc: null,
-								children: [
-									{
-										loc: null,
-										name: "not",
-										type: "Identifier",
-									},
-									{
-										children: [
-											{
-												loc: null,
-												type: "String",
-												value: "container",
-											},
-										],
-										loc: null,
-										name: "inline",
-										type: "Function",
-									},
-								],
-							},
-							block: null,
-							loc: null,
-						},
-					],
-				});
-			});
-		});
-
-		describe("Validation", () => {
-			[
-				"@source '../foo';",
-				'@source not "./bar";',
-				"@source inline('container');",
-				"@source not inline('container');",
-			].forEach(prelude => {
-				it("should allow valid prelude", () => {
-					const tree = toPlainObject(parse(prelude));
-					const { error } = lexer.matchAtrulePrelude(
-						"source",
-						tree.children[0].prelude,
-					);
-					assert.equal(error, null);
-				});
-			});
-
-			[
-				"@source foo;",
-				"@source 10;",
-				"@source foo 'bar';",
-				"@source foo inline('bar');",
-				"@source not inline('bar') 'baz';",
-				"@source foo('bar');",
-			].forEach(prelude => {
-				it("should fail with invalid prelude", () => {
-					const tree = toPlainObject(parse(prelude));
-					const { error } = lexer.matchAtrulePrelude(
-						"source",
-						tree.children[0].prelude,
-					);
-					assert.notEqual(error, null);
-				});
-			});
-		});
-	});
-
-	describe("@variant", () => {
-		it("should parse @variant with a valid prelude", () => {
-			const tree = toPlainObject(
-				parse("@variant hover { .example { color: blue; } }"),
-			);
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Atrule",
-						name: "variant",
-						prelude: {
-							type: "AtrulePrelude",
-							loc: null,
-							children: [
-								{
-									type: "Identifier",
-									name: "hover",
-									loc: null,
-								},
-							],
-						},
-						block: {
-							type: "Block",
-							loc: null,
-							children: [
-								{
-									type: "Rule",
-									loc: null,
-									prelude: {
-										type: "SelectorList",
-										loc: null,
-										children: [
-											{
-												type: "Selector",
-												loc: null,
-												children: [
-													{
-														type: "ClassSelector",
-														name: "example",
-														loc: null,
-													},
-												],
-											},
-										],
-									},
-									block: {
-										type: "Block",
-										loc: null,
-										children: [
-											{
-												type: "Declaration",
-												loc: null,
-												property: "color",
-												value: {
-													type: "Value",
-													children: [
-														{
-															type: "Identifier",
-															name: "blue",
-															loc: null,
-														},
-													],
-													loc: null,
-												},
-												important: false,
-											},
-										],
-									},
-								},
-							],
-						},
-						loc: null,
-					},
-				],
-			});
-		});
-	});
-
-	describe("@custom-variant", () => {
-		it("should parse @custom-variant with a valid prelude", () => {
-			const tree = toPlainObject(
-				parse(
-					"@custom-variant my-variant { .example { color: green; } }",
-				),
-			);
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Atrule",
-						name: "custom-variant",
-						prelude: {
-							type: "AtrulePrelude",
-							loc: null,
-							children: [
-								{
-									type: "Identifier",
-									name: "my-variant",
-									loc: null,
-								},
-							],
-						},
-						block: {
-							type: "Block",
-							loc: null,
-							children: [
-								{
-									type: "Rule",
-									loc: null,
-									prelude: {
-										type: "SelectorList",
-										loc: null,
-										children: [
-											{
-												type: "Selector",
-												loc: null,
-												children: [
-													{
-														type: "ClassSelector",
-														name: "example",
-														loc: null,
-													},
-												],
-											},
-										],
-									},
-									block: {
-										type: "Block",
-										loc: null,
-										children: [
-											{
-												type: "Declaration",
-												loc: null,
-												property: "color",
-												value: {
-													type: "Value",
-													children: [
-														{
-															type: "Identifier",
-															name: "green",
-															loc: null,
-														},
-													],
-													loc: null,
-												},
-												important: false,
-											},
-										],
-									},
-								},
-							],
-						},
-						loc: null,
-					},
-				],
-			});
-		});
-	});
-
-	describe("@apply", () => {
-		it("should parse @apply with valid classes", () => {
-			const tree = toPlainObject(
-				parse(
-					".example { @apply bg-red-500 text-white focus:ring-3; }",
-				),
-			);
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Rule",
-						loc: null,
-						prelude: {
-							type: "SelectorList",
-							loc: null,
-							children: [
-								{
-									type: "Selector",
-									loc: null,
-									children: [
-										{
-											type: "ClassSelector",
-											name: "example",
-											loc: null,
-										},
-									],
-								},
-							],
-						},
-						block: {
-							type: "Block",
-							loc: null,
-							children: [
-								{
-									type: "Atrule",
-									name: "apply",
-									prelude: {
-										type: "AtrulePrelude",
-										loc: null,
-										children: [
-											{
-												type: "Identifier",
-												name: "bg-red-500",
-												loc: null,
-											},
-											{
-												type: "Identifier",
-												name: "text-white",
-												loc: null,
-											},
-											{
-												type: "TailwindUtilityClass",
-												loc: null,
-												variant: {
-													type: "Identifier",
-													name: "focus",
-													loc: null,
-												},
-												name: {
-													type: "Identifier",
-													name: "ring-3",
-													loc: null,
-												},
-											},
-										],
-									},
-									block: null,
-									loc: null,
-								},
-							],
-						},
-					},
-				],
-			});
-		});
-	});
-
-	describe("@reference", () => {
-		it("should parse @reference with a valid prelude", () => {
-			const tree = toPlainObject(
-				parse("@reference colors { primary: #00ff00; }"),
-			);
-			assert.deepStrictEqual(tree, {
-				type: "StyleSheet",
-				loc: null,
-				children: [
-					{
-						type: "Atrule",
-						name: "reference",
-						prelude: {
-							type: "AtrulePrelude",
-							loc: null,
-							children: [
-								{
-									type: "Identifier",
-									name: "colors",
-									loc: null,
-								},
-							],
-						},
-						block: {
-							type: "Block",
-							loc: null,
-							children: [
-								{
-									type: "Declaration",
-									loc: null,
-									property: "primary",
-									value: {
-										type: "Value",
-										children: [
-											{
-												type: "Hash",
-												value: "00ff00",
-												loc: null,
-											},
-										],
-										loc: null,
-									},
-									important: false,
-								},
-							],
-						},
-						loc: null,
-					},
-				],
-			});
-		});
-	});
-
-	describe("Validation", () => {
-		describe("Type Validation", () => {
-			[
-				"--alpha(#000 / 50%)",
-				"--alpha(white / 70%)",
-				"--alpha(rgba(0, 0, 0, 0.5) / 1%)",
-			].forEach(value => {
-				it(`should validate type <tw-alpha> with ${value}`, () => {
-					const tree = parse(value, { context: "value" });
-					assert.strictEqual(
-						lexer.matchType("tw-alpha", tree).error,
-						null,
-					);
-				});
-
-				it(`should validate type <tw-any-color> with ${value}`, () => {
-					const tree = parse(value, { context: "value" });
-					assert.strictEqual(
-						lexer.matchType("tw-any-color", tree).error,
-						null,
-					);
-				});
-			});
-
-			["--spacing(4)", "--spacing(12)", "--spacing(0.5)"].forEach(
-				value => {
-					it(`should validate type <tw-spacing> with ${value}`, () => {
-						const tree = parse(value, { context: "value" });
-						assert.strictEqual(
-							lexer.matchType("tw-spacing", tree).error,
-							null,
-						);
-					});
-
-					it(`should validate type <tw-any-spacing> with ${value}`, () => {
-						const tree = parse(value, { context: "value" });
-						assert.strictEqual(
-							lexer.matchType("tw-any-spacing", tree).error,
-							null,
-						);
-					});
-				},
-			);
-		});
-
-		describe("Property Validation", () => {
-			it("should validate margin: --spacing(4)", () => {
-				const tree = toPlainObject(
-					parse("a { margin: --spacing(4); }"),
-				);
-				const { error } = lexer.matchDeclaration(
-					tree.children[0].block.children[0],
-				);
-				assert.strictEqual(error, null);
-			});
-
-			it("should validate color: --alpha(#000 / 50%)", () => {
-				const tree = toPlainObject(
-					parse("a { color: --alpha(#000 / 50%); }"),
-				);
-				const { error } = lexer.matchDeclaration(
-					tree.children[0].block.children[0],
-				);
-				assert.strictEqual(error, null);
-			});
-		});
-	});
-
-	describe("Canonical Tailwind 4 File", () => {
-		it("should parse a canonical Tailwind 4 file", async () => {
-			const file = await fs.readFile(filename, "utf8");
-			const tree = toPlainObject(parse(file));
-
-			assert.strictEqual(tree.type, "StyleSheet");
-		});
-	});
+    describe("Canonical Tailwind 4 File", () => {
+        it("should parse a canonical Tailwind 4 file", async () => {
+            const file = await fs.readFile(filename, "utf8");
+            const tree = toPlainObject(parse(file));
+            
+            assert.strictEqual(tree.type, "StyleSheet");
+        });
+    });
 });

@@ -9,9 +9,9 @@ export default defineConfig([
 	{
 		files: ["**/*.js"],
 		plugins: {
-			js,
+			js
 		},
-		extends: ["js/recommended"],
+		extends: ["js/recommended"]
 	},
 	{
 		files: ["tests/**/*.js"],
@@ -30,7 +30,7 @@ export default defineConfig([
 	{
 		files: ["**/*.css"],
 		plugins: {
-			css,
+			css
 		},
 		language: "css/css",
 		extends: ["css/recommended"],
@@ -39,12 +39,12 @@ export default defineConfig([
 		files: ["tests/fixtures/tailwind3.css"],
 		languageOptions: {
 			customSyntax: tailwind3,
-		},
+		}
 	},
 	{
 		files: ["tests/fixtures/tailwind4.css"],
 		languageOptions: {
 			customSyntax: tailwind4,
-		},
+		}
 	},
 ]);
