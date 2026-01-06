@@ -332,6 +332,57 @@ describe("Tailwind 3", function () {
                 ]
             });
         });
+        
+        it("should parse @apply with slash notation for opacity modifiers", () => {
+            const testCases = [
+                "a { @apply outline-ring/50; }",
+                "a { @apply bg-blue-500/30; }",
+                "a { @apply border-gray-200/50; }",
+            ];
+            
+            testCases.forEach((testCase) => {
+                assert.doesNotThrow(() => {
+                    const result = parse(testCase);
+                    assert.ok(result, `Should parse: ${testCase}`);
+                }, `Should not throw parsing errors for: ${testCase}`);
+            });
+        });
+        
+        it("should parse @apply with variants and slash notation", () => {
+            const testCases = [
+                "a { @apply hover:bg-blue-500/50; }",
+                "a { @apply focus:outline-ring/30; }",
+                "a { @apply active:border-red-500/25; }",
+            ];
+            
+            testCases.forEach((testCase) => {
+                assert.doesNotThrow(() => {
+                    const result = parse(testCase);
+                    assert.ok(result, `Should parse: ${testCase}`);
+                }, `Should not throw parsing errors for: ${testCase}`);
+            });
+        });
+        
+        it("should parse the original issue CSS without errors", () => {
+            const originalCSS = `
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+            `;
+            
+            // The original issue was that this would throw:
+            // "Parsing error: Semicolon or block is expected"
+            // Now it should parse successfully
+            assert.doesNotThrow(() => {
+                const result = parse(originalCSS);
+                assert.ok(result, "Should return a valid AST");
+            }, "Should not throw parsing errors");
+        });
     });
     
     describe("Validation", () => {
@@ -340,6 +391,11 @@ describe("Tailwind 3", function () {
                 "bg-blue-500",
                 "hover:bg-blue-700",
                 "focus:ring-blue-500",
+                "outline-ring/50",
+                "bg-blue-500/30", 
+                "border-gray-200/50",
+                "hover:bg-blue-500/50",
+                "focus:outline-ring/30",
             ].forEach((value) => {
                 it(`should validate type <tw-apply-ident> with ${value}`, () => {
                     assert.strictEqual(lexer.matchType("tw-apply-ident", value).error, null);
@@ -354,6 +410,9 @@ describe("Tailwind 3", function () {
                 "bg-blue-500",
                 "hover:bg-blue-700",
                 "bg-blue-500 focus:ring-blue-500",
+                "outline-ring/50",
+                "hover:bg-blue-500/50",
+                "bg-blue-500/30 focus:outline-ring/50",
             ].forEach((value) => {
                 it(`should validate @apply ${value}`, () => {
                     assert.strictEqual(lexer.matchAtrulePrelude("apply", value).error, null);

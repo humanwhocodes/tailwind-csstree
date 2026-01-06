@@ -69,6 +69,29 @@ export function parse() {
         variant = className;
         className = this.Identifier();
     }
+    
+    // Handle slash notation for opacity (e.g., bg-red-500/50 or hover:bg-red-500/50)
+    // Only try to parse slash if we see one
+    if (this.tokenType === tokenTypes.Delim && this.tokenValue === '/') {
+        this.next(); // consume the '/'
+        
+        if (this.tokenType === tokenTypes.Ident) {
+            const opacityValue = this.Identifier();
+            className = {
+                ...className,
+                name: className.name + '/' + opacityValue.name
+            };
+        } else if (this.tokenType === tokenTypes.Number) {
+            const opacityValue = this.tokenValue;
+            this.next(); // consume the number token
+            className = {
+                ...className,
+                name: className.name + '/' + opacityValue
+            };
+        }
+        // If we can't parse after /, don't throw an error, just continue
+        // This will leave tokens unconsumed which should cause a parse error naturally
+    }
 
     this.skipSC();
     
