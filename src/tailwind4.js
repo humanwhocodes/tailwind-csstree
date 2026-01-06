@@ -7,7 +7,6 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { lexer, definitionSyntax } from "@eslint/css-tree";
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
@@ -16,34 +15,23 @@ import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
 //-----------------------------------------------------------------------------
-// Helpers
-//-----------------------------------------------------------------------------
-
-/**
- * Get the CSS syntax string for a type from the default lexer.
- * @param {string} typeName The type name to get syntax for
- * @returns {string} The CSS syntax string
- */
-function getDefaultTypeSyntax(typeName) {
-	// @ts-expect-error - lexer has types property at runtime but not in type definitions
-	return definitionSyntax.generate(lexer.types[typeName].syntax);
-}
-
-//-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
 
 /**
- * @import { SyntaxConfig } from "@eslint/css-tree"
+ * @import { SyntaxConfig, SyntaxExtensionCallback } from "@eslint/css-tree"
  */
 
-/** @type {Partial<SyntaxConfig>} */
-export const tailwind4 = {
+/** @type {SyntaxExtensionCallback} */
+export const tailwind4 = prev => ({
+	...prev,
 	atrule: {
+		...prev.atrule,
 		apply: tailwindApply,
 		import: tailwindImport,
 	},
 	atrules: {
+		...prev.atrules,
 		import: {
 			prelude:
 				"[ <string> | <url> ] [ [ source( [ <string> | none ] ) ]? || [ prefix( <ident> ) ]? || [ layer | layer( <layer-name> ) ]? ] [ supports( [ <supports-condition> | <declaration> ] ) ]? <media-query-list>?",
@@ -56,8 +44,7 @@ export const tailwind4 = {
 		},
 		theme: {
 			prelude: null,
-			// @ts-expect-error - lexer has properties property at runtime but not in type definitions
-			descriptors: lexer.properties,
+			descriptors: prev.properties,
 		},
 		source: {
 			prelude: "not? [ <string> | inline(<string>) ]",
@@ -67,8 +54,7 @@ export const tailwind4 = {
 		},
 		variant: {
 			prelude: "<ident>",
-			// @ts-expect-error - lexer has properties property at runtime but not in type definitions
-			descriptors: lexer.properties,
+			descriptors: prev.properties,
 		},
 		"custom-variant": {
 			prelude: "<ident> <parentheses-block>",
@@ -81,8 +67,9 @@ export const tailwind4 = {
 		},
 	},
 	types: {
-		"length-percentage": `${getDefaultTypeSyntax("length-percentage")} | <tw-any-spacing>`,
-		color: `${getDefaultTypeSyntax("color")} | <tw-any-color>`,
+		...prev.types,
+		"length-percentage": `${prev.types["length-percentage"]} | <tw-any-spacing>`,
+		color: `${prev.types.color} | <tw-any-color>`,
 		"tw-alpha": `--alpha(<color> / <percentage>)`,
 		"tw-spacing": "--spacing(<number>)",
 		"tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
@@ -91,12 +78,15 @@ export const tailwind4 = {
 		...themeTypes,
 	},
 	node: {
+		...prev.node,
 		TailwindThemeKey,
 		TailwindUtilityClass,
 	},
 	scope: {
+		...prev.scope,
 		Value: {
+			...prev.scope?.Value,
 			theme,
 		},
 	},
-};
+});
