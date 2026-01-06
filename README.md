@@ -6,7 +6,7 @@ If you find this useful, please consider supporting my work with a [donation](ht
 
 ## Description
 
-Tailwind custom syntax in CSSTree format.
+Tailwind custom syntax in CSSTree format. 
 
 ## Installation
 
@@ -58,13 +58,16 @@ export default defineConfig([
 
 ### Use with CSSTree directly
 
-If you're using [CSSTree](https://github.com/eslint/css-tree) directly, you
+If you're using [CSSTree](https://github.com/eslint/css-tree) directly, you 
 
 ```js
 import { fork } from "@eslint/css-tree";
 import { tailwind4 } from "tailwind-csstree";
 
-const { parse, toPlainObject } = fork(tailwind4);
+const {
+    parse,
+    toPlainObject
+} = fork(tailwind4);
 
 const result = parse("@config 'tailwind.config.js'");
 console.log(toPlainObject(result));
