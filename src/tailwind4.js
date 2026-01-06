@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tailwind 3 Custom Syntax for CSSTree.
+ * @fileoverview Tailwind 4 Custom Syntax for CSSTree.
  * @author Nicholas C. Zakas
  */
 
