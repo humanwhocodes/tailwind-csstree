@@ -1114,7 +1114,7 @@ describe("Tailwind 4", function () {
     @apply bg-background text-foreground;
   }
 }
-			`;
+		`;
 
 			// The original issue was that this would throw:
 			// "Parsing error: Semicolon or block is expected"

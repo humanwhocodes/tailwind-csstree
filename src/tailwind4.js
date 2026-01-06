@@ -74,7 +74,12 @@ export const tailwind4 = prev => ({
 		"tw-spacing": "--spacing(<number>)",
 		"tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
 		"tw-any-color": "<tw-alpha> | <tw-theme-color>",
-		"tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
+		"tw-apply-ident":
+			"<ident> | <tw-utility-with-variant> | <tw-utility-with-opacity>",
+		"tw-utility-with-variant":
+			"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
+		"tw-utility-with-opacity":
+			"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
 		...themeTypes,
 	},
 	node: {

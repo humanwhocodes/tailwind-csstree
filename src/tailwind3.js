@@ -45,7 +45,12 @@ export const tailwind3 = prev => ({
 		...prev.types,
 		"length-percentage": `${prev.types["length-percentage"]} | <tw-theme-spacing>`,
 		color: `${prev.types.color} | <tw-theme-color>`,
-		"tw-apply-ident": "<ident> | [ <ident> ':' <ident> ]",
+		"tw-apply-ident":
+			"<ident> | <tw-utility-with-variant> | <tw-utility-with-opacity>",
+		"tw-utility-with-variant":
+			"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
+		"tw-utility-with-opacity":
+			"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
 		...themeTypes,
 	},
 	node: {
