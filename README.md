@@ -11,7 +11,7 @@ Tailwind custom syntax in CSSTree format.
 ## Installation
 
 ```shell
-npm install @humanwhocodes/tailwind-csstree
+npm install tailwind-csstree
 ```
 
 ## Usage
@@ -58,7 +58,7 @@ export default defineConfig([
 
 ### Use with CSSTree directly
 
-If you're using [CSSTree](https://github.com/eslint/css-tree) directly, you 
+If you're using [CSSTree](https://github.com/eslint/csstree) directly, you 
 
 ```js
 import { fork } from "@eslint/css-tree";
