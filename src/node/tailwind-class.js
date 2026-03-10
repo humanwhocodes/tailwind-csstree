@@ -69,6 +69,26 @@ export function parse() {
         variant = className;
         className = this.Identifier();
     }
+
+    if (this.tokenType === tokenTypes.LeftSquareBracket) {
+        const bracketStart = this.tokenStart;
+        let depth = 0;
+
+        do {
+            if (this.tokenType === tokenTypes.LeftSquareBracket) {
+                depth++;
+            } else if (this.tokenType === tokenTypes.RightSquareBracket) {
+                depth--;
+            }
+
+            this.next();
+        } while (depth > 0 && this.tokenType !== tokenTypes.EOF);
+
+        className = {
+            ...className,
+            name: className.name + this.source.slice(bracketStart, this.tokenStart)
+        };
+    }
     
     // Handle slash notation for opacity (e.g., bg-red-500/50 or hover:bg-red-500/50)
     // Only try to parse slash if we see one
