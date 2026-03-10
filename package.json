@@ -63,7 +63,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
-    "@eslint/css": "^0.8.1",
+    "@eslint/css": "^1.0.0",
     "@eslint/css-tree": "^3.6.0",
     "@eslint/js": "^9.0.0",
     "@tsconfig/node16": "^16.1.1",

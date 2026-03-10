@@ -1,23 +1,17 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import js from "@eslint/js";
 import css from "@eslint/css";
-import defaultSyntax from "@eslint/css-tree/definition-syntax-data";
 import { tailwind3 } from "./src/tailwind3.js";
 import { tailwind4 } from "./src/tailwind4.js";
-
-// For ESLint CSS plugin, we need Partial<SyntaxConfig> objects with string values.
-// Our exports are functions that receive the base config, so we call them here.
-const tw3Config = tailwind3(defaultSyntax);
-const tw4Config = tailwind4(defaultSyntax);
 
 export default defineConfig([
 	globalIgnores(["dist"]),
 	{
 		files: ["**/*.js"],
 		plugins: {
-			js,
+			js
 		},
-		extends: ["js/recommended"],
+		extends: ["js/recommended"]
 	},
 	{
 		files: ["tests/**/*.js"],
@@ -36,7 +30,7 @@ export default defineConfig([
 	{
 		files: ["**/*.css"],
 		plugins: {
-			css,
+			css
 		},
 		language: "css/css",
 		extends: ["css/recommended"],
@@ -44,13 +38,13 @@ export default defineConfig([
 	{
 		files: ["tests/fixtures/tailwind3.css"],
 		languageOptions: {
-			customSyntax: tw3Config,
-		},
+			customSyntax: tailwind3,
+		}
 	},
 	{
 		files: ["tests/fixtures/tailwind4.css"],
 		languageOptions: {
-			customSyntax: tw4Config,
-		},
+			customSyntax: tailwind4,
+		}
 	},
 ]);
