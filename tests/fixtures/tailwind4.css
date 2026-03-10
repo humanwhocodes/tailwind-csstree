@@ -21,6 +21,7 @@
 }
 
 @theme {
+  --color-*: initial;
   --primary: #ff0000;
 }
 

@@ -9,6 +9,7 @@
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
+import * as TailwindDeclaration from "./node/tailwind-declaration.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
 import tailwindImport from "./atrule/tailwind-import.js";
 import theme from "./scope/theme.js";
@@ -84,6 +85,7 @@ export const tailwind4 = prev => ({
 	},
 	node: {
 		...prev.node,
+		Declaration: TailwindDeclaration,
 		TailwindThemeKey,
 		TailwindUtilityClass,
 	},

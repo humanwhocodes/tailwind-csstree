@@ -621,6 +621,39 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
+
+        it("should parse @theme wildcard custom property reset", () => {
+            const tree = toPlainObject(parse("@theme { --color-*: initial; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "theme",
+                        prelude: null,
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Declaration",
+                                    loc: null,
+                                    property: "--color-*",
+                                    value: {
+                                        type: "Raw",
+                                        value: " initial",
+                                        loc: null
+                                    },
+                                    important: false
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
     });
 
     describe("@source", () => {
