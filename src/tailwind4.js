@@ -57,7 +57,10 @@ export const tailwind4 = prev => ({
 			descriptors: prev.properties,
 		},
 		"custom-variant": {
-			prelude: "<ident> <parentheses-block>",
+			prelude: "<ident> [ '(' <any-value> ')' ]?",
+		},
+		slot: {
+			prelude: null,
 		},
 		plugin: {
 			prelude: "<string>",
