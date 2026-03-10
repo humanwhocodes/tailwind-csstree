@@ -130,7 +130,6 @@ export default {
          * @this {ParserContext}
          * @type {SyntaxConfig['atrule']['import']['parse']['prelude']}
          */
-        // @ts-expect-error it doesn't like that we extend ParserContext
         prelude: function() {
             const children = this.createList();
 

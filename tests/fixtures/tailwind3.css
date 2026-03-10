@@ -1,12 +1,12 @@
 /**
  * A comprehensive example of Tailwind CSS v3 custom syntax
  */
+ 
+/* Import statements must come before @config when using postcss-import */
+@import "some-external-styles.css";
 
 /* Configuration directive - specify custom config file */
 @config "./custom-tailwind.config.js";
-
-/* Import statements must come before @config when using postcss-import */
-@import "some-external-styles.css";
 
 /* Core Tailwind directives */
 @tailwind base;
