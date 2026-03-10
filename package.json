@@ -62,6 +62,9 @@
   ],
   "author": "Nicholas C. Zaks",
   "license": "Apache-2.0",
+  "peerDependencies": {
+    "@eslint/css": ">=1.0.0"
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
     "@eslint/css": "^1.0.0",
