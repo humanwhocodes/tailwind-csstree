@@ -29,14 +29,17 @@ const ASTERISK = 0x002a;
 const PLUSSIGN = 0x002b;
 const SOLIDUS = 0x002f;
 
+/** @this {any} */
 function consumeValueRaw() {
 	return this.Raw(this.consumeUntilExclamationMarkOrSemicolon, true);
 }
 
+/** @this {any} */
 function consumeCustomPropertyRaw() {
 	return this.Raw(this.consumeUntilExclamationMarkOrSemicolon, false);
 }
 
+/** @this {any} */
 function consumeValue() {
 	const startValueToken = this.tokenIndex;
 	const value = this.Value();
@@ -54,6 +57,7 @@ function consumeValue() {
 	return value;
 }
 
+/** @this {any} */
 function readProperty() {
 	const start = this.tokenStart;
 
@@ -96,6 +100,7 @@ function readProperty() {
 	return this.substrToCursor(start);
 }
 
+/** @this {any} */
 function getImportant() {
 	this.eat(tokenTypes.Delim);
 	this.skipSC();
@@ -118,13 +123,18 @@ export const structure = {
 	value: ["Value", "Raw"],
 };
 
+/** @this {any} */
 export function parse() {
 	const start = this.tokenStart;
 	const startToken = this.tokenIndex;
 	const property = readProperty.call(this);
 	const customProperty = property.startsWith("--");
-	const parseValue = customProperty ? this.parseCustomProperty : this.parseValue;
-	const consumeRaw = customProperty ? consumeCustomPropertyRaw : consumeValueRaw;
+	const parseValue = customProperty
+		? this.parseCustomProperty
+		: this.parseValue;
+	const consumeRaw = customProperty
+		? consumeCustomPropertyRaw
+		: consumeValueRaw;
 	let important = false;
 	let value;
 
@@ -140,7 +150,7 @@ export function parse() {
 	if (parseValue) {
 		value = this.parseWithFallback(consumeValue, consumeRaw);
 	} else {
-		value = consumeRaw.call(this, this.tokenIndex);
+		value = consumeRaw.call(this);
 	}
 
 	if (customProperty && value.type === "Value" && value.children.isEmpty) {
@@ -178,6 +188,10 @@ export function parse() {
 	};
 }
 
+/**
+ * @this {any}
+ * @param {any} node
+ */
 export function generate(node) {
 	if (node.property.startsWith("--") && node.property.endsWith("*")) {
 		this.token(tokenTypes.Ident, node.property.slice(0, -1));
