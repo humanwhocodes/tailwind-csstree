@@ -43,6 +43,7 @@
 @reference "tailwindcss";
 
 .my-element {
+  --color-lime-300: #d9f99d;
   color: --alpha(var(--color-lime-300) / 50%);
 }
 

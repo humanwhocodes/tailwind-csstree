@@ -40,6 +40,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/ tests/",
+    "lint:fix": "eslint --fix src/ tests/",
     "fmt": "prettier --write .",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
