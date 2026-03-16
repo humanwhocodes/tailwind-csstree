@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.5](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.4...tailwind-csstree-v0.1.5) (2026-03-16)
+
+
+### Bug Fixes
+
+* eslint/css as optional peer dependency ([1f82cba](https://github.com/humanwhocodes/tailwind-csstree/commit/1f82cba5f472e80bd959238418418136ad91dd7e))
+* Use function-based syntax extensions for pnpm compatibility ([#37](https://github.com/humanwhocodes/tailwind-csstree/issues/37)) ([f0afe81](https://github.com/humanwhocodes/tailwind-csstree/commit/f0afe81f2e85f068c2e47f8fdd8d641173a3703f))
+
 ## [0.1.4](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.3...tailwind-csstree-v0.1.4) (2025-09-01)
 
 
