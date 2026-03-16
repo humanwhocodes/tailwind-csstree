@@ -65,6 +65,11 @@
   "peerDependencies": {
     "@eslint/css": ">=1.0.0"
   },
+  "peerDependenciesMeta": {
+    "@eslint/css": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
     "@eslint/css": "^1.0.0",
