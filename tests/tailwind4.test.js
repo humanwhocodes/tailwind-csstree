@@ -1025,7 +1025,7 @@ describe("Tailwind 4", function () {
                 "a { @apply bg-blue-500/30; }",
                 "a { @apply border-gray-200/50; }",
             ];
-            
+
             testCases.forEach((testCase) => {
                 assert.doesNotThrow(() => {
                     const result = parse(testCase);
@@ -1039,6 +1039,20 @@ describe("Tailwind 4", function () {
                 "a { @apply hover:bg-blue-500/50; }",
                 "a { @apply focus:outline-ring/30; }",
                 "a { @apply active:border-red-500/25; }",
+            ];
+            
+            testCases.forEach((testCase) => {
+                assert.doesNotThrow(() => {
+                    const result = parse(testCase);
+                    assert.ok(result, `Should parse: ${testCase}`);
+                }, `Should not throw parsing errors for: ${testCase}`);
+            });
+        });
+
+        it("should parse @apply with square bracket arbitrary values", () => {
+            const testCases = [
+                "a { @apply grid-cols-[200px_auto]; }",
+                "a { @apply hover:grid-cols-[200px_auto]; }",
             ];
             
             testCases.forEach((testCase) => {

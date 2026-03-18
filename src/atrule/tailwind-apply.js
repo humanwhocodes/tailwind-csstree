@@ -33,8 +33,8 @@ export default {
 
             while (this.tokenType === tokenTypes.Ident) {
                 
-                if (this.lookupType(1) === tokenTypes.Colon) {
-                    // This is a variant like hover: - use TailwindUtilityClass
+                if (this.lookupType(1) === tokenTypes.Colon || this.lookupType(1) === tokenTypes.LeftSquareBracket) {
+                    // This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
                     children.push(/** @type {ConsumerFunction} */ (this.TailwindUtilityClass)());
                 } else {
                     // Simple identifier - use Identifier parser
