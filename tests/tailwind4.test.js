@@ -1051,7 +1051,13 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
-        
+
+        it("should parse @apply with responsive condition variants", () => {
+            assert.doesNotThrow(() => {
+                parse(".example { @apply sm:grid; }");
+            });
+        });
+
         it("should parse @apply with slash notation for opacity modifiers", () => {
             const testCases = [
                 "a { @apply outline-ring/50; }",
