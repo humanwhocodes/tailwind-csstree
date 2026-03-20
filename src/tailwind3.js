@@ -9,7 +9,7 @@
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
-import tailwindApply from "./atrule/tailwind-apply.js";
+import tailwindApply, { APPLY_IMPORTANT_FLAG } from "./atrule/tailwind-apply.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
@@ -23,8 +23,46 @@ import { themeTypes } from "./types/theme-types.js";
  */
 
 /** @type {SyntaxExtensionCallback} */
-export const tailwind3 = prev => ({
-	...prev,
+export const tailwind3 = prev => {
+	const previousAtrule = prev.node?.Atrule;
+	const previousAtruleNode =
+		typeof previousAtrule === "function" ? { parse: previousAtrule } : previousAtrule;
+	const previousAtruleParse = previousAtruleNode?.parse;
+
+	return {
+		...prev,
+		node: {
+			...prev.node,
+			...(previousAtruleParse
+				? {
+						Atrule: {
+							...previousAtruleNode,
+							/** @this {any} */
+							parse(isDeclaration, options) {
+								try {
+									const result = /** @type {any} */ (
+										previousAtruleParse.call(this, isDeclaration, options)
+									);
+
+									if (
+										result?.type === "Atrule" &&
+										result.name?.toLowerCase?.() === "apply" &&
+										this[APPLY_IMPORTANT_FLAG] === true
+									) {
+										result.important = true;
+									}
+
+									return result;
+								} finally {
+									delete this[APPLY_IMPORTANT_FLAG];
+								}
+							},
+						},
+					}
+				: {}),
+			TailwindThemeKey,
+			TailwindUtilityClass,
+		},
 	atrule: {
 		...prev.atrule,
 		apply: tailwindApply,
@@ -53,11 +91,6 @@ export const tailwind3 = prev => ({
 			"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
 		...themeTypes,
 	},
-	node: {
-		...prev.node,
-		TailwindThemeKey,
-		TailwindUtilityClass,
-	},
 	scope: {
 		...prev.scope,
 		Value: {
@@ -65,4 +98,5 @@ export const tailwind3 = prev => ({
 			theme,
 		},
 	},
-});
+	};
+};

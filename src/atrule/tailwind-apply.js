@@ -23,14 +23,17 @@ import { tokenTypes } from "../token-types.js";
 //-----------------------------------------------------------------------------
 
 const EXCLAMATIONMARK = 0x0021;
+export const APPLY_IMPORTANT_FLAG = "__tailwindApplyImportant";
 
-export default {
+/** @type {any} */
+const tailwindApply = {
 	parse: {
 		/**
 		 * @this {ParserContext}
 		 */
 		prelude: function () {
 			const children = this.createList();
+			this[APPLY_IMPORTANT_FLAG] = false;
 
 			while (this.tokenType === tokenTypes.Ident) {
 				if (
@@ -54,9 +57,7 @@ export default {
 			}
 
 			if (this.isDelim(EXCLAMATIONMARK)) {
-				children.push(
-					/** @type {ConsumerFunction} */ (this.Operator)(),
-				);
+				this.next();
 				this.skipSC();
 
 				if (
@@ -69,7 +70,8 @@ export default {
 					);
 				}
 
-				children.push(/** @type {ConsumerFunction} */ (this.Identifier)());
+				this.Identifier();
+				this[APPLY_IMPORTANT_FLAG] = true;
 				this.skipSC();
 			}
 
@@ -78,3 +80,5 @@ export default {
 		block: null,
 	},
 };
+
+export default tailwindApply;
