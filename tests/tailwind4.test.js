@@ -901,79 +901,42 @@ describe("Tailwind 4", function () {
     });
 
     describe("@custom-variant", () => {
-        it("should parse @custom-variant with a valid prelude", () => {
-            const tree = toPlainObject(parse("@custom-variant my-variant { .example { color: green; } }"));
-            assert.deepStrictEqual(tree, {
-                type: "StyleSheet",
-                loc: null,
-                children: [
-                    {
-                        type: "Atrule",
-                        name: "custom-variant",
-                        prelude: {
-                            type: "AtrulePrelude",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Identifier",
-                                    name: "my-variant",
-                                    loc: null
-                                }
-                            ]
-                        },
-                        block: {
-                            type: "Block",
-                            loc: null,
-                            children: [
-                                {
-                                    type: "Rule",
-                                    loc: null,
-                                    prelude: {
-                                        type: "SelectorList",
-                                        loc: null,
-                                        children: [
-                                            {
-                                                type: "Selector",
-                                                loc: null,
-                                                children: [
-                                                    {
-                                                        type: "ClassSelector",
-                                                        name: "example",
-                                                        loc: null
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    block: {
-                                        type: "Block",
-                                        loc: null,
-                                        children: [
-                                            {
-                                                type: "Declaration",
-                                                loc: null,
-                                                property: "color",
-                                                value: {
-                                                    type: "Value",
-                                                    children: [
-                                                        {
-                                                            type: "Identifier",
-                                                            name: "green",
-                                                            loc: null
-                                                        }
-                                                    ],
-                                                    loc: null
-                                                },
-                                                important: false
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        loc: null
-                    }
-                ]
+        it("should parse @custom-variant with an inline selector", () => {
+            const tree = toPlainObject(parse("@custom-variant theme-midnight (&:where([data-theme='midnight'] *));"));
+            const atrule = tree.children[0];
+
+            assert.equal(atrule.type, "Atrule");
+            assert.equal(atrule.name, "custom-variant");
+            assert.equal(atrule.block, null);
+            assert.equal(atrule.prelude.type, "Raw");
+            assert.equal(
+                atrule.prelude.value,
+                "theme-midnight (&:where([data-theme='midnight'] *))",
+            );
+        });
+
+        it("should parse @custom-variant with a block body using @slot", () => {
+            const tree = toPlainObject(parse("@custom-variant theme-midnight { &:where([data-theme='midnight'] *) { @slot; } }"));
+            const atrule = tree.children[0];
+
+            assert.equal(atrule.type, "Atrule");
+            assert.equal(atrule.name, "custom-variant");
+            assert.equal(atrule.prelude.type, "AtrulePrelude");
+            assert.equal(atrule.prelude.children[0].name, "theme-midnight");
+            assert.equal(atrule.block.children[0].type, "Rule");
+            assert.equal(atrule.block.children[0].block.children[0].name, "slot");
+        });
+
+        describe("Validation", () => {
+            [
+                "@custom-variant theme-midnight (&:where([data-theme='midnight'] *));",
+                "@custom-variant theme-midnight { &:where([data-theme='midnight'] *) { @slot; } }",
+            ].forEach((cssRule) => {
+                it("should allow valid prelude", () => {
+                    const tree = toPlainObject(parse(cssRule));
+                    const { error } = lexer.matchAtrulePrelude("custom-variant", tree.children[0].prelude);
+                    assert.equal(error, null);
+                });
             });
         });
     });
