@@ -1,8 +1,7 @@
 /**
- * @fileoverview CSS Syntax token type constants.
- * These values are defined by the CSS Syntax spec and are shared by CSSTree
- * implementations, allowing this package to avoid importing token types
- * from a specific runtime package.
+ * @fileoverview CSS tokenizer token type constants.
+ * These numeric values are used by CSSTree implementations, allowing this
+ * package to avoid importing token types from a specific runtime package.
  */
 
 export const tokenTypes = {
