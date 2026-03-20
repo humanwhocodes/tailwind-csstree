@@ -9,10 +9,12 @@
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
+import * as TailwindDeclaration from "./node/tailwind-declaration.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
 import tailwindImport from "./atrule/tailwind-import.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
+import { tokenTypes } from "./token-types.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -23,8 +25,19 @@ import { themeTypes } from "./types/theme-types.js";
  */
 
 /** @type {SyntaxExtensionCallback} */
-export const tailwind4 = prev => ({
-	...prev,
+export const tailwind4 = prev => {
+	const ASTERISK = 0x002a;
+	const HYPHENMINUS = 0x002d;
+	const previousDeclaration = prev.node?.Declaration;
+	const previousDeclarationNode =
+		typeof previousDeclaration === "function"
+			? { parse: previousDeclaration }
+			: previousDeclaration;
+	/** @type {any} */
+	const previousDeclarationParse = previousDeclarationNode?.parse;
+
+	return {
+		...prev,
 	atrule: {
 		...prev.atrule,
 		apply: tailwindApply,
@@ -84,6 +97,37 @@ export const tailwind4 = prev => ({
 	},
 	node: {
 		...prev.node,
+		Declaration: previousDeclarationParse
+			? {
+					...previousDeclarationNode,
+					/** @this {any} */
+					parse() {
+				/*
+				 * Tailwind allows wildcard custom properties in @theme blocks,
+				 * e.g. `--color-*: initial;`.
+				 */
+				if (
+					this.tokenType !== tokenTypes.Ident ||
+					this.charCodeAt(this.tokenStart) !== HYPHENMINUS ||
+					this.charCodeAt(this.tokenStart + 1) !== HYPHENMINUS ||
+					this.lookupTypeNonSC(1) !== tokenTypes.Delim ||
+					this.lookupTypeNonSC(2) !== tokenTypes.Colon
+				) {
+					return previousDeclarationParse.call(this);
+				}
+
+				const wildcardOffset = this.lookupOffsetNonSC(1);
+				const wildcardIndex = this.tokenIndex + wildcardOffset;
+				const wildcardStart = this.getTokenStart(wildcardIndex);
+
+				if (this.charCodeAt(wildcardStart) !== ASTERISK) {
+					return previousDeclarationParse.call(this);
+				}
+
+				return TailwindDeclaration.parse.call(this);
+					},
+				}
+			: TailwindDeclaration,
 		TailwindThemeKey,
 		TailwindUtilityClass,
 	},
@@ -94,4 +138,5 @@ export const tailwind4 = prev => ({
 			theme,
 		},
 	},
-});
+	};
+};
