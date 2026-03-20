@@ -22,6 +22,8 @@ import { tokenTypes } from "../token-types.js";
 // Exports
 //-----------------------------------------------------------------------------
 
+const EXCLAMATIONMARK = 0x0021;
+
 export default {
     parse: {
         
@@ -41,6 +43,20 @@ export default {
                     children.push(/** @type {ConsumerFunction} */ (this.Identifier)());
                 }
                 
+                this.skipSC();
+            }
+
+            if (this.isDelim(EXCLAMATIONMARK)) {
+                children.push(/** @type {ConsumerFunction} */ (this.Operator)());
+                this.skipSC();
+
+                const important = /** @type {ConsumerFunction} */ (this.Identifier)();
+
+                if (important.name !== "important") {
+                    this.error();
+                }
+
+                children.push(important);
                 this.skipSC();
             }
             

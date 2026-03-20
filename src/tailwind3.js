@@ -32,7 +32,7 @@ export const tailwind3 = prev => ({
 	atrules: {
 		...prev.atrules,
 		apply: {
-			prelude: "<tw-apply-ident>+",
+			prelude: "<tw-apply-ident>+ [ '!' important ]?",
 		},
 		tailwind: {
 			prelude: "base | components | utilities | variants",
