@@ -9,7 +9,7 @@
 // Imports
 //-----------------------------------------------------------------------------
 
-import { tokenTypes } from "@eslint/css-tree";
+import { tokenTypes } from "../token-types.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
