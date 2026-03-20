@@ -43,7 +43,7 @@ export const tailwind3 = prev => ({
 	},
 	types: {
 		...prev.types,
-		"length-percentage": `${prev.types["length-percentage"]} | <tw-theme-spacing>`,
+		"length-percentage": `${prev.types["length-percentage"]} | <tw-theme-spacing> | <tw-theme-screens>`,
 		color: `${prev.types.color} | <tw-theme-color>`,
 		"tw-apply-ident":
 			"<ident> | <tw-utility-with-variant> | <tw-utility-with-opacity>",
@@ -57,6 +57,15 @@ export const tailwind3 = prev => ({
 		...prev.node,
 		TailwindThemeKey,
 		TailwindUtilityClass,
+	},
+	features: {
+		...prev.features,
+		media: {
+			...prev.features?.media,
+			screen() {
+				return this.Identifier();
+			},
+		},
 	},
 	scope: {
 		...prev.scope,
