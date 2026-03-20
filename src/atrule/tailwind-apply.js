@@ -70,6 +70,7 @@ const tailwindApply = {
 					);
 				}
 
+				// Consume `important` so Atrule parser can continue from the next token.
 				this.Identifier();
 				this[APPLY_IMPORTANT_FLAG] = true;
 				this.skipSC();

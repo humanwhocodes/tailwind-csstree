@@ -54,7 +54,9 @@ export const tailwind3 = prev => {
 
 									return result;
 								} finally {
-									delete this[APPLY_IMPORTANT_FLAG];
+									if (APPLY_IMPORTANT_FLAG in this) {
+										delete this[APPLY_IMPORTANT_FLAG];
+									}
 								}
 							},
 						},
