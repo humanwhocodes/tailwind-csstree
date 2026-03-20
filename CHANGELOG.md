@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.5...tailwind-csstree-v0.2.0) (2026-03-20)
+
+
+### Features
+
+* Tailwind 4 `[@custom-variant](https://github.com/custom-variant)` and `[@slot](https://github.com/slot)` at-rule support ([#42](https://github.com/humanwhocodes/tailwind-csstree/issues/42)) ([9b5fe90](https://github.com/humanwhocodes/tailwind-csstree/commit/9b5fe909be05b94db2bd51931614d3ee8fcc2110))
+
+
+### Bug Fixes
+
+* Decouple runtime tokenTypes from `@eslint/css-tree` ([#47](https://github.com/humanwhocodes/tailwind-csstree/issues/47)) ([09c9a5a](https://github.com/humanwhocodes/tailwind-csstree/commit/09c9a5a4167541ce68a8649e114b0002a159417b))
+* Handle Tailwind v4 `[@theme](https://github.com/theme)` wildcard color declarations ([#45](https://github.com/humanwhocodes/tailwind-csstree/issues/45)) ([4077e0a](https://github.com/humanwhocodes/tailwind-csstree/commit/4077e0a526366f304ec95672fd193eb2037ef5ab))
+
 ## [0.1.5](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.4...tailwind-csstree-v0.1.5) (2026-03-16)
 
 
