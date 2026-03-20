@@ -15,7 +15,7 @@ import { tokenTypes } from "../token-types.js";
 
 /**
  * @import { ParserContext, ConsumerFunction } from "@eslint/css-tree";
- * 
+ *
  */
 
 //-----------------------------------------------------------------------------
@@ -25,43 +25,56 @@ import { tokenTypes } from "../token-types.js";
 const EXCLAMATIONMARK = 0x0021;
 
 export default {
-    parse: {
-        
-        /**
-         * @this {ParserContext}
-         */
-        prelude: function() {
-            const children = this.createList();
+	parse: {
+		/**
+		 * @this {ParserContext}
+		 */
+		prelude: function () {
+			const children = this.createList();
 
-            while (this.tokenType === tokenTypes.Ident) {
-                
-                if (this.lookupType(1) === tokenTypes.Colon || this.lookupType(1) === tokenTypes.LeftSquareBracket) {
-                    // This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
-                    children.push(/** @type {ConsumerFunction} */ (this.TailwindUtilityClass)());
-                } else {
-                    // Simple identifier - use Identifier parser
-                    children.push(/** @type {ConsumerFunction} */ (this.Identifier)());
-                }
-                
-                this.skipSC();
-            }
+			while (this.tokenType === tokenTypes.Ident) {
+				if (
+					this.lookupType(1) === tokenTypes.Colon ||
+					this.lookupType(1) === tokenTypes.LeftSquareBracket
+				) {
+					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
+					children.push(
+						/** @type {ConsumerFunction} */ (
+							this.TailwindUtilityClass
+						)(),
+					);
+				} else {
+					// Simple identifier - use Identifier parser
+					children.push(
+						/** @type {ConsumerFunction} */ (this.Identifier)(),
+					);
+				}
 
-            if (this.isDelim(EXCLAMATIONMARK)) {
-                children.push(/** @type {ConsumerFunction} */ (this.Operator)());
-                this.skipSC();
+				this.skipSC();
+			}
 
-                const important = /** @type {ConsumerFunction} */ (this.Identifier)();
+			if (this.isDelim(EXCLAMATIONMARK)) {
+				children.push(
+					/** @type {ConsumerFunction} */ (this.Operator)(),
+				);
+				this.skipSC();
 
-                if (important.name !== "important") {
-                    this.error();
-                }
+				if (
+					this.tokenType !== tokenTypes.Ident ||
+					!this.cmpStr(this.tokenStart, this.tokenEnd, "important")
+				) {
+					this.error(
+						"Expected 'important' keyword after '!' in @apply directive",
+						0,
+					);
+				}
 
-                children.push(important);
-                this.skipSC();
-            }
-            
-            return children;
-        },
-        block: null
-    }
+				children.push(/** @type {ConsumerFunction} */ (this.Identifier)());
+				this.skipSC();
+			}
+
+			return children;
+		},
+		block: null,
+	},
 };
