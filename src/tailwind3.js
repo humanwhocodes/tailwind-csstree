@@ -55,8 +55,9 @@ export const tailwind3 = prev => {
 									return result;
 								} finally {
 									if ("important" in this) {
-										// `important` is parser state set by @apply prelude parsing and must not leak
-										// into subsequent atrule parses that reuse the same parser context object.
+										// `important` is temporary @apply parser state. We delete it in `finally`
+										// because parsing can throw before a clean reset (for example, `!foo`
+										// triggers the invalid-`!important` error path), and parser context is reused.
 										delete this.important;
 									}
 								}
