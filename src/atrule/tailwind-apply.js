@@ -23,7 +23,6 @@ import { tokenTypes } from "../token-types.js";
 //-----------------------------------------------------------------------------
 
 const EXCLAMATIONMARK = 0x0021;
-export const APPLY_IMPORTANT_FLAG = "__tailwindApplyImportant";
 
 /** @type {any} */
 const tailwindApply = {
@@ -33,7 +32,7 @@ const tailwindApply = {
 		 */
 		prelude: function () {
 			const children = this.createList();
-			this[APPLY_IMPORTANT_FLAG] = false;
+			this.important = false;
 
 			while (this.tokenType === tokenTypes.Ident) {
 				if (
@@ -72,7 +71,7 @@ const tailwindApply = {
 
 				// Consume `important` so Atrule parser can continue from the next token.
 				this.Identifier();
-				this[APPLY_IMPORTANT_FLAG] = true;
+				this.important = true;
 				this.skipSC();
 			}
 

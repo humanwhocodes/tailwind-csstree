@@ -9,7 +9,7 @@
 
 import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
-import tailwindApply, { APPLY_IMPORTANT_FLAG } from "./atrule/tailwind-apply.js";
+import tailwindApply from "./atrule/tailwind-apply.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 
@@ -47,15 +47,15 @@ export const tailwind3 = prev => {
 									if (
 										result?.type === "Atrule" &&
 										result.name?.toLowerCase?.() === "apply" &&
-										this[APPLY_IMPORTANT_FLAG] === true
+										this.important === true
 									) {
 										result.important = true;
 									}
 
 									return result;
 								} finally {
-									if (APPLY_IMPORTANT_FLAG in this) {
-										delete this[APPLY_IMPORTANT_FLAG];
+									if ("important" in this) {
+										delete this.important;
 									}
 								}
 							},
