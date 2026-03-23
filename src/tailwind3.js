@@ -55,6 +55,8 @@ export const tailwind3 = prev => {
 									return result;
 								} finally {
 									if ("important" in this) {
+										// `important` is parser state set by @apply prelude parsing and must not leak
+										// into subsequent atrule parses that reuse the same parser context object.
 										delete this.important;
 									}
 								}
