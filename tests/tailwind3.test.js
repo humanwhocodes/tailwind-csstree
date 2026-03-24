@@ -128,6 +128,7 @@ describe("Tailwind 3", function () {
                 ]
             });
         });
+
     });
     
     describe("@apply", () => {
@@ -495,6 +496,15 @@ describe("Tailwind 3", function () {
             
             it(`should validate @container `, () => {
                 assert.strictEqual(lexer.matchAtrulePrelude("container", "(min-width: 400px)").error, null);
+            });
+
+            [
+                ["tailwind", "base !important"],
+                ["config", "'tailwind.config.js' !important"],
+            ].forEach(([name, value]) => {
+                it(`should reject @${name} ${value}`, () => {
+                    assert.notStrictEqual(lexer.matchAtrulePrelude(name, value).error, null);
+                });
             });
 
         });
