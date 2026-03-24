@@ -128,6 +128,7 @@ describe("Tailwind 3", function () {
                 ]
             });
         });
+
     });
     
     describe("@apply", () => {
@@ -362,6 +363,79 @@ describe("Tailwind 3", function () {
                 }, `Should not throw parsing errors for: ${testCase}`);
             });
         });
+
+        it("should parse @apply with !important", () => {
+            const tree = toPlainObject(
+                parse("a { @apply font-bold py-2 px-4 rounded !important; }"),
+            );
+
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Rule",
+                        loc: null,
+                        prelude: {
+                            type: "SelectorList",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Selector",
+                                    loc: null,
+                                    children: [
+                                        {
+                                            type: "TypeSelector",
+                                            name: "a",
+                                            loc: null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Atrule",
+                                    name: "apply",
+                                    prelude: {
+                                        type: "AtrulePrelude",
+                                        loc: null,
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "font-bold",
+                                                loc: null
+                                            },
+                                            {
+                                                type: "Identifier",
+                                                name: "py-2",
+                                                loc: null
+                                            },
+                                            {
+                                                type: "Identifier",
+                                                name: "px-4",
+                                                loc: null
+                                            },
+                                            {
+                                                type: "Identifier",
+                                                name: "rounded",
+                                                loc: null
+                                            }
+                                        ]
+                                    },
+                                    important: true,
+                                    block: null,
+                                    loc: null
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+        });
         
         it("should parse the original issue CSS without errors", () => {
             const originalCSS = `
@@ -413,6 +487,7 @@ describe("Tailwind 3", function () {
                 "outline-ring/50",
                 "hover:bg-blue-500/50",
                 "bg-blue-500/30 focus:outline-ring/50",
+                "font-bold py-2 px-4 rounded !important",
             ].forEach((value) => {
                 it(`should validate @apply ${value}`, () => {
                     assert.strictEqual(lexer.matchAtrulePrelude("apply", value).error, null);
@@ -421,6 +496,15 @@ describe("Tailwind 3", function () {
             
             it(`should validate @container `, () => {
                 assert.strictEqual(lexer.matchAtrulePrelude("container", "(min-width: 400px)").error, null);
+            });
+
+            [
+                ["tailwind", "base !important"],
+                ["config", "'tailwind.config.js' !important"],
+            ].forEach(([name, value]) => {
+                it(`should reject @${name} ${value}`, () => {
+                    assert.notStrictEqual(lexer.matchAtrulePrelude(name, value).error, null);
+                });
             });
 
         });

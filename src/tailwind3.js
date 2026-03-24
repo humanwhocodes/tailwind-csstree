@@ -23,8 +23,51 @@ import { themeTypes } from "./types/theme-types.js";
  */
 
 /** @type {SyntaxExtensionCallback} */
-export const tailwind3 = prev => ({
-	...prev,
+export const tailwind3 = prev => {
+	const previousAtrule = prev.node?.Atrule;
+	const previousAtruleNode =
+		typeof previousAtrule === "function" ? { parse: previousAtrule } : previousAtrule;
+	const previousAtruleParse = previousAtruleNode?.parse;
+
+	return {
+		...prev,
+		node: {
+			...prev.node,
+			...(previousAtruleParse
+				? {
+						Atrule: {
+							...previousAtruleNode,
+							/** @this {any} */
+							parse(isDeclaration, options) {
+								try {
+									const result = /** @type {any} */ (
+										previousAtruleParse.call(this, isDeclaration, options)
+									);
+
+									if (
+										result?.type === "Atrule" &&
+										result.name?.toLowerCase?.() === "apply" &&
+										this.important === true
+									) {
+										result.important = true;
+									}
+
+									return result;
+								} finally {
+									if ("important" in this) {
+										// `important` is temporary @apply parser state. We delete it in `finally`
+										// because parsing can throw before a clean reset (for example, `!foo`
+										// triggers the invalid-`!important` error path), and parser context is reused.
+										delete this.important;
+									}
+								}
+							},
+						},
+					}
+				: {}),
+			TailwindThemeKey,
+			TailwindUtilityClass,
+		},
 	atrule: {
 		...prev.atrule,
 		apply: tailwindApply,
@@ -32,7 +75,7 @@ export const tailwind3 = prev => ({
 	atrules: {
 		...prev.atrules,
 		apply: {
-			prelude: "<tw-apply-ident>+",
+			prelude: "<tw-apply-ident>+ [ '!' important ]?",
 		},
 		tailwind: {
 			prelude: "base | components | utilities | variants",
@@ -53,11 +96,6 @@ export const tailwind3 = prev => ({
 			"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
 		...themeTypes,
 	},
-	node: {
-		...prev.node,
-		TailwindThemeKey,
-		TailwindUtilityClass,
-	},
 	features: {
 		...prev.features,
 		media: {
@@ -74,4 +112,5 @@ export const tailwind3 = prev => ({
 			theme,
 		},
 	},
-});
+	};
+};
