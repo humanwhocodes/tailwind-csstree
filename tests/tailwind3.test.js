@@ -510,6 +510,41 @@ describe("Tailwind 3", function () {
         });
     });
     
+    describe("@media screen()", () => {
+        it("should parse @media screen(sm) with a block body", () => {
+            assert.doesNotThrow(() => {
+                const result = parse("@media screen(sm) { .sidebar { display: none; } }");
+                assert.ok(result, "Should return a valid AST");
+            }, "Should not throw parsing errors");
+        });
+
+        it("should parse @media screen(md) with theme() inside", () => {
+            assert.doesNotThrow(() => {
+                const result = parse(
+                    "@media screen(md) { .container { max-width: theme(screens.md); } }",
+                );
+                assert.ok(result, "Should return a valid AST");
+            }, "Should not throw parsing errors");
+        });
+
+        it("should produce a FeatureFunction node for screen() in media query", () => {
+            const tree = toPlainObject(
+                parse("@media screen(sm) { .sidebar { display: none; } }"),
+            );
+            const mediaQuery =
+                tree.children[0].prelude.children[0].children[0];
+            const condition = mediaQuery.condition;
+            assert.strictEqual(condition.type, "Condition");
+            assert.strictEqual(condition.kind, "media");
+            const featureFn = condition.children[0];
+            assert.strictEqual(featureFn.type, "FeatureFunction");
+            assert.strictEqual(featureFn.kind, "media");
+            assert.strictEqual(featureFn.feature, "screen");
+            assert.strictEqual(featureFn.value.type, "Identifier");
+            assert.strictEqual(featureFn.value.name, "sm");
+        });
+    });
+
     describe("Canonical Tailwind 3 File", () => {
         it("should parse a canonical Tailwind 3 file", async () => {
             const file = await fs.readFile(filename, "utf8");
