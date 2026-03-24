@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.2.0...tailwind-csstree-v0.3.0) (2026-03-24)
+
+
+### Features
+
+* **tailwind3:** implement [@media](https://github.com/media) screen() function support ([#50](https://github.com/humanwhocodes/tailwind-csstree/issues/50)) ([b8f5e99](https://github.com/humanwhocodes/tailwind-csstree/commit/b8f5e99aad361addef580dc0634cb6f492815952))
+
+
+### Bug Fixes
+
+* Tailwind 3 `[@apply](https://github.com/apply) ... !important` support ([#49](https://github.com/humanwhocodes/tailwind-csstree/issues/49)) ([9e520af](https://github.com/humanwhocodes/tailwind-csstree/commit/9e520afcdc598f605908f683f13386a96d0ba711))
+
 ## [0.2.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.1.5...tailwind-csstree-v0.2.0) (2026-03-20)
 
 
