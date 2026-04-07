@@ -927,7 +927,7 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.block.children[0].block.children[0].name, "slot");
         });
 
-        it("should parse @custom-variant with an inline selector", () => {
+        it("should parse @custom-variant with a single inline selector", () => {
             const tree = toPlainObject(parse('@custom-variant theme-midnight (&:where([data-theme="midnight"] *));'));
             const atrule = tree.children[0];
 
@@ -957,7 +957,7 @@ describe("Tailwind 4", function () {
                 '@custom-variant theme-midnight (&:where([data-theme="midnight"] *));',
                 "@custom-variant any-hover { @media (any-hover: hover) { &:hover { @slot; } } }",
             ].forEach((cssRule) => {
-                it("should allow valid prelude", () => {
+                it(`should allow valid prelude: ${cssRule}`, () => {
                     const tree = toPlainObject(parse(cssRule));
                     const { error } = lexer.matchAtrulePrelude("custom-variant", tree.children[0].prelude);
                     assert.equal(error, null);
