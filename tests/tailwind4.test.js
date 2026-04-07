@@ -901,8 +901,8 @@ describe("Tailwind 4", function () {
     });
 
     describe("@custom-variant", () => {
-        it("should parse @custom-variant with an inline selector", () => {
-            const tree = toPlainObject(parse("@custom-variant theme-midnight (&:where([data-theme='midnight'] *));"));
+        it("should parse @custom-variant with an inline selector list", () => {
+            const tree = toPlainObject(parse("@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));"));
             const atrule = tree.children[0];
 
             assert.equal(atrule.type, "Atrule");
@@ -911,12 +911,12 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.prelude.type, "Raw");
             assert.equal(
                 atrule.prelude.value,
-                "theme-midnight (&:where([data-theme='midnight'] *))",
+                "dark (&:where([data-theme=dark], [data-theme=dark] *))",
             );
         });
 
         it("should parse @custom-variant with a block body using @slot", () => {
-            const tree = toPlainObject(parse("@custom-variant theme-midnight { &:where([data-theme='midnight'] *) { @slot; } }"));
+            const tree = toPlainObject(parse('@custom-variant theme-midnight { &:where([data-theme="midnight"] *) { @slot; } }'));
             const atrule = tree.children[0];
 
             assert.equal(atrule.type, "Atrule");
@@ -927,10 +927,34 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.block.children[0].block.children[0].name, "slot");
         });
 
+        it("should parse @custom-variant with an inline selector", () => {
+            const tree = toPlainObject(parse('@custom-variant theme-midnight (&:where([data-theme="midnight"] *));'));
+            const atrule = tree.children[0];
+
+            assert.equal(atrule.type, "Atrule");
+            assert.equal(atrule.name, "custom-variant");
+            assert.equal(atrule.block, null);
+            assert.equal(atrule.prelude.type, "Raw");
+        });
+
+        it("should parse @custom-variant with nested at-rules in a block body", () => {
+            const tree = toPlainObject(parse("@custom-variant any-hover { @media (any-hover: hover) { &:hover { @slot; } } }"));
+            const atrule = tree.children[0];
+
+            assert.equal(atrule.type, "Atrule");
+            assert.equal(atrule.name, "custom-variant");
+            assert.equal(atrule.prelude.type, "AtrulePrelude");
+            assert.equal(atrule.prelude.children[0].name, "any-hover");
+            assert.equal(atrule.block.children[0].name, "media");
+            assert.equal(atrule.block.children[0].block.children[0].type, "Rule");
+        });
+
         describe("Validation", () => {
             [
-                "@custom-variant theme-midnight (&:where([data-theme='midnight'] *));",
-                "@custom-variant theme-midnight { &:where([data-theme='midnight'] *) { @slot; } }",
+                "@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));",
+                '@custom-variant theme-midnight { &:where([data-theme="midnight"] *) { @slot; } }',
+                '@custom-variant theme-midnight (&:where([data-theme="midnight"] *));',
+                "@custom-variant any-hover { @media (any-hover: hover) { &:hover { @slot; } } }",
             ].forEach((cssRule) => {
                 it("should allow valid prelude", () => {
                     const tree = toPlainObject(parse(cssRule));
