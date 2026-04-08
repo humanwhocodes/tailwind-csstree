@@ -1,4 +1,6 @@
 
+/* eslint css/use-baseline: "off" */
+
 @config 'tailwind.config.js';
 @plugin 'tailwindcss/typography';
 
@@ -33,7 +35,23 @@
     }
 }
 
-/* @custom-variant theme-midnight (&:where([data-theme="midnight"] *)); */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@custom-variant theme-midnight {
+  &:where([data-theme="midnight"] *) {
+    @slot;
+  }
+}
+
+@custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+
+@custom-variant any-hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
 
 @source "../node_modules/@my-company/ui-lib";
 

@@ -908,10 +908,10 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.type, "Atrule");
             assert.equal(atrule.name, "custom-variant");
             assert.equal(atrule.block, null);
-            assert.equal(atrule.prelude.type, "Raw");
+            assert.equal(atrule.prelude.type, "AtrulePrelude");
             assert.equal(
-                atrule.prelude.value,
-                "dark (&:where([data-theme=dark], [data-theme=dark] *))",
+                atrule.prelude.children[1].value,
+                "(&:where([data-theme=dark], [data-theme=dark] *))",
             );
         });
 
@@ -934,8 +934,8 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.type, "Atrule");
             assert.equal(atrule.name, "custom-variant");
             assert.equal(atrule.block, null);
-            assert.equal(atrule.prelude.type, "Raw");
-            assert.equal(atrule.prelude.value, 'theme-midnight (&:where([data-theme="midnight"] *))');
+            assert.equal(atrule.prelude.type, "AtrulePrelude");
+            assert.equal(atrule.prelude.children[1].value, '(&:where([data-theme="midnight"] *))');
         });
 
         it("should parse @custom-variant with nested at-rules in a block body", () => {
