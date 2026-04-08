@@ -909,7 +909,7 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.name, "custom-variant");
             assert.equal(atrule.block, null);
             assert.equal(atrule.prelude.type, "AtrulePrelude");
-            assert.ok(atrule.prelude.children.length > 1);
+            assert.equal(atrule.prelude.children.length, 2);
             assert.equal(
                 atrule.prelude.children[1].value,
                 "(&:where([data-theme=dark], [data-theme=dark] *))",
@@ -936,7 +936,7 @@ describe("Tailwind 4", function () {
             assert.equal(atrule.name, "custom-variant");
             assert.equal(atrule.block, null);
             assert.equal(atrule.prelude.type, "AtrulePrelude");
-            assert.ok(atrule.prelude.children.length > 1);
+            assert.equal(atrule.prelude.children.length, 2);
             assert.equal(atrule.prelude.children[1].value, '(&:where([data-theme="midnight"] *))');
         });
 

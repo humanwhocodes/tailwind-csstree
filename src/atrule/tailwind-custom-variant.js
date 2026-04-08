@@ -34,7 +34,6 @@ export default {
 					"Expected variant name identifier after @custom-variant",
 					0,
 				);
-				return children;
 			}
 
 			children.push(this.Identifier());
@@ -43,8 +42,8 @@ export default {
 			// Parse the inline selector form: @custom-variant name (selector)
 			if (this.tokenType === tokenTypes.LeftParenthesis) {
 				/*
-				 * Consume until semicolon (or `{` for recovery) so we keep the
-				 * selector payload, including nested parentheses.
+				 * Consume until semicolon; if `{` is encountered, stop there for
+				 * recovery. This keeps the selector payload and nested parentheses.
 				 */
 				children.push(
 					this.Raw(this.consumeUntilLeftCurlyBracketOrSemicolon, true),
