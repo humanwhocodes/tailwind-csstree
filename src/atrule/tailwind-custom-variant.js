@@ -30,12 +30,16 @@ export default {
 			const children = this.createList();
 
 			if (this.tokenType !== tokenTypes.Ident) {
-				this.error("Identifier is expected", 0);
+				this.error(
+					"Expected variant name identifier after @custom-variant",
+					0,
+				);
 			}
 
 			children.push(this.Identifier());
 			this.skipSC();
 
+			// Parse the inline selector form: @custom-variant name (selector)
 			if (this.tokenType === tokenTypes.LeftParenthesis) {
 				children.push(
 					this.Raw(this.consumeUntilLeftCurlyBracketOrSemicolon, true),
