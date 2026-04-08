@@ -1,5 +1,5 @@
 
-/* eslint css/use-baseline: "off" */
+/* eslint css/use-baseline: "off" -- fixture includes nesting selectors for parser coverage */
 
 @config 'tailwind.config.js';
 @plugin 'tailwindcss/typography';
