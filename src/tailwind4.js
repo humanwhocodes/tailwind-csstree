@@ -11,6 +11,7 @@ import * as TailwindThemeKey from "./node/tailwind-theme-key.js";
 import * as TailwindUtilityClass from "./node/tailwind-class.js";
 import * as TailwindDeclaration from "./node/tailwind-declaration.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
+import tailwindCustomVariant from "./atrule/tailwind-custom-variant.js";
 import tailwindImport from "./atrule/tailwind-import.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
@@ -41,6 +42,7 @@ export const tailwind4 = prev => {
 	atrule: {
 		...prev.atrule,
 		apply: tailwindApply,
+		"custom-variant": tailwindCustomVariant,
 		import: tailwindImport,
 	},
 	atrules: {
