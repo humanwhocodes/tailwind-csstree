@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.0...tailwind-csstree-v0.3.1) (2026-04-10)
+
+
+### Bug Fixes
+
+* Tailwind 4 `[@custom-variant](https://github.com/custom-variant)` parsing for ESLint CSS plugin and expand syntax coverage ([#54](https://github.com/humanwhocodes/tailwind-csstree/issues/54)) ([fc4e117](https://github.com/humanwhocodes/tailwind-csstree/commit/fc4e1172731ce3dd401996c85fd5c4369cae989c))
+
 ## [0.3.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.2.0...tailwind-csstree-v0.3.0) (2026-03-24)
 
 
