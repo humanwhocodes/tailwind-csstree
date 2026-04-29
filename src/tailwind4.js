@@ -66,6 +66,7 @@ export const tailwind4 = prev => {
 		},
 		utility: {
 			prelude: "<ident>",
+			descriptors: prev.properties,
 		},
 		variant: {
 			prelude: "<ident>",
