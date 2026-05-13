@@ -621,7 +621,7 @@ describe("Tailwind 4", function () {
                 "@theme { --color-primary: #ff0000; }",
                 "@theme inline { --color-primary: #ff0000; }"
             ].forEach((prelude) => {
-                it("should allow valid prelude", () => {
+                it(`should allow valid prelude: ${prelude}`, () => {
                     const tree = toPlainObject(parse(prelude));
                     const { error } = lexer.matchAtrulePrelude("theme", tree.children[0].prelude);
                     assert.equal(error, null);
@@ -631,7 +631,7 @@ describe("Tailwind 4", function () {
             [
                 "@theme colors { --color-primary: #ff0000; }"
             ].forEach((prelude) => {
-                it("should fail with invalid prelude", () => {
+                it(`should fail with invalid prelude: ${prelude}`, () => {
                     const tree = toPlainObject(parse(prelude));
                     const { error } = lexer.matchAtrulePrelude("theme", tree.children[0].prelude);
                     assert.notEqual(error, null);
