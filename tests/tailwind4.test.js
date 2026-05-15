@@ -573,8 +573,8 @@ describe("Tailwind 4", function () {
     });
 
     describe("@theme", () => {
-        it("should parse @theme with a valid prelude", () => {
-            const tree = toPlainObject(parse("@theme colors { primary: #ff0000; }"));
+        it("should parse @theme with inline prelude", () => {
+            const tree = toPlainObject(parse("@theme inline { --color-primary: #ff0000; }"));
             assert.deepStrictEqual(tree, {
                 type: "StyleSheet",
                 loc: null,
@@ -588,7 +588,7 @@ describe("Tailwind 4", function () {
                             children: [
                                 {
                                     type: "Identifier",
-                                    name: "colors",
+                                    name: "inline",
                                     loc: null
                                 }
                             ]
@@ -600,16 +600,10 @@ describe("Tailwind 4", function () {
                                 {
                                     type: "Declaration",
                                     loc: null,
-                                    property: "primary",
+                                    property: "--color-primary",
                                     value: {
-                                        type: "Value",
-                                        children: [
-                                            {
-                                                type: "Hash",
-                                                value: "ff0000",
-                                                loc: null
-                                            }
-                                        ],
+                                        type: "Raw",
+                                        value: " #ff0000",
                                         loc: null
                                     },
                                     important: false
@@ -619,6 +613,75 @@ describe("Tailwind 4", function () {
                         loc: null
                     }
                 ]
+            });
+        });
+
+        it("should parse @theme with static prelude", () => {
+            const tree = toPlainObject(parse("@theme static { --color-primary: #ff0000; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "theme",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "static",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Declaration",
+                                    loc: null,
+                                    property: "--color-primary",
+                                    value: {
+                                        type: "Raw",
+                                        value: " #ff0000",
+                                        loc: null
+                                    },
+                                    important: false
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
+
+        describe("Validation", () => {
+            [
+                "@theme { --color-primary: #ff0000; }",
+                "@theme inline { --color-primary: #ff0000; }",
+                "@theme static { --color-primary: #ff0000; }"
+            ].forEach((prelude) => {
+                it(`should allow valid prelude: ${prelude}`, () => {
+                    const tree = toPlainObject(parse(prelude));
+                    const { error } = lexer.matchAtrulePrelude("theme", tree.children[0].prelude);
+                    assert.equal(error, null);
+                });
+            });
+
+            [
+                "@theme colors { --color-primary: #ff0000; }",
+                "@theme inline static { --color-primary: #ff0000; }",
+                "@theme static inline { --color-primary: #ff0000; }"
+            ].forEach((prelude) => {
+                it(`should fail with invalid prelude: ${prelude}`, () => {
+                    const tree = toPlainObject(parse(prelude));
+                    const { error } = lexer.matchAtrulePrelude("theme", tree.children[0].prelude);
+                    assert.notEqual(error, null);
+                });
             });
         });
 
