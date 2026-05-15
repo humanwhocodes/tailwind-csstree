@@ -58,7 +58,7 @@ export const tailwind4 = prev => {
 			prelude: "<string>",
 		},
 		theme: {
-			prelude: "inline?",
+			prelude: "[ inline | static ]?",
 			descriptors: prev.properties,
 		},
 		source: {

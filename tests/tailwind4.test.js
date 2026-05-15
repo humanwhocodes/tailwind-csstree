@@ -616,10 +616,54 @@ describe("Tailwind 4", function () {
             });
         });
 
+        it("should parse @theme with static prelude", () => {
+            const tree = toPlainObject(parse("@theme static { --color-primary: #ff0000; }"));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "theme",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "static",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Declaration",
+                                    loc: null,
+                                    property: "--color-primary",
+                                    value: {
+                                        type: "Raw",
+                                        value: " #ff0000",
+                                        loc: null
+                                    },
+                                    important: false
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
+
         describe("Validation", () => {
             [
                 "@theme { --color-primary: #ff0000; }",
-                "@theme inline { --color-primary: #ff0000; }"
+                "@theme inline { --color-primary: #ff0000; }",
+                "@theme static { --color-primary: #ff0000; }"
             ].forEach((prelude) => {
                 it(`should allow valid prelude: ${prelude}`, () => {
                     const tree = toPlainObject(parse(prelude));
@@ -629,7 +673,9 @@ describe("Tailwind 4", function () {
             });
 
             [
-                "@theme colors { --color-primary: #ff0000; }"
+                "@theme colors { --color-primary: #ff0000; }",
+                "@theme inline static { --color-primary: #ff0000; }",
+                "@theme static inline { --color-primary: #ff0000; }"
             ].forEach((prelude) => {
                 it(`should fail with invalid prelude: ${prelude}`, () => {
                     const tree = toPlainObject(parse(prelude));
