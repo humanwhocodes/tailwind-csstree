@@ -1033,7 +1033,7 @@ describe("Tailwind 4", function () {
 
     describe("@apply", () => {
         it("should parse @apply with valid classes", () => {
-            const tree = toPlainObject(parse(".example { @apply bg-red-500 text-white focus:ring-3; }"));
+            const tree = toPlainObject(parse(".example { @apply bg-red-500 text-white focus:ring-3 grid-cols-[200px_auto]; }"));
             assert.deepStrictEqual(tree, {
                 type: "StyleSheet",
                 loc: null,
@@ -1090,6 +1090,16 @@ describe("Tailwind 4", function () {
                                                 name: {
                                                     type: "Identifier",
                                                     name: "ring-3",
+                                                    loc: null
+                                                }
+                                            },
+                                            {
+                                                type: "TailwindUtilityClass",
+                                                loc: null,
+                                                variant: null,
+                                                name: {
+                                                    type: "Identifier",
+                                                    name: "grid-cols-[200px_auto]",
                                                     loc: null
                                                 }
                                             }

@@ -48,7 +48,7 @@ export const name = "TailwindUtilityClass";
  */
 export const structure = {
     name: ["Identifier"],
-    variant: ["Identifier"],
+    variant: ["Identifier", null],
 };
 
 /**
