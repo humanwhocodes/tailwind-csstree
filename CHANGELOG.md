@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.2](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.1...tailwind-csstree-v0.3.2) (2026-05-19)
+
+
+### Bug Fixes
+
+* Allow `[@theme](https://github.com/theme)` inline/static preludes ([#60](https://github.com/humanwhocodes/tailwind-csstree/issues/60)) ([31286c3](https://github.com/humanwhocodes/tailwind-csstree/commit/31286c3a088b1087b1ebe3780cbbdc8136b693fb))
+* parsing issue in [@apply](https://github.com/apply) arbitrary bracket classes ([#58](https://github.com/humanwhocodes/tailwind-csstree/issues/58)) ([6767a32](https://github.com/humanwhocodes/tailwind-csstree/commit/6767a32fe39d34218283acfef25e8ca5e9f20008))
+
 ## [0.3.1](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.0...tailwind-csstree-v0.3.1) (2026-04-10)
 
 
