@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.2...tailwind-csstree-v0.3.3) (2026-06-09)
+
+
+### Bug Fixes
+
+* add descriptors to utility at-rule ([#59](https://github.com/humanwhocodes/tailwind-csstree/issues/59)) ([c517380](https://github.com/humanwhocodes/tailwind-csstree/commit/c5173807e7eb23ee50ed2b44f57f744b69a57928))
+
 ## [0.3.2](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.1...tailwind-csstree-v0.3.2) (2026-05-19)
 
 
