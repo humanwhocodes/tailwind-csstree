@@ -885,6 +885,61 @@ describe("Tailwind 4", function () {
       });
     });
 
+	describe("@utility", () => {
+        it("should parse @utility with a valid prelude", () => {
+            const tree = toPlainObject(
+                parse(
+                    "@utility font-mono { font-feature-numeric: tabular-nums; }",
+                ),
+            );
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "utility",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Identifier",
+                                    name: "font-mono",
+                                    loc: null,
+                                },
+                            ],
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Declaration",
+                                    loc: null,
+                                    property: "font-feature-numeric",
+                                    value: {
+                                        type: "Value",
+                                        children: [
+                                            {
+                                                type: "Identifier",
+                                                name: "tabular-nums",
+                                                loc: null,
+                                            },
+                                        ],
+                                        loc: null,
+                                    },
+                                    important: false,
+                                },
+                            ],
+                        },
+                        loc: null,
+                    },
+                ],
+            });
+        });
+    });
+
     describe("@variant", () => {
         it("should parse @variant with a valid prelude", () => {
             const tree = toPlainObject(parse("@variant hover { .example { color: blue; } }"));
