@@ -26,7 +26,9 @@ import { themeTypes } from "./types/theme-types.js";
 export const tailwind3 = prev => {
 	const previousAtrule = prev.node?.Atrule;
 	const previousAtruleNode =
-		typeof previousAtrule === "function" ? { parse: previousAtrule } : previousAtrule;
+		typeof previousAtrule === "function"
+			? { parse: previousAtrule }
+			: previousAtrule;
 	const previousAtruleParse = previousAtruleNode?.parse;
 
 	return {
@@ -41,12 +43,17 @@ export const tailwind3 = prev => {
 							parse(isDeclaration, options) {
 								try {
 									const result = /** @type {any} */ (
-										previousAtruleParse.call(this, isDeclaration, options)
+										previousAtruleParse.call(
+											this,
+											isDeclaration,
+											options,
+										)
 									);
 
 									if (
 										result?.type === "Atrule" &&
-										result.name?.toLowerCase?.() === "apply" &&
+										result.name?.toLowerCase?.() ===
+											"apply" &&
 										this.important === true
 									) {
 										result.important = true;
@@ -68,49 +75,49 @@ export const tailwind3 = prev => {
 			TailwindThemeKey,
 			TailwindUtilityClass,
 		},
-	atrule: {
-		...prev.atrule,
-		apply: tailwindApply,
-	},
-	atrules: {
-		...prev.atrules,
-		apply: {
-			prelude: "<tw-apply-ident>+ [ '!' important ]?",
+		atrule: {
+			...prev.atrule,
+			apply: tailwindApply,
 		},
-		tailwind: {
-			prelude: "base | components | utilities | variants",
-		},
-		config: {
-			prelude: "<string>",
-		},
-	},
-	types: {
-		...prev.types,
-		"length-percentage": `${prev.types["length-percentage"]} | <tw-theme-spacing> | <tw-theme-screens>`,
-		color: `${prev.types.color} | <tw-theme-color>`,
-		"tw-apply-ident":
-			"<ident> | <tw-utility-with-variant> | <tw-utility-with-opacity>",
-		"tw-utility-with-variant":
-			"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
-		"tw-utility-with-opacity":
-			"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
-		...themeTypes,
-	},
-	features: {
-		...prev.features,
-		media: {
-			...prev.features?.media,
-			screen() {
-				return this.Identifier();
+		atrules: {
+			...prev.atrules,
+			apply: {
+				prelude: "<tw-apply-ident>+ [ '!' important ]?",
+			},
+			tailwind: {
+				prelude: "base | components | utilities | variants",
+			},
+			config: {
+				prelude: "<string>",
 			},
 		},
-	},
-	scope: {
-		...prev.scope,
-		Value: {
-			...prev.scope?.Value,
-			theme,
+		types: {
+			...prev.types,
+			"length-percentage": `${prev.types["length-percentage"]} | <tw-theme-spacing> | <tw-theme-screens>`,
+			color: `${prev.types.color} | <tw-theme-color>`,
+			"tw-apply-ident":
+				"<ident> | <tw-utility-with-variant> | <tw-utility-with-opacity>",
+			"tw-utility-with-variant":
+				"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
+			"tw-utility-with-opacity":
+				"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
+			...themeTypes,
 		},
-	},
+		features: {
+			...prev.features,
+			media: {
+				...prev.features?.media,
+				screen() {
+					return this.Identifier();
+				},
+			},
+		},
+		scope: {
+			...prev.scope,
+			Value: {
+				...prev.scope?.Value,
+				theme,
+			},
+		},
 	};
 };

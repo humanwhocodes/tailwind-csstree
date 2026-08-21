@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tailwind 4 `@custom-variant` rule parser.
+ * @fileoverview Tailwind 4 `@plugin` rule parser.
  */
 
 //-----------------------------------------------------------------------------
@@ -23,37 +23,34 @@ import { tokenTypes } from "../token-types.js";
 export default {
 	parse: {
 		/**
+		 * Parses the optional block of a `@plugin` rule as a raw block so that
+		 * plugin-specific option properties (which are not standard CSS
+		 * properties) are preserved as raw text and do not trigger
+		 * descriptor-validation lint errors.
 		 * @this {ParserContext}
-		 * @type {SyntaxConfig['atrule']['custom-variant']['parse']['prelude']}
+		 * @returns {any}
 		 */
-		prelude: function () {
+		block() {
+			const start = this.tokenStart;
 			const children = this.createList();
 
-			if (this.tokenType !== tokenTypes.Ident) {
-				this.error(
-					"Expected variant name identifier after @custom-variant",
-					0,
-				);
+			this.eat(tokenTypes.LeftCurlyBracket);
+
+			const raw = this.Raw(null, true);
+
+			if (raw.value) {
+				children.appendData(raw);
 			}
 
-			children.push(this.Identifier());
-			this.skipSC();
-
-			// Parse the inline selector form: @custom-variant name (selector)
-			if (this.tokenType === tokenTypes.LeftParenthesis) {
-				/*
-				 * Consume until semicolon; if `{` is encountered, stop there for
-				 * recovery. This keeps the selector payload and nested parentheses.
-				 */
-				children.push(
-					this.Raw(
-						this.consumeUntilLeftCurlyBracketOrSemicolon,
-						true,
-					),
-				);
+			if (!this.eof) {
+				this.eat(tokenTypes.RightCurlyBracket);
 			}
 
-			return children;
+			return {
+				type: "Block",
+				loc: this.getLocation(start, this.tokenStart),
+				children,
+			};
 		},
 	},
 };
