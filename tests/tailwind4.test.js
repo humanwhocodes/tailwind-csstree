@@ -938,6 +938,26 @@ describe("Tailwind 4", function () {
                 ],
             });
         });
+
+        it("should parse declarations before a nested rule as declarations, not as part of the selector", () => {
+            const tree = toPlainObject(
+                parse(
+                    "@utility sf { color: red; & span { color: blue; } }",
+                ),
+            );
+            const block = tree.children[0].block;
+
+            assert.equal(block.children.length, 2);
+            assert.equal(block.children[0].type, "Declaration");
+            assert.equal(block.children[0].property, "color");
+            assert.equal(block.children[1].type, "Rule");
+            assert.deepStrictEqual(
+                block.children[1].prelude.children[0].children.map(
+                    child => child.type,
+                ),
+                ["NestingSelector", "Combinator", "TypeSelector"],
+            );
+        });
     });
 
     describe("@variant", () => {
@@ -1015,6 +1035,26 @@ describe("Tailwind 4", function () {
                     }
                 ]
             });
+        });
+
+        it("should parse declarations before a nested rule as declarations, not as part of the selector", () => {
+            const tree = toPlainObject(
+                parse(
+                    "@variant hover { color: red; & span { color: blue; } }",
+                ),
+            );
+            const block = tree.children[0].block;
+
+            assert.equal(block.children.length, 2);
+            assert.equal(block.children[0].type, "Declaration");
+            assert.equal(block.children[0].property, "color");
+            assert.equal(block.children[1].type, "Rule");
+            assert.deepStrictEqual(
+                block.children[1].prelude.children[0].children.map(
+                    child => child.type,
+                ),
+                ["NestingSelector", "Combinator", "TypeSelector"],
+            );
         });
     });
 
