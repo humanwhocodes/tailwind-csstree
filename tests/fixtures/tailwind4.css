@@ -1,3 +1,4 @@
+
 /* eslint css/use-baseline: "off" -- fixture includes nesting selectors for parser coverage */
 
 @config 'tailwind.config.js';
@@ -9,52 +10,52 @@
 }
 
 @layer base {
-	h1 {
-		@apply text-2xl font-bold;
-	}
+  h1 {
+    @apply text-2xl font-bold;
+  }
 }
 
 @layer components {
-	.btn {
-		@apply px-4 py-2 bg-blue-500 text-white dark:text-black border-[#222];
-	}
+  .btn {
+    @apply px-4 py-2 bg-blue-500 text-white dark:text-black border-[#222];
+  }
 }
 
 @layer utilities {
-	.custom-utility {
-		@apply border border-gray-300;
-	}
+  .custom-utility {
+    @apply border border-gray-300;
+  }
 }
 
 @theme {
-	--color-*: initial;
-	--primary: #ff0000;
+  --color-*: initial;
+  --primary: #ff0000;
 }
 
 .my-element {
-	background: white;
+    background: white;
 
-	@variant dark {
-		background: black;
-	}
+    @variant dark {
+        background: black;
+    }
 }
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @custom-variant theme-midnight {
-	&:where([data-theme="midnight"] *) {
-		@slot;
-	}
+  &:where([data-theme="midnight"] *) {
+    @slot;
+  }
 }
 
 @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
 
 @custom-variant any-hover {
-	@media (any-hover: hover) {
-		&:hover {
-			@slot;
-		}
-	}
+  @media (any-hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
 }
 
 @source "../node_modules/@my-company/ui-lib";
@@ -66,14 +67,14 @@
 @reference "tailwindcss";
 
 .my-element {
-	--color-lime-300: #d9f99d;
-	color: --alpha(var(--color-lime-300) / 50%);
+  --color-lime-300: #d9f99d;
+  color: --alpha(var(--color-lime-300) / 50%);
 }
 
 .my-element {
-	margin: --spacing(4);
+  margin: --spacing(4);
 }
 
 .my-element {
-	margin: theme(spacing.12);
+  margin: theme(spacing.12);
 }
