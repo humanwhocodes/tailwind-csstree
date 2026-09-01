@@ -9,7 +9,7 @@
 
 import assert from "node:assert";
 import { tailwind4 } from "../src/tailwind4.js";
-import { fork } from "@eslint/css-tree";
+import { fork, walk } from "@eslint/css-tree";
 import fs from "node:fs/promises";
 import { createThemeFunctionTests } from "./helpers/theme-function-tests.js";
 
@@ -1181,13 +1181,28 @@ describe("Tailwind 4", function () {
                 "a { @apply outline-ring/50; }",
                 "a { @apply bg-blue-500/30; }",
                 "a { @apply border-gray-200/50; }",
+                "a { @apply border-border outline-ring/50; }",
+                "@layer base { * { @apply border-border outline-ring/50; } }",
             ];
 
             testCases.forEach((testCase) => {
-                assert.doesNotThrow(() => {
-                    const result = parse(testCase);
-                    assert.ok(result, `Should parse: ${testCase}`);
-                }, `Should not throw parsing errors for: ${testCase}`);
+                const errors = [];
+                const nodes = [];
+                const result = parse(testCase, {
+                    onParseError(error) {
+                        errors.push(error.message);
+                    },
+                });
+
+                walk(result, {
+                    enter(node) {
+                        nodes.push(node.type);
+                    },
+                });
+
+                assert.deepStrictEqual(errors, []);
+                assert.ok(nodes.includes("AtrulePrelude"));
+                assert.ok(!nodes.includes("Raw"));
             });
         });
         
@@ -1199,10 +1214,23 @@ describe("Tailwind 4", function () {
             ];
             
             testCases.forEach((testCase) => {
-                assert.doesNotThrow(() => {
-                    const result = parse(testCase);
-                    assert.ok(result, `Should parse: ${testCase}`);
-                }, `Should not throw parsing errors for: ${testCase}`);
+                const errors = [];
+                const nodes = [];
+                const result = parse(testCase, {
+                    onParseError(error) {
+                        errors.push(error.message);
+                    },
+                });
+
+                walk(result, {
+                    enter(node) {
+                        nodes.push(node.type);
+                    },
+                });
+
+                assert.deepStrictEqual(errors, []);
+                assert.ok(nodes.includes("AtrulePrelude"));
+                assert.ok(!nodes.includes("Raw"));
             });
         });
 
