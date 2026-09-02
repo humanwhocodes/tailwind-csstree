@@ -11,6 +11,8 @@
 
 import { tokenTypes } from "../token-types.js";
 
+const SOLIDUS = 0x002f;
+
 //-----------------------------------------------------------------------------
 // Type Definitions
 //-----------------------------------------------------------------------------
@@ -92,7 +94,7 @@ export function parse() {
     
     // Handle slash notation for opacity (e.g., bg-red-500/50 or hover:bg-red-500/50)
     // Only try to parse slash if we see one
-    if (this.tokenType === tokenTypes.Delim && this.tokenValue === '/') {
+    if (this.isDelim(SOLIDUS)) {
         this.next(); // consume the '/'
         
         if (this.tokenType === tokenTypes.Ident) {
@@ -102,7 +104,7 @@ export function parse() {
                 name: className.name + '/' + opacityValue.name
             };
         } else if (this.tokenType === tokenTypes.Number) {
-            const opacityValue = this.tokenValue;
+            const opacityValue = this.source.slice(this.tokenStart, this.tokenEnd);
             this.next(); // consume the number token
             className = {
                 ...className,

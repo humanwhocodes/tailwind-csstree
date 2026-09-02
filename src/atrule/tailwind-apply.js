@@ -23,6 +23,7 @@ import { tokenTypes } from "../token-types.js";
 //-----------------------------------------------------------------------------
 
 const EXCLAMATIONMARK = 0x0021;
+const SOLIDUS = 0x002f;
 
 /** @type {any} */
 const tailwindApply = {
@@ -37,7 +38,8 @@ const tailwindApply = {
 			while (this.tokenType === tokenTypes.Ident) {
 				if (
 					this.lookupType(1) === tokenTypes.Colon ||
-					this.lookupType(1) === tokenTypes.LeftSquareBracket
+					this.lookupType(1) === tokenTypes.LeftSquareBracket ||
+					this.isDelim(SOLIDUS, 1)
 				) {
 					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
 					children.push(
