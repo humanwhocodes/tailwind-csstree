@@ -570,6 +570,43 @@ describe("Tailwind 4", function () {
                 ]
             });
         });
+
+        it("should parse @plugin with a block containing plugin-specific properties", () => {
+            const tree = toPlainObject(parse('@plugin "daisyui" { themes: light --default, dark --prefersdark; }'));
+            assert.deepStrictEqual(tree, {
+                type: "StyleSheet",
+                loc: null,
+                children: [
+                    {
+                        type: "Atrule",
+                        name: "plugin",
+                        prelude: {
+                            type: "AtrulePrelude",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "String",
+                                    value: "daisyui",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        block: {
+                            type: "Block",
+                            loc: null,
+                            children: [
+                                {
+                                    type: "Raw",
+                                    value: " themes: light --default, dark --prefersdark;",
+                                    loc: null
+                                }
+                            ]
+                        },
+                        loc: null
+                    }
+                ]
+            });
+        });
     });
 
     describe("@theme", () => {

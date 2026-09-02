@@ -3,6 +3,9 @@
 
 @config 'tailwind.config.js';
 @plugin 'tailwindcss/typography';
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
 
 @layer base {
   h1 {
