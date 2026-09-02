@@ -13,6 +13,7 @@ import * as TailwindDeclaration from "./node/tailwind-declaration.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
 import tailwindCustomVariant from "./atrule/tailwind-custom-variant.js";
 import tailwindImport from "./atrule/tailwind-import.js";
+import tailwindNestedDeclarations from "./atrule/tailwind-nested-declarations.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
 import { tokenTypes } from "./token-types.js";
@@ -44,6 +45,8 @@ export const tailwind4 = prev => {
 		apply: tailwindApply,
 		"custom-variant": tailwindCustomVariant,
 		import: tailwindImport,
+		utility: tailwindNestedDeclarations,
+		variant: tailwindNestedDeclarations,
 	},
 	atrules: {
 		...prev.atrules,
