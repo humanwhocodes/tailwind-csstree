@@ -46,10 +46,7 @@ export default {
 				 * recovery. This keeps the selector payload and nested parentheses.
 				 */
 				children.push(
-					this.Raw(
-						this.consumeUntilLeftCurlyBracketOrSemicolon,
-						true,
-					),
+					this.Raw(this.consumeUntilLeftCurlyBracketOrSemicolon, true),
 				);
 			}
 
