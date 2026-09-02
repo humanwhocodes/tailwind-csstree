@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.3...tailwind-csstree-v0.4.0) (2026-09-02)
+
+
+### Features
+
+* allow [@plugin](https://github.com/plugin) to optionally accept a block with arbitrary properties ([#64](https://github.com/humanwhocodes/tailwind-csstree/issues/64)) ([c82c4c8](https://github.com/humanwhocodes/tailwind-csstree/commit/c82c4c80ff5a8bac7abe14a09e883b8f89f186a9))
+
+
+### Bug Fixes
+
+* [@apply](https://github.com/apply) opacity modifiers degrading to Raw ([#68](https://github.com/humanwhocodes/tailwind-csstree/issues/68)) ([110db17](https://github.com/humanwhocodes/tailwind-csstree/commit/110db1777810c7cbf8bbceb734a5cd56ed7c5eea))
+* `[@utility](https://github.com/utility)`/`[@variant](https://github.com/variant)` blocks mixing declarations and nested rules ([#67](https://github.com/humanwhocodes/tailwind-csstree/issues/67)) ([00524c5](https://github.com/humanwhocodes/tailwind-csstree/commit/00524c51ce1fe4d7257242d9a1c105e93d9b6acf))
+
 ## [0.3.3](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.2...tailwind-csstree-v0.3.3) (2026-06-09)
 
 
