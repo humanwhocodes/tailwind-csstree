@@ -1413,13 +1413,11 @@ describe("Tailwind 4", function () {
 		});
 
 		it("should parse @apply with important utility modifiers", () => {
-			["a { @apply !flex; }", "a { @apply flex!; }"].forEach(
-				testCase => {
-					assert.doesNotThrow(() => {
-						parse(testCase);
-					});
-				},
-			);
+			["a { @apply !flex; }", "a { @apply flex!; }"].forEach(testCase => {
+				assert.doesNotThrow(() => {
+					parse(testCase);
+				});
+			});
 		});
 
 		it("should parse the original issue CSS without errors", () => {

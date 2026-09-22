@@ -121,10 +121,7 @@ const tailwindApply = {
 				}
 
 				if (hasLeadingImportantModifier) {
-					utilityClass = addImportantModifier(
-						utilityClass,
-						"prefix",
-					);
+					utilityClass = addImportantModifier(utilityClass, "prefix");
 				}
 
 				this.skipSC();
@@ -142,10 +139,7 @@ const tailwindApply = {
 						break;
 					}
 
-					utilityClass = addImportantModifier(
-						utilityClass,
-						"suffix",
-					);
+					utilityClass = addImportantModifier(utilityClass, "suffix");
 				}
 
 				children.push(utilityClass);
