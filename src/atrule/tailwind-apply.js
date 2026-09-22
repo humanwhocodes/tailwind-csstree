@@ -45,14 +45,16 @@ function isImportantIdentifier(parser) {
  */
 function addImportantModifier(utilityClass, position) {
 	if (utilityClass.type === "TailwindUtilityClass") {
-		utilityClass.name = {
-			...utilityClass.name,
-			name:
-				position === "prefix"
-					? `!${utilityClass.name.name}`
-					: `${utilityClass.name.name}!`,
+		return {
+			...utilityClass,
+			name: {
+				...utilityClass.name,
+				name:
+					position === "prefix"
+						? `!${utilityClass.name.name}`
+						: `${utilityClass.name.name}!`,
+			},
 		};
-		return utilityClass;
 	}
 
 	return {
@@ -143,6 +145,18 @@ const tailwindApply = {
 					if (isImportantIdentifier(this)) {
 						this.error(
 							"Expected whitespace before !important in @apply directive",
+							0,
+						);
+					}
+
+					if (
+						this.tokenType !== tokenTypes.WhiteSpace &&
+						this.tokenType !== tokenTypes.Semicolon &&
+						this.tokenType !== tokenTypes.EOF &&
+						this.tokenType !== tokenTypes.Comment
+					) {
+						this.error(
+							"Expected whitespace or ';' after suffixed '!' in @apply directive",
 							0,
 						);
 					}

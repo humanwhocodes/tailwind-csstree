@@ -532,6 +532,16 @@ describe("Tailwind 3", function () {
 			assert.notDeepStrictEqual(errors, []);
 		});
 
+		it("should reject @apply suffixed utility without separator", () => {
+			const errors = [];
+			parse("a { @apply flex!mt-2; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
 		it("should parse the original issue CSS without errors", () => {
 			const originalCSS = `
 @layer base {

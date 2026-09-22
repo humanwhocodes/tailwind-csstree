@@ -99,11 +99,16 @@ export const tailwind4 = prev => {
 			"tw-any-spacing": "<tw-spacing> | <tw-theme-spacing>",
 			"tw-any-color": "<tw-alpha> | <tw-theme-color>",
 			"tw-apply-ident":
-				"<ident> | [ '!' <ident> ] | [ <ident> '!' ] | <tw-utility-with-variant> | [ '!' <tw-utility-with-variant> ] | [ <tw-utility-with-variant> '!' ] | <tw-utility-with-opacity> | [ '!' <tw-utility-with-opacity> ] | [ <tw-utility-with-opacity> '!' ]",
+				"<tw-important-ident> | <tw-important-utility-with-variant> | <tw-important-utility-with-opacity>",
+			"tw-important-ident": "<ident> | [ '!' <ident> ] | [ <ident> '!' ]",
 			"tw-utility-with-variant":
 				"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
+			"tw-important-utility-with-variant":
+				"<tw-utility-with-variant> | [ '!' <tw-utility-with-variant> ] | [ <tw-utility-with-variant> '!' ]",
 			"tw-utility-with-opacity":
 				"[ <ident> '/' <number> ] | [ <ident> '/' <ident> ]",
+			"tw-important-utility-with-opacity":
+				"<tw-utility-with-opacity> | [ '!' <tw-utility-with-opacity> ] | [ <tw-utility-with-opacity> '!' ]",
 			...themeTypes,
 		},
 		node: {
