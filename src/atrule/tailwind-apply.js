@@ -90,14 +90,10 @@ const tailwindApply = {
 					}
 
 					if (this.tokenType === tokenTypes.WhiteSpace) {
-						this.skipSC();
-
-						if (isImportantIdentifier(this)) {
-							this.error(
-								"Expected '!important' without whitespace in @apply directive",
-								0,
-							);
-						}
+						this.error(
+							"Expected identifier immediately after '!' in @apply directive",
+							0,
+						);
 					}
 
 					hasLeadingImportantModifier = true;
@@ -149,17 +145,6 @@ const tailwindApply = {
 							"Expected whitespace before !important in @apply directive",
 							0,
 						);
-					}
-
-					if (this.tokenType === tokenTypes.WhiteSpace) {
-						this.skipSC();
-
-						if (isImportantIdentifier(this)) {
-							this.error(
-								"Expected '!important' without whitespace in @apply directive",
-								0,
-							);
-						}
 					}
 
 					utilityClass = addImportantModifier(utilityClass, "suffix");

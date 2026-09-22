@@ -1413,7 +1413,12 @@ describe("Tailwind 4", function () {
 		});
 
 		it("should parse @apply with important utility modifiers", () => {
-			["a { @apply !flex; }", "a { @apply flex!; }"].forEach(testCase => {
+			[
+				"a { @apply !flex; }",
+				"a { @apply flex!; }",
+				"a { @apply !flex mt-2; }",
+				"a { @apply flex! mt-2; }",
+			].forEach(testCase => {
 				assert.doesNotThrow(() => {
 					parse(testCase);
 				});
@@ -1443,6 +1448,16 @@ describe("Tailwind 4", function () {
 		it("should reject @apply with detached trailing !", () => {
 			const errors = [];
 			parse("a { @apply flex !; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply with detached trailing ! before utility", () => {
+			const errors = [];
+			parse("a { @apply flex ! mt-2; }", {
 				onParseError(error) {
 					errors.push(error.message);
 				},
