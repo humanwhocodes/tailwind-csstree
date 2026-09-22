@@ -145,12 +145,10 @@ const tailwindApply = {
 					this.next();
 
 					if (isImportantIdentifier(this)) {
-						// Consume `important` so Atrule parser can continue from the next token.
-						this.Identifier();
-						this.important = true;
-						children.push(utilityClass);
-						this.skipSC();
-						break;
+						this.error(
+							"Expected whitespace before !important in @apply directive",
+							0,
+						);
 					}
 
 					if (this.tokenType === tokenTypes.WhiteSpace) {
