@@ -134,8 +134,6 @@ const tailwindApply = {
 					utilityClass = addImportantModifier(utilityClass, "prefix");
 				}
 
-				this.skipSC();
-
 				if (this.isDelim(EXCLAMATIONMARK)) {
 					if (hasLeadingImportantModifier) {
 						this.error(

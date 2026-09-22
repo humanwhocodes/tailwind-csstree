@@ -497,6 +497,16 @@ describe("Tailwind 3", function () {
 			assert.notDeepStrictEqual(errors, []);
 		});
 
+		it("should reject @apply with detached trailing !", () => {
+			const errors = [];
+			parse("a { @apply flex !; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
 		it("should parse the original issue CSS without errors", () => {
 			const originalCSS = `
 @layer base {
