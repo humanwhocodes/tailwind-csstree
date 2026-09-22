@@ -96,7 +96,7 @@ export const tailwind3 = prev => {
 			"length-percentage": `${prev.types["length-percentage"]} | <tw-theme-spacing> | <tw-theme-screens>`,
 			color: `${prev.types.color} | <tw-theme-color>`,
 			"tw-apply-ident":
-				"[ '!'? <ident> '!'? ] | [ '!'? <tw-utility-with-variant> '!'? ] | [ '!'? <tw-utility-with-opacity> '!'? ]",
+				"<ident> | [ '!' <ident> ] | [ <ident> '!' ] | <tw-utility-with-variant> | [ '!' <tw-utility-with-variant> ] | [ <tw-utility-with-variant> '!' ] | <tw-utility-with-opacity> | [ '!' <tw-utility-with-opacity> ] | [ <tw-utility-with-opacity> '!' ]",
 			"tw-utility-with-variant":
 				"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
 			"tw-utility-with-opacity":

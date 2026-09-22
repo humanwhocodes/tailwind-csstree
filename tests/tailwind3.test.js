@@ -477,6 +477,26 @@ describe("Tailwind 3", function () {
 			});
 		});
 
+		it("should reject @apply with double important utility modifiers", () => {
+			const errors = [];
+			parse("a { @apply !flex!; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply with spaced ! important", () => {
+			const errors = [];
+			parse("a { @apply flex ! important; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
 		it("should parse the original issue CSS without errors", () => {
 			const originalCSS = `
 @layer base {
@@ -551,6 +571,7 @@ describe("Tailwind 3", function () {
 			[
 				["tailwind", "base !important"],
 				["config", "'tailwind.config.js' !important"],
+				["apply", "!font-bold!"],
 			].forEach(([name, value]) => {
 				it(`should reject @${name} ${value}`, () => {
 					assert.notStrictEqual(

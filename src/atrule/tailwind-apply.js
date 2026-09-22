@@ -80,7 +80,6 @@ const tailwindApply = {
 				let hasLeadingImportantModifier = false;
 				if (this.isDelim(EXCLAMATIONMARK)) {
 					this.next();
-					this.skipSC();
 
 					if (isImportantIdentifier(this)) {
 						// Consume `important` so Atrule parser can continue from the next token.
@@ -88,6 +87,17 @@ const tailwindApply = {
 						this.important = true;
 						this.skipSC();
 						break;
+					}
+
+					if (this.tokenType === tokenTypes.WhiteSpace) {
+						this.skipSC();
+
+						if (isImportantIdentifier(this)) {
+							this.error(
+								"Expected '!important' without whitespace in @apply directive",
+								0,
+							);
+						}
 					}
 
 					hasLeadingImportantModifier = true;
@@ -127,8 +137,14 @@ const tailwindApply = {
 				this.skipSC();
 
 				if (this.isDelim(EXCLAMATIONMARK)) {
+					if (hasLeadingImportantModifier) {
+						this.error(
+							"Important modifier can only appear once per utility in @apply directive",
+							0,
+						);
+					}
+
 					this.next();
-					this.skipSC();
 
 					if (isImportantIdentifier(this)) {
 						// Consume `important` so Atrule parser can continue from the next token.
@@ -137,6 +153,17 @@ const tailwindApply = {
 						children.push(utilityClass);
 						this.skipSC();
 						break;
+					}
+
+					if (this.tokenType === tokenTypes.WhiteSpace) {
+						this.skipSC();
+
+						if (isImportantIdentifier(this)) {
+							this.error(
+								"Expected '!important' without whitespace in @apply directive",
+								0,
+							);
+						}
 					}
 
 					utilityClass = addImportantModifier(utilityClass, "suffix");

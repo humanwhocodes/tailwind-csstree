@@ -1420,6 +1420,16 @@ describe("Tailwind 4", function () {
 			});
 		});
 
+		it("should reject @apply with double important utility modifiers", () => {
+			const errors = [];
+			parse("a { @apply !flex!; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
 		it("should parse the original issue CSS without errors", () => {
 			const originalCSS = `
 @layer base {
