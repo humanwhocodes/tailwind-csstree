@@ -469,6 +469,16 @@ describe("Tailwind 3", function () {
 			});
 		});
 
+		it("should parse @apply with important utility modifiers", () => {
+			["a { @apply !flex; }", "a { @apply flex!; }"].forEach(
+				testCase => {
+					assert.doesNotThrow(() => {
+						parse(testCase);
+					});
+				},
+			);
+		});
+
 		it("should parse the original issue CSS without errors", () => {
 			const originalCSS = `
 @layer base {
@@ -521,6 +531,8 @@ describe("Tailwind 3", function () {
 				"hover:bg-blue-500/50",
 				"bg-blue-500/30 focus:outline-ring/50",
 				"font-bold py-2 px-4 rounded !important",
+				"!font-bold",
+				"font-bold!",
 			].forEach(value => {
 				it(`should validate @apply ${value}`, () => {
 					assert.strictEqual(

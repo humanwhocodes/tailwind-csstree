@@ -25,6 +25,45 @@ import { tokenTypes } from "../token-types.js";
 const EXCLAMATIONMARK = 0x0021;
 const SOLIDUS = 0x002f;
 
+/**
+ * Determines if the current token is `important`.
+ * @param {ParserContext} parser
+ * @returns {boolean}
+ */
+function isImportantIdentifier(parser) {
+	return (
+		parser.tokenType === tokenTypes.Ident &&
+		parser.cmpStr(parser.tokenStart, parser.tokenEnd, "important")
+	);
+}
+
+/**
+ * Adds an important modifier to a parsed utility class.
+ * @param {any} utilityClass
+ * @param {"prefix" | "suffix"} position
+ * @returns {any}
+ */
+function addImportantModifier(utilityClass, position) {
+	if (utilityClass.type === "TailwindUtilityClass") {
+		utilityClass.name = {
+			...utilityClass.name,
+			name:
+				position === "prefix"
+					? `!${utilityClass.name.name}`
+					: `${utilityClass.name.name}!`,
+		};
+		return utilityClass;
+	}
+
+	return {
+		...utilityClass,
+		name:
+			position === "prefix"
+				? `!${utilityClass.name}`
+				: `${utilityClass.name}!`,
+	};
+}
+
 /** @type {any} */
 const tailwindApply = {
 	parse: {
@@ -35,46 +74,81 @@ const tailwindApply = {
 			const children = this.createList();
 			this.important = false;
 
-			while (this.tokenType === tokenTypes.Ident) {
+			while (true) {
+				this.skipSC();
+
+				let hasLeadingImportantModifier = false;
+				if (this.isDelim(EXCLAMATIONMARK)) {
+					this.next();
+					this.skipSC();
+
+					if (isImportantIdentifier(this)) {
+						// Consume `important` so Atrule parser can continue from the next token.
+						this.Identifier();
+						this.important = true;
+						this.skipSC();
+						break;
+					}
+
+					hasLeadingImportantModifier = true;
+				}
+
+				if (this.tokenType !== tokenTypes.Ident) {
+					if (hasLeadingImportantModifier) {
+						this.error(
+							"Expected identifier after '!' in @apply directive",
+							0,
+						);
+					}
+					break;
+				}
+
+				let utilityClass;
 				if (
 					this.lookupType(1) === tokenTypes.Colon ||
 					this.lookupType(1) === tokenTypes.LeftSquareBracket ||
 					this.isDelim(SOLIDUS, 1)
 				) {
 					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
-					children.push(
-						/** @type {ConsumerFunction} */ (
-							this.TailwindUtilityClass
-						)(),
-					);
+					utilityClass = /** @type {ConsumerFunction} */ (
+						this.TailwindUtilityClass
+					)();
 				} else {
 					// Simple identifier - use Identifier parser
-					children.push(
-						/** @type {ConsumerFunction} */ (this.Identifier)(),
+					utilityClass = /** @type {ConsumerFunction} */ (
+						this.Identifier
+					)();
+				}
+
+				if (hasLeadingImportantModifier) {
+					utilityClass = addImportantModifier(
+						utilityClass,
+						"prefix",
 					);
 				}
 
 				this.skipSC();
-			}
 
-			if (this.isDelim(EXCLAMATIONMARK)) {
-				this.next();
-				this.skipSC();
+				if (this.isDelim(EXCLAMATIONMARK)) {
+					this.next();
+					this.skipSC();
 
-				if (
-					this.tokenType !== tokenTypes.Ident ||
-					!this.cmpStr(this.tokenStart, this.tokenEnd, "important")
-				) {
-					this.error(
-						"Expected 'important' keyword after '!' in @apply directive",
-						0,
+					if (isImportantIdentifier(this)) {
+						// Consume `important` so Atrule parser can continue from the next token.
+						this.Identifier();
+						this.important = true;
+						children.push(utilityClass);
+						this.skipSC();
+						break;
+					}
+
+					utilityClass = addImportantModifier(
+						utilityClass,
+						"suffix",
 					);
 				}
 
-				// Consume `important` so Atrule parser can continue from the next token.
-				this.Identifier();
-				this.important = true;
-				this.skipSC();
+				children.push(utilityClass);
 			}
 
 			return children;
