@@ -1050,6 +1050,18 @@ describe("Tailwind 4", function () {
 				["NestingSelector", "Combinator", "TypeSelector"],
 			);
 		});
+
+		it("should validate CSS-wide keywords in descriptors", () => {
+			const tree = parse("@utility display-unset { display: unset; }");
+			const declaration = tree.children.first.block.children.first;
+			const { error } = lexer.matchAtruleDescriptor(
+				"utility",
+				declaration.property,
+				declaration.value,
+			);
+
+			assert.strictEqual(error, null);
+		});
 	});
 
 	describe("@variant", () => {
@@ -1147,6 +1159,18 @@ describe("Tailwind 4", function () {
 				),
 				["NestingSelector", "Combinator", "TypeSelector"],
 			);
+		});
+
+		it("should validate CSS-wide keywords in descriptors", () => {
+			const tree = parse("@variant hover { display: unset; }");
+			const declaration = tree.children.first.block.children.first;
+			const { error } = lexer.matchAtruleDescriptor(
+				"variant",
+				declaration.property,
+				declaration.value,
+			);
+
+			assert.strictEqual(error, null);
 		});
 	});
 

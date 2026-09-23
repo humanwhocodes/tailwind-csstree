@@ -27,10 +27,31 @@ import { tokenTypes } from "./token-types.js";
  * @import { SyntaxConfig, SyntaxExtensionCallback } from "@eslint/css-tree"
  */
 
+const cssWideKeywordSyntax =
+	"initial | inherit | unset | revert | revert-layer";
+
+/**
+ * Extends property definitions for use as at-rule descriptors, which are
+ * validated without css-tree's built-in CSS-wide keyword fallback.
+ * @param {Record<string, string>} properties
+ * @returns {Record<string, string>}
+ */
+function createDeclarationDescriptors(properties) {
+	return Object.fromEntries(
+		Object.entries(properties).map(([name, syntax]) => [
+			name,
+			`${syntax} | ${cssWideKeywordSyntax}`,
+		]),
+	);
+}
+
 /** @type {SyntaxExtensionCallback} */
 export const tailwind4 = prev => {
 	const ASTERISK = 0x002a;
 	const HYPHENMINUS = 0x002d;
+	const declarationDescriptors = createDeclarationDescriptors(
+		prev.properties,
+	);
 	const previousDeclaration = prev.node?.Declaration;
 	const previousDeclarationNode =
 		typeof previousDeclaration === "function"
@@ -71,11 +92,11 @@ export const tailwind4 = prev => {
 			},
 			utility: {
 				prelude: "<ident>",
-				descriptors: prev.properties,
+				descriptors: declarationDescriptors,
 			},
 			variant: {
 				prelude: "<ident>",
-				descriptors: prev.properties,
+				descriptors: declarationDescriptors,
 			},
 			"custom-variant": {
 				prelude: "<ident> [ '(' <any-value> ')' ]?",
