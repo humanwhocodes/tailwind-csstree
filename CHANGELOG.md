@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.4.0...tailwind-csstree-v0.4.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* `[@apply](https://github.com/apply)` parsing for Tailwind important utility modifiers (`!foo` / `foo!`) ([#72](https://github.com/humanwhocodes/tailwind-csstree/issues/72)) ([abab35e](https://github.com/humanwhocodes/tailwind-csstree/commit/abab35e3255d22b852d54edab23ad9666fadf0e3))
+
 ## [0.4.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.3...tailwind-csstree-v0.4.0) (2026-09-02)
 
 
