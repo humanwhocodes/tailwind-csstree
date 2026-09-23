@@ -1412,6 +1412,79 @@ describe("Tailwind 4", function () {
 			});
 		});
 
+		it("should parse @apply with important utility modifiers", () => {
+			[
+				"a { @apply !flex; }",
+				"a { @apply flex!; }",
+				"a { @apply !flex mt-2; }",
+				"a { @apply flex! mt-2; }",
+			].forEach(testCase => {
+				assert.doesNotThrow(() => {
+					parse(testCase);
+				});
+			});
+		});
+
+		it("should reject @apply with double important utility modifiers", () => {
+			const errors = [];
+			parse("a { @apply !flex!; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply with spaced ! important", () => {
+			const errors = [];
+			parse("a { @apply flex ! important; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply with detached trailing !", () => {
+			const errors = [];
+			parse("a { @apply flex !; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply with detached trailing ! before utility", () => {
+			const errors = [];
+			parse("a { @apply flex ! mt-2; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply utility!important without whitespace", () => {
+			const errors = [];
+			parse("a { @apply flex!important; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
+		it("should reject @apply suffixed utility without separator", () => {
+			const errors = [];
+			parse("a { @apply flex!mt-2; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
 		it("should parse the original issue CSS without errors", () => {
 			const originalCSS = `
 @layer base {
