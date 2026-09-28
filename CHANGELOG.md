@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.4.0...tailwind-csstree-v0.4.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* `[@apply](https://github.com/apply)` parsing for Tailwind important utility modifiers (`!foo` / `foo!`) ([#72](https://github.com/humanwhocodes/tailwind-csstree/issues/72)) ([abab35e](https://github.com/humanwhocodes/tailwind-csstree/commit/abab35e3255d22b852d54edab23ad9666fadf0e3))
+* Allow CSS-wide keywords in Tailwind 4 `[@utility](https://github.com/utility)` and `[@variant](https://github.com/variant)` descriptors ([#75](https://github.com/humanwhocodes/tailwind-csstree/issues/75)) ([ba70037](https://github.com/humanwhocodes/tailwind-csstree/commit/ba70037e887358029549dd235abc52b15cb8aa93))
+
 ## [0.4.0](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.3.3...tailwind-csstree-v0.4.0) (2026-09-02)
 
 
