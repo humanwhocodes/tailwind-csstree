@@ -68,7 +68,13 @@ export const tailwind4 = prev => {
 			"custom-variant": tailwindCustomVariant,
 			import: tailwindImport,
 			plugin: tailwindPlugin,
-			theme: tailwindNestedDeclarations,
+			theme: {
+				parse: {
+					block() {
+						return this.Block(true);
+					},
+				},
+			},
 			utility: tailwindNestedDeclarations,
 			variant: tailwindNestedDeclarations,
 		},
