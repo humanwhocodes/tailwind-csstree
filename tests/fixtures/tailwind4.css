@@ -24,6 +24,10 @@
 	.custom-utility {
 		@apply border border-gray-300;
 	}
+
+	.custom-width {
+		@apply max-w-(--my-width) lg:max-w-(--my-width);
+	}
 }
 
 @theme {

@@ -54,6 +54,45 @@ export const structure = {
 };
 
 /**
+ * Parses a utility class name. Handles both plain identifiers and the
+ * arbitrary value shorthand with parentheses, such as `max-w-(--my-width)`,
+ * which is tokenized as a function token.
+ * @param {TailwindParserApplyContext} parser
+ * @returns {Identifier}
+ */
+function parseClassName(parser) {
+	if (parser.tokenType !== tokenTypes.Function) {
+		return parser.Identifier();
+	}
+
+	const start = parser.tokenStart;
+	let depth = 0;
+
+	do {
+		if (
+			parser.tokenType === tokenTypes.Function ||
+			parser.tokenType === tokenTypes.LeftParenthesis
+		) {
+			depth++;
+		} else if (parser.tokenType === tokenTypes.RightParenthesis) {
+			depth--;
+		}
+
+		parser.next();
+	} while (depth > 0 && parser.tokenType !== tokenTypes.EOF);
+
+	if (depth > 0) {
+		parser.error("')' is expected", parser.tokenStart);
+	}
+
+	return {
+		type: "Identifier",
+		loc: parser.getLocation(start, parser.tokenStart),
+		name: parser.source.slice(start, parser.tokenStart),
+	};
+}
+
+/**
  * Parse method for Tailwind theme key node.
  * Handles Tailwind functions such as theme(colors.gray.900/75%) and theme(spacing[2.5]).
  * @this {TailwindParserApplyContext}
@@ -62,14 +101,14 @@ export const structure = {
 export function parse() {
 	this.skipSC();
 	const start = this.tokenStart;
-	let className = this.Identifier();
+	let className = parseClassName(this);
 
 	// if next character is a :, then it's a variant
 	let variant = null;
 	if (this.tokenType === tokenTypes.Colon) {
 		this.next();
 		variant = className;
-		className = this.Identifier();
+		className = parseClassName(this);
 	}
 
 	if (this.tokenType === tokenTypes.LeftSquareBracket) {
