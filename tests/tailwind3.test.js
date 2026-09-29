@@ -258,6 +258,35 @@ describe("Tailwind 3", function () {
 			});
 		});
 
+		it("should parse @apply with stacked variants", () => {
+			const errors = [];
+			const nodes = [];
+			const result = parse(
+				"a { @apply dark:hover:underline tw:hover:underline; }",
+				{
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				},
+			);
+
+			walk(result, {
+				enter(node) {
+					nodes.push(node.type);
+				},
+			});
+
+			assert.deepStrictEqual(errors, []);
+			assert.ok(!nodes.includes("Raw"));
+			assert.strictEqual(
+				lexer.matchAtrulePrelude(
+					"apply",
+					"dark:hover:underline tw:hover:underline",
+				).error,
+				null,
+			);
+		});
+
 		it("should parse @apply with a variant and multiple identifiers", () => {
 			const tree = toPlainObject(
 				parse("a { @apply hover:bg-blue-500 focus:ring-blue-500; }"),

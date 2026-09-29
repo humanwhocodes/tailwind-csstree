@@ -123,7 +123,7 @@ export const tailwind4 = prev => {
 				"<tw-important-ident> | <tw-important-utility-with-variant> | <tw-important-utility-with-opacity>",
 			"tw-important-ident": "<ident> | [ '!' <ident> ] | [ <ident> '!' ]",
 			"tw-utility-with-variant":
-				"[ <ident> ':' <ident> ] | [ <ident> ':' <ident> '/' <number> ] | [ <ident> ':' <ident> '/' <ident> ]",
+				"[ <ident> ':' ]+ <ident> [ '/' [ <number> | <ident> ] ]?",
 			"tw-important-utility-with-variant":
 				"<tw-utility-with-variant> | [ '!' <tw-utility-with-variant> ] | [ <tw-utility-with-variant> '!' ]",
 			"tw-utility-with-opacity":
