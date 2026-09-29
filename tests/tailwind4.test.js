@@ -1436,6 +1436,69 @@ describe("Tailwind 4", function () {
 			});
 		});
 
+		it("should parse @apply with parenthesized arbitrary value shorthand", () => {
+			const testCases = [
+				[
+					"a { @apply max-w-(--my-width); }",
+					null,
+					"max-w-(--my-width)",
+				],
+				[
+					"a { @apply lg:max-w-(--my-width); }",
+					"lg",
+					"max-w-(--my-width)",
+				],
+				[
+					"a { @apply bg-(color:--my-color)/50; }",
+					null,
+					"bg-(color:--my-color)/50",
+				],
+				[
+					"a { @apply !max-w-(--my-width); }",
+					null,
+					"!max-w-(--my-width)",
+				],
+				[
+					"a { @apply max-w-(--my-width)!; }",
+					null,
+					"max-w-(--my-width)!",
+				],
+			];
+
+			testCases.forEach(([testCase, variant, className]) => {
+				const tree = toPlainObject(parse(testCase));
+				const utilityClass =
+					tree.children[0].block.children[0].prelude.children[0];
+
+				assert.strictEqual(utilityClass.type, "TailwindUtilityClass");
+				assert.strictEqual(utilityClass.variant?.name ?? null, variant);
+				assert.strictEqual(utilityClass.name.name, className);
+			});
+		});
+
+		it("should parse @apply with parenthesized arbitrary value shorthand followed by other utilities", () => {
+			const tree = toPlainObject(
+				parse("a { @apply max-w-(--my-width) flex; }"),
+			);
+			const children =
+				tree.children[0].block.children[0].prelude.children;
+
+			assert.deepStrictEqual(
+				children.map(child => child.name.name ?? child.name),
+				["max-w-(--my-width)", "flex"],
+			);
+		});
+
+		it("should reject @apply with unclosed parenthesized arbitrary value", () => {
+			const errors = [];
+			parse("a { @apply max-w-(--my-width; }", {
+				onParseError(error) {
+					errors.push(error.message);
+				},
+			});
+			assert.notDeepStrictEqual(errors, []);
+		});
+
 		it("should parse @apply with important utility modifiers", () => {
 			[
 				"a { @apply !flex; }",
