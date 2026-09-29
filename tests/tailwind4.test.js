@@ -795,6 +795,28 @@ describe("Tailwind 4", function () {
 				],
 			});
 		});
+
+		it("should parse @keyframes inside @theme", () => {
+			const tree = toPlainObject(
+				parse(`
+					@theme {
+						--animate-fade: fade 1s;
+
+						@keyframes fade {
+							to {
+								opacity: 0;
+							}
+						}
+					}
+				`),
+			);
+			const children = tree.children[0].block.children;
+
+			assert.equal(children[0].type, "Declaration");
+			assert.equal(children[0].property, "--animate-fade");
+			assert.equal(children[1].type, "Atrule");
+			assert.equal(children[1].name, "keyframes");
+		});
 	});
 
 	describe("@source", () => {
