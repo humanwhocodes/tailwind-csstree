@@ -24,6 +24,7 @@ import { tokenTypes } from "../token-types.js";
 
 const EXCLAMATIONMARK = 0x0021;
 const SOLIDUS = 0x002f;
+const ASTERISK = 0x002a;
 
 /**
  * Determines if the current token is `important`.
@@ -101,7 +102,12 @@ const tailwindApply = {
 					hasLeadingImportantModifier = true;
 				}
 
-				if (this.tokenType !== tokenTypes.Ident) {
+				if (
+					this.tokenType !== tokenTypes.Ident &&
+					this.tokenType !== tokenTypes.Dimension &&
+					this.tokenType !== tokenTypes.LeftSquareBracket &&
+					!this.isDelim(ASTERISK)
+				) {
 					if (hasLeadingImportantModifier) {
 						this.error(
 							"Expected identifier after '!' in @apply directive",
@@ -113,6 +119,7 @@ const tailwindApply = {
 
 				let utilityClass;
 				if (
+					this.tokenType !== tokenTypes.Ident ||
 					this.lookupType(1) === tokenTypes.Colon ||
 					this.lookupType(1) === tokenTypes.LeftSquareBracket ||
 					this.isDelim(SOLIDUS, 1)

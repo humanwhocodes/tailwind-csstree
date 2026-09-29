@@ -1271,6 +1271,34 @@ describe("Tailwind 4", function () {
 	});
 
 	describe("@apply", () => {
+		it("should parse variants that do not start with a letter", () => {
+			const { generate } = fork(tailwind4);
+			for (const variant of [
+				"2xl",
+				"*",
+				"[&>img]",
+				"[&:is(img,[role=img])]",
+			]) {
+				const errors = [];
+				const result = parse(`a { @apply ${variant}:underline!; }`, {
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				});
+				const tree = toPlainObject(result);
+				assert.deepStrictEqual(errors, []);
+				const utility =
+					tree.children[0].block.children[0].prelude.children[0];
+				assert.equal(utility.type, "TailwindUtilityClass");
+				assert.equal(utility.variant.name, variant);
+				assert.equal(utility.name.name, "underline!");
+				assert.equal(
+					generate(result),
+					`a{@apply ${variant}:underline!;}`,
+				);
+			}
+		});
+
 		it("should parse @apply with valid classes", () => {
 			const tree = toPlainObject(
 				parse(

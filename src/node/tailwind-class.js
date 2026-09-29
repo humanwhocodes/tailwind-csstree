@@ -12,6 +12,7 @@
 import { tokenTypes } from "../token-types.js";
 
 const SOLIDUS = 0x002f;
+const ASTERISK = 0x002a;
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -62,7 +63,42 @@ export const structure = {
 export function parse() {
 	this.skipSC();
 	const start = this.tokenStart;
-	let className = this.Identifier();
+	/** @type {Identifier} */
+	let className;
+
+	if (
+		this.tokenType === tokenTypes.Dimension ||
+		this.tokenType === tokenTypes.LeftSquareBracket ||
+		this.isDelim(ASTERISK)
+	) {
+		const variantStart = this.tokenStart;
+
+		if (this.tokenType === tokenTypes.LeftSquareBracket) {
+			let depth = 0;
+			do {
+				if (this.tokenType === tokenTypes.LeftSquareBracket) {
+					depth++;
+				} else if (this.tokenType === tokenTypes.RightSquareBracket) {
+					depth--;
+				}
+				this.next();
+			} while (depth > 0 && this.tokenType !== tokenTypes.EOF);
+		} else {
+			this.next();
+		}
+
+		className = {
+			type: "Identifier",
+			loc: this.getLocation(variantStart, this.tokenStart),
+			name: this.source.slice(variantStart, this.tokenStart),
+		};
+
+		if (this.tokenType !== tokenTypes.Colon) {
+			this.error("Colon is expected after variant", 0);
+		}
+	} else {
+		className = this.Identifier();
+	}
 
 	// if next character is a :, then it's a variant
 	let variant = null;
