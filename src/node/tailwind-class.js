@@ -65,10 +65,15 @@ export function parse() {
 	let className = this.Identifier();
 
 	// if next character is a :, then it's a variant
+	/** @type {Identifier | null} */
 	let variant = null;
-	if (this.tokenType === tokenTypes.Colon) {
+	while (this.tokenType === tokenTypes.Colon) {
 		this.next();
-		variant = className;
+		if (variant) {
+			variant.name += `:${className.name}`;
+		} else {
+			variant = className;
+		}
 		className = this.Identifier();
 	}
 
