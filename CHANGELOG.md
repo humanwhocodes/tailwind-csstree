@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.4.1...tailwind-csstree-v0.4.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* Parse nested [@keyframes](https://github.com/keyframes) inside Tailwind [@theme](https://github.com/theme) blocks ([#81](https://github.com/humanwhocodes/tailwind-csstree/issues/81)) ([113510f](https://github.com/humanwhocodes/tailwind-csstree/commit/113510f97e7863fdea95dd524238689edcb31327))
+
 ## [0.4.1](https://github.com/humanwhocodes/tailwind-csstree/compare/tailwind-csstree-v0.4.0...tailwind-csstree-v0.4.1) (2026-09-28)
 
 
