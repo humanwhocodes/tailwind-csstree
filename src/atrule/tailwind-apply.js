@@ -106,7 +106,8 @@ const tailwindApply = {
 					this.tokenType !== tokenTypes.Ident &&
 					this.tokenType !== tokenTypes.Dimension &&
 					this.tokenType !== tokenTypes.LeftSquareBracket &&
-					!this.isDelim(ASTERISK)
+					!this.isDelim(ASTERISK) &&
+					this.tokenType !== tokenTypes.Function
 				) {
 					if (hasLeadingImportantModifier) {
 						this.error(
@@ -124,7 +125,7 @@ const tailwindApply = {
 					this.lookupType(1) === tokenTypes.LeftSquareBracket ||
 					this.isDelim(SOLIDUS, 1)
 				) {
-					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
+					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] or max-w-(...) - use TailwindUtilityClass
 					utilityClass = /** @type {ConsumerFunction} */ (
 						this.TailwindUtilityClass
 					)();

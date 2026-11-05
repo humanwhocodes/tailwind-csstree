@@ -55,6 +55,45 @@ export const structure = {
 };
 
 /**
+ * Parses a utility class name. Handles both plain identifiers and the
+ * arbitrary value shorthand with parentheses, such as `max-w-(--my-width)`,
+ * which is tokenized as a function token.
+ * @param {TailwindParserApplyContext} parser
+ * @returns {Identifier}
+ */
+function parseClassName(parser) {
+	if (parser.tokenType !== tokenTypes.Function) {
+		return parser.Identifier();
+	}
+
+	const start = parser.tokenStart;
+	let depth = 0;
+
+	do {
+		if (
+			parser.tokenType === tokenTypes.Function ||
+			parser.tokenType === tokenTypes.LeftParenthesis
+		) {
+			depth++;
+		} else if (parser.tokenType === tokenTypes.RightParenthesis) {
+			depth--;
+		}
+
+		parser.next();
+	} while (depth > 0 && parser.tokenType !== tokenTypes.EOF);
+
+	if (depth > 0) {
+		parser.error("')' is expected", parser.tokenStart);
+	}
+
+	return {
+		type: "Identifier",
+		loc: parser.getLocation(start, parser.tokenStart),
+		name: parser.source.slice(start, parser.tokenStart),
+	};
+}
+
+/**
  * Parse method for Tailwind theme key node.
  * Handles Tailwind functions such as theme(colors.gray.900/75%) and theme(spacing[2.5]).
  * @this {TailwindParserApplyContext}
@@ -71,7 +110,7 @@ export function parse() {
 			this.tokenType !== tokenTypes.LeftSquareBracket &&
 			!this.isDelim(ASTERISK)
 		) {
-			return this.Identifier();
+			return parseClassName(this);
 		}
 
 		const variantStart = this.tokenStart;
@@ -169,8 +208,6 @@ export function parse() {
 		// If we can't parse after /, don't throw an error, just continue
 		// This will leave tokens unconsumed which should cause a parse error naturally
 	}
-
-	this.skipSC();
 
 	return {
 		type: name,
