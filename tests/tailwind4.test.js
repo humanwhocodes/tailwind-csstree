@@ -795,6 +795,28 @@ describe("Tailwind 4", function () {
 				],
 			});
 		});
+
+		it("should parse @keyframes inside @theme", () => {
+			const tree = toPlainObject(
+				parse(`
+					@theme {
+						--animate-fade: fade 1s;
+
+						@keyframes fade {
+							to {
+								opacity: 0;
+							}
+						}
+					}
+				`),
+			);
+			const children = tree.children[0].block.children;
+
+			assert.equal(children[0].type, "Declaration");
+			assert.equal(children[0].property, "--animate-fade");
+			assert.equal(children[1].type, "Atrule");
+			assert.equal(children[1].name, "keyframes");
+		});
 	});
 
 	describe("@source", () => {
@@ -1364,6 +1386,35 @@ describe("Tailwind 4", function () {
 			});
 		});
 
+		it("should parse @apply with stacked variants", () => {
+			const errors = [];
+			const nodes = [];
+			const result = parse(
+				"a { @apply dark:hover:underline tw:hover:underline; }",
+				{
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				},
+			);
+
+			walk(result, {
+				enter(node) {
+					nodes.push(node.type);
+				},
+			});
+
+			assert.deepStrictEqual(errors, []);
+			assert.ok(!nodes.includes("Raw"));
+			assert.strictEqual(
+				lexer.matchAtrulePrelude(
+					"apply",
+					"dark:hover:underline tw:hover:underline",
+				).error,
+				null,
+			);
+		});
+
 		it("should parse @apply with slash notation for opacity modifiers", () => {
 			const testCases = [
 				"a { @apply outline-ring/50; }",
@@ -1449,6 +1500,11 @@ describe("Tailwind 4", function () {
 					"max-w-(--my-width)",
 				],
 				[
+					"a { @apply lg:hover:max-w-(--my-width); }",
+					"lg:hover",
+					"max-w-(--my-width)",
+				],
+				[
 					"a { @apply bg-(color:--my-color)/50; }",
 					null,
 					"bg-(color:--my-color)/50",
@@ -1487,6 +1543,33 @@ describe("Tailwind 4", function () {
 				children.map(child => child.name.name ?? child.name),
 				["max-w-(--my-width)", "flex"],
 			);
+		});
+
+		it("should preserve separators before important utilities after parenthesized shorthand", () => {
+			[" ", "/**/"].forEach(separator => {
+				const tree = toPlainObject(
+					parse(`a { @apply max-w-(--x)${separator}!mt-2; }`),
+				);
+				const children =
+					tree.children[0].block.children[0].prelude.children;
+
+				assert.deepStrictEqual(
+					children.map(child => child.name.name ?? child.name),
+					["max-w-(--x)", "!mt-2"],
+				);
+			});
+		});
+
+		it("should reject detached important modifiers after parenthesized shorthand", () => {
+			[" ", "/**/"].forEach(separator => {
+				const errors = [];
+				parse(`a { @apply max-w-(--x)${separator}!; }`, {
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				});
+				assert.notDeepStrictEqual(errors, []);
+			});
 		});
 
 		it("should reject @apply with unclosed parenthesized arbitrary value", () => {

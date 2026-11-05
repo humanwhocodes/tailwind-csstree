@@ -104,10 +104,15 @@ export function parse() {
 	let className = parseClassName(this);
 
 	// if next character is a :, then it's a variant
+	/** @type {Identifier | null} */
 	let variant = null;
-	if (this.tokenType === tokenTypes.Colon) {
+	while (this.tokenType === tokenTypes.Colon) {
 		this.next();
-		variant = className;
+		if (variant) {
+			variant.name += `:${className.name}`;
+		} else {
+			variant = className;
+		}
 		className = parseClassName(this);
 	}
 
@@ -158,8 +163,6 @@ export function parse() {
 		// If we can't parse after /, don't throw an error, just continue
 		// This will leave tokens unconsumed which should cause a parse error naturally
 	}
-
-	this.skipSC();
 
 	return {
 		type: name,
