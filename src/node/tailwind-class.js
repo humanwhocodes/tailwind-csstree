@@ -87,7 +87,11 @@ export function parse() {
 				this.next();
 			} while (depth > 0 && this.tokenType !== tokenTypes.EOF);
 		} else {
+			const isWildcard = this.isDelim(ASTERISK);
 			this.next();
+			if (isWildcard && this.isDelim(ASTERISK)) {
+				this.next();
+			}
 		}
 
 		/** @type {Identifier} */

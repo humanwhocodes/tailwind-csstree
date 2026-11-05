@@ -1298,12 +1298,18 @@ describe("Tailwind 4", function () {
 			for (const variant of [
 				"2xl",
 				"*",
+				"**",
 				"[&>img]",
 				"[&:is(img,[role=img])]",
 				"2xl:hover",
 				"dark:*",
 				"dark:[&>img]",
 			]) {
+				assert.equal(
+					lexer.matchAtrulePrelude("apply", `${variant}:underline!`)
+						.error,
+					null,
+				);
 				const errors = [];
 				const result = parse(`a { @apply ${variant}:underline!; }`, {
 					onParseError(error) {
