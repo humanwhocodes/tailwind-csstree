@@ -12,6 +12,7 @@
 import { tokenTypes } from "../token-types.js";
 
 const SOLIDUS = 0x002f;
+const ASTERISK = 0x002a;
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -101,8 +102,52 @@ function parseClassName(parser) {
 export function parse() {
 	this.skipSC();
 	const start = this.tokenStart;
-	let className = parseClassName(this);
 
+	/** @returns {Identifier} */
+	const parseClassOrVariant = () => {
+		if (
+			this.tokenType !== tokenTypes.Dimension &&
+			this.tokenType !== tokenTypes.LeftSquareBracket &&
+			!this.isDelim(ASTERISK)
+		) {
+			return parseClassName(this);
+		}
+
+		const variantStart = this.tokenStart;
+
+		if (this.tokenType === tokenTypes.LeftSquareBracket) {
+			let depth = 0;
+			do {
+				if (this.tokenType === tokenTypes.LeftSquareBracket) {
+					depth++;
+				} else if (this.tokenType === tokenTypes.RightSquareBracket) {
+					depth--;
+				}
+				this.next();
+			} while (depth > 0 && this.tokenType !== tokenTypes.EOF);
+		} else {
+			const isWildcard = this.isDelim(ASTERISK);
+			this.next();
+			if (isWildcard && this.isDelim(ASTERISK)) {
+				this.next();
+			}
+		}
+
+		/** @type {Identifier} */
+		const variant = {
+			type: "Identifier",
+			loc: this.getLocation(variantStart, this.tokenStart),
+			name: this.source.slice(variantStart, this.tokenStart),
+		};
+
+		if (this.tokenType !== tokenTypes.Colon) {
+			this.error("Colon is expected after variant", 0);
+		}
+
+		return variant;
+	};
+
+	let className = parseClassOrVariant();
 	// if next character is a :, then it's a variant
 	/** @type {Identifier | null} */
 	let variant = null;
@@ -113,7 +158,7 @@ export function parse() {
 		} else {
 			variant = className;
 		}
-		className = parseClassName(this);
+		className = parseClassOrVariant();
 	}
 
 	if (this.tokenType === tokenTypes.LeftSquareBracket) {
