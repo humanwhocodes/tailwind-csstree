@@ -63,14 +63,17 @@ export const structure = {
 export function parse() {
 	this.skipSC();
 	const start = this.tokenStart;
-	/** @type {Identifier} */
-	let className;
 
-	if (
-		this.tokenType === tokenTypes.Dimension ||
-		this.tokenType === tokenTypes.LeftSquareBracket ||
-		this.isDelim(ASTERISK)
-	) {
+	/** @returns {Identifier} */
+	const parseClassOrVariant = () => {
+		if (
+			this.tokenType !== tokenTypes.Dimension &&
+			this.tokenType !== tokenTypes.LeftSquareBracket &&
+			!this.isDelim(ASTERISK)
+		) {
+			return this.Identifier();
+		}
+
 		const variantStart = this.tokenStart;
 
 		if (this.tokenType === tokenTypes.LeftSquareBracket) {
@@ -87,7 +90,8 @@ export function parse() {
 			this.next();
 		}
 
-		className = {
+		/** @type {Identifier} */
+		const variant = {
 			type: "Identifier",
 			loc: this.getLocation(variantStart, this.tokenStart),
 			name: this.source.slice(variantStart, this.tokenStart),
@@ -96,16 +100,22 @@ export function parse() {
 		if (this.tokenType !== tokenTypes.Colon) {
 			this.error("Colon is expected after variant", 0);
 		}
-	} else {
-		className = this.Identifier();
-	}
 
+		return variant;
+	};
+
+	let className = parseClassOrVariant();
 	// if next character is a :, then it's a variant
+	/** @type {Identifier | null} */
 	let variant = null;
-	if (this.tokenType === tokenTypes.Colon) {
+	while (this.tokenType === tokenTypes.Colon) {
 		this.next();
-		variant = className;
-		className = this.Identifier();
+		if (variant) {
+			variant.name += `:${className.name}`;
+		} else {
+			variant = className;
+		}
+		className = parseClassOrVariant();
 	}
 
 	if (this.tokenType === tokenTypes.LeftSquareBracket) {

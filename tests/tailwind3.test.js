@@ -265,6 +265,9 @@ describe("Tailwind 3", function () {
 				"*",
 				"[&>img]",
 				"[&:is(img,[role=img])]",
+				"2xl:hover",
+				"dark:*",
+				"dark:[&>img]",
 			]) {
 				const errors = [];
 				const result = parse(`a { @apply ${variant}:underline!; }`, {
@@ -284,6 +287,35 @@ describe("Tailwind 3", function () {
 					`a{@apply ${variant}:underline!;}`,
 				);
 			}
+		});
+
+		it("should parse @apply with stacked variants", () => {
+			const errors = [];
+			const nodes = [];
+			const result = parse(
+				"a { @apply dark:hover:underline tw:hover:underline; }",
+				{
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				},
+			);
+
+			walk(result, {
+				enter(node) {
+					nodes.push(node.type);
+				},
+			});
+
+			assert.deepStrictEqual(errors, []);
+			assert.ok(!nodes.includes("Raw"));
+			assert.strictEqual(
+				lexer.matchAtrulePrelude(
+					"apply",
+					"dark:hover:underline tw:hover:underline",
+				).error,
+				null,
+			);
 		});
 
 		it("should parse @apply with a variant and multiple identifiers", () => {

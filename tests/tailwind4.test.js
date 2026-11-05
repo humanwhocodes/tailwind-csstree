@@ -795,6 +795,28 @@ describe("Tailwind 4", function () {
 				],
 			});
 		});
+
+		it("should parse @keyframes inside @theme", () => {
+			const tree = toPlainObject(
+				parse(`
+					@theme {
+						--animate-fade: fade 1s;
+
+						@keyframes fade {
+							to {
+								opacity: 0;
+							}
+						}
+					}
+				`),
+			);
+			const children = tree.children[0].block.children;
+
+			assert.equal(children[0].type, "Declaration");
+			assert.equal(children[0].property, "--animate-fade");
+			assert.equal(children[1].type, "Atrule");
+			assert.equal(children[1].name, "keyframes");
+		});
 	});
 
 	describe("@source", () => {
@@ -1278,6 +1300,9 @@ describe("Tailwind 4", function () {
 				"*",
 				"[&>img]",
 				"[&:is(img,[role=img])]",
+				"2xl:hover",
+				"dark:*",
+				"dark:[&>img]",
 			]) {
 				const errors = [];
 				const result = parse(`a { @apply ${variant}:underline!; }`, {
@@ -1390,6 +1415,35 @@ describe("Tailwind 4", function () {
 			assert.doesNotThrow(() => {
 				parse(".example { @apply sm:grid; }");
 			});
+		});
+
+		it("should parse @apply with stacked variants", () => {
+			const errors = [];
+			const nodes = [];
+			const result = parse(
+				"a { @apply dark:hover:underline tw:hover:underline; }",
+				{
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				},
+			);
+
+			walk(result, {
+				enter(node) {
+					nodes.push(node.type);
+				},
+			});
+
+			assert.deepStrictEqual(errors, []);
+			assert.ok(!nodes.includes("Raw"));
+			assert.strictEqual(
+				lexer.matchAtrulePrelude(
+					"apply",
+					"dark:hover:underline tw:hover:underline",
+				).error,
+				null,
+			);
 		});
 
 		it("should parse @apply with slash notation for opacity modifiers", () => {
