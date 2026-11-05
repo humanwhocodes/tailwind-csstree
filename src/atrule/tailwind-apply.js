@@ -101,7 +101,10 @@ const tailwindApply = {
 					hasLeadingImportantModifier = true;
 				}
 
-				if (this.tokenType !== tokenTypes.Ident) {
+				if (
+					this.tokenType !== tokenTypes.Ident &&
+					this.tokenType !== tokenTypes.Function
+				) {
 					if (hasLeadingImportantModifier) {
 						this.error(
 							"Expected identifier after '!' in @apply directive",
@@ -113,11 +116,12 @@ const tailwindApply = {
 
 				let utilityClass;
 				if (
+					this.tokenType === tokenTypes.Function ||
 					this.lookupType(1) === tokenTypes.Colon ||
 					this.lookupType(1) === tokenTypes.LeftSquareBracket ||
 					this.isDelim(SOLIDUS, 1)
 				) {
-					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] - use TailwindUtilityClass
+					// This is a variant like hover: or an arbitrary utility like grid-cols-[...] or max-w-(...) - use TailwindUtilityClass
 					utilityClass = /** @type {ConsumerFunction} */ (
 						this.TailwindUtilityClass
 					)();
