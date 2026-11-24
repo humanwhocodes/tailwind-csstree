@@ -538,6 +538,36 @@ describe("Tailwind 3", function () {
 			});
 		});
 
+		it("should preserve a previously configured at-rule generator", () => {
+			const syntax = fork(previous => {
+				const atrule = previous.node.Atrule;
+				return {
+					...previous,
+					node: {
+						...previous.node,
+						Atrule: {
+							...atrule,
+							generate(node) {
+								this.tokenize("/*custom*/");
+								atrule.generate.call(this, node);
+							},
+						},
+					},
+				};
+			}).fork(tailwind3);
+			const tree = syntax.parse("a { @apply font-bold !important; }");
+			assert.strictEqual(
+				syntax.generate(tree),
+				"a{/*custom*/@apply font-bold !important;}",
+			);
+			const before = syntax.toPlainObject(tree);
+			assert.strictEqual(
+				syntax.generate(tree),
+				"a{/*custom*/@apply font-bold !important;}",
+			);
+			assert.deepStrictEqual(syntax.toPlainObject(tree), before);
+		});
+
 		it("should parse @apply with important utility modifiers", () => {
 			[
 				"a { @apply !flex; }",

@@ -12,7 +12,6 @@ import * as TailwindUtilityClass from "./node/tailwind-class.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
-import { tokenTypes } from "./token-types.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -59,26 +58,42 @@ export const tailwind3 = prev => {
 												);
 											}
 
-											this.token(
-												tokenTypes.AtKeyword,
-												`@${node.name}`,
+											const important = {
+												type: "Raw",
+												loc: null,
+												value: " !important",
+											};
+											const prelude =
+												node.prelude?.type ===
+												"AtrulePrelude"
+													? {
+															...node.prelude,
+															children:
+																Array.isArray(
+																	node.prelude
+																		.children,
+																)
+																	? [
+																			...node
+																				.prelude
+																				.children,
+																			important,
+																		]
+																	: node.prelude.children
+																			.copy()
+																			.appendData(
+																				important,
+																			),
+														}
+													: {
+															type: "Raw",
+															loc: null,
+															value: `${node.prelude?.value ?? ""} !important`,
+														};
+											return previousAtruleGenerate.call(
+												this,
+												{ ...node, prelude },
 											);
-											if (node.prelude) {
-												this.node(node.prelude);
-											}
-											this.token(
-												tokenTypes.WhiteSpace,
-												" ",
-											);
-											this.tokenize("!important");
-											if (node.block) {
-												this.node(node.block);
-											} else {
-												this.token(
-													tokenTypes.Semicolon,
-													";",
-												);
-											}
 										},
 									}
 								: {}),

@@ -55,6 +55,11 @@ export function createThemeFunctionTests({
 						output,
 						`.x{${property}:theme(${expected})}`,
 					);
+					assert.strictEqual(
+						lexer.matchProperty(property, `theme(${expected})`)
+							.error,
+						null,
+					);
 					const reparsed = parse(output, options);
 					assert.deepStrictEqual(errors, []);
 					assert.deepStrictEqual(
