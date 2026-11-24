@@ -498,6 +498,76 @@ describe("Tailwind 3", function () {
 			});
 		});
 
+		it("should round-trip @apply with directive-level !important", () => {
+			const { generate } = fork(tailwind3);
+			[
+				[
+					"a { @apply font-bold !important; }",
+					"a{@apply font-bold !important;}",
+				],
+				["a { @apply font-bold; }", "a{@apply font-bold;}"],
+				["a { @apply !font-bold; }", "a{@apply !font-bold;}"],
+				[
+					"a { @apply font-bold! !important; }",
+					"a{@apply font-bold! !important;}",
+				],
+				[
+					"a { @APPLY hover:bg-blue-500 !important; }",
+					"a{@APPLY hover:bg-blue-500 !important;}",
+				],
+				[
+					"@config 'tailwind.config.js';",
+					'@config "tailwind.config.js";',
+				],
+			].forEach(([input, expected]) => {
+				const errors = [];
+				const options = {
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				};
+				const tree = parse(input, options);
+				const output = generate(tree);
+				assert.strictEqual(output, expected);
+				const reparsed = parse(output, options);
+				assert.deepStrictEqual(errors, []);
+				assert.deepStrictEqual(
+					toPlainObject(reparsed),
+					toPlainObject(tree),
+				);
+			});
+		});
+
+		it("should preserve a previously configured at-rule generator", () => {
+			const syntax = fork(previous => {
+				const atrule = previous.node.Atrule;
+				return {
+					...previous,
+					node: {
+						...previous.node,
+						Atrule: {
+							...atrule,
+							generate(node) {
+								this.tokenize("/*custom*/");
+								atrule.generate.call(this, node);
+							},
+						},
+					},
+				};
+			}).fork(tailwind3);
+			const tree = syntax.parse("a { @apply font-bold !important; }");
+			assert.strictEqual(
+				syntax.generate(tree),
+				"a{/*custom*/@apply font-bold !important;}",
+			);
+			const before = syntax.toPlainObject(tree);
+			assert.strictEqual(
+				syntax.generate(tree),
+				"a{/*custom*/@apply font-bold !important;}",
+			);
+			assert.deepStrictEqual(syntax.toPlainObject(tree), before);
+		});
+
 		it("should parse @apply with important utility modifiers", () => {
 			[
 				"a { @apply !flex; }",

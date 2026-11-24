@@ -30,6 +30,7 @@ export const tailwind3 = prev => {
 			? { parse: previousAtrule }
 			: previousAtrule;
 	const previousAtruleParse = previousAtruleNode?.parse;
+	const previousAtruleGenerate = previousAtruleNode?.generate;
 
 	return {
 		...prev,
@@ -39,6 +40,63 @@ export const tailwind3 = prev => {
 				? {
 						Atrule: {
 							...previousAtruleNode,
+							...(previousAtruleGenerate
+								? {
+										/**
+										 * @this {any}
+										 * @param {any} node
+										 */
+										generate(node) {
+											if (
+												node.name.toLowerCase() !==
+													"apply" ||
+												node.important !== true
+											) {
+												return previousAtruleGenerate.call(
+													this,
+													node,
+												);
+											}
+
+											const important = {
+												type: "Raw",
+												loc: null,
+												value: " !important",
+											};
+											const prelude =
+												node.prelude?.type ===
+												"AtrulePrelude"
+													? {
+															...node.prelude,
+															children:
+																Array.isArray(
+																	node.prelude
+																		.children,
+																)
+																	? [
+																			...node
+																				.prelude
+																				.children,
+																			important,
+																		]
+																	: node.prelude.children
+																			.copy()
+																			.appendData(
+																				important,
+																			),
+														}
+													: {
+															type: "Raw",
+															loc: null,
+															value: `${node.prelude?.value ?? ""} !important`,
+														};
+											return previousAtruleGenerate.call(
+												this,
+												{ ...node, prelude },
+											);
+										},
+									}
+								: {}),
 							/** @this {any} */
 							parse(isDeclaration, options) {
 								try {

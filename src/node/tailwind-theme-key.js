@@ -25,6 +25,7 @@ import { tokenTypes } from "../token-types.js";
  * @property {() => CssNode} Operator - Parses the operator (slash).
  * @property {() => CssNode} Percentage - Parses a percentage value.
  * @property {() => CssNode} Identifier - Parses an identifier.
+ * @property {() => CssNode} String - Parses a string.
  * @property {(readSequence: ReadSequenceFunction, recognizer: Recognizer) => CssNode} Brackets - Parses a sequence of tokens within square brackets.
  * @property {() => CssNode} Number - Parses a number.
  * @property {(message: string) => void} error - Throws an error with the specified message.
@@ -51,6 +52,12 @@ function readKey(recognizer) {
 	const children = this.createList();
 
 	this.skipSC();
+
+	if (this.tokenType === tokenTypes.String) {
+		children.push(this.String());
+		this.skipSC();
+		return children;
+	}
 
 	children.push(this.Identifier());
 
@@ -139,6 +146,30 @@ export function parse(recognizer) {
  * @type {NodeSyntaxConfig<TailwindThemeKeyNode>["generate"]}
  */
 export function generate(node) {
-	// @ts-ignore -- need to fix later
-	this.children(node);
+	/** @type {CssNode | null} */
+	let dot = null;
+	node.children.forEach(child => {
+		if (dot) {
+			if (child.type === "Number") {
+				this.node(dot);
+				// Keep the lexer's separate tokens without serializing a space between them.
+				this.token(tokenTypes.WhiteSpace, "");
+				this.node(child);
+				dot = null;
+				return;
+			}
+			this.node(dot);
+			dot = null;
+		}
+
+		if (child.type === "Operator" && child.value === ".") {
+			dot = child;
+		} else {
+			this.node(child);
+		}
+	});
+
+	if (dot) {
+		this.node(dot);
+	}
 }
