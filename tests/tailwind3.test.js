@@ -498,6 +498,46 @@ describe("Tailwind 3", function () {
 			});
 		});
 
+		it("should round-trip @apply with directive-level !important", () => {
+			const { generate } = fork(tailwind3);
+			[
+				[
+					"a { @apply font-bold !important; }",
+					"a{@apply font-bold !important;}",
+				],
+				["a { @apply font-bold; }", "a{@apply font-bold;}"],
+				["a { @apply !font-bold; }", "a{@apply !font-bold;}"],
+				[
+					"a { @apply font-bold! !important; }",
+					"a{@apply font-bold! !important;}",
+				],
+				[
+					"a { @APPLY hover:bg-blue-500 !important; }",
+					"a{@APPLY hover:bg-blue-500 !important;}",
+				],
+				[
+					"@config 'tailwind.config.js';",
+					'@config "tailwind.config.js";',
+				],
+			].forEach(([input, expected]) => {
+				const errors = [];
+				const options = {
+					onParseError(error) {
+						errors.push(error.message);
+					},
+				};
+				const tree = parse(input, options);
+				const output = generate(tree);
+				assert.strictEqual(output, expected);
+				const reparsed = parse(output, options);
+				assert.deepStrictEqual(errors, []);
+				assert.deepStrictEqual(
+					toPlainObject(reparsed),
+					toPlainObject(tree),
+				);
+			});
+		});
+
 		it("should parse @apply with important utility modifiers", () => {
 			[
 				"a { @apply !flex; }",

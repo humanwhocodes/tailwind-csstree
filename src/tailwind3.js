@@ -12,6 +12,7 @@ import * as TailwindUtilityClass from "./node/tailwind-class.js";
 import tailwindApply from "./atrule/tailwind-apply.js";
 import theme from "./scope/theme.js";
 import { themeTypes } from "./types/theme-types.js";
+import { tokenTypes } from "./token-types.js";
 
 //-----------------------------------------------------------------------------
 // Type Definitions
@@ -30,6 +31,7 @@ export const tailwind3 = prev => {
 			? { parse: previousAtrule }
 			: previousAtrule;
 	const previousAtruleParse = previousAtruleNode?.parse;
+	const previousAtruleGenerate = previousAtruleNode?.generate;
 
 	return {
 		...prev,
@@ -39,6 +41,47 @@ export const tailwind3 = prev => {
 				? {
 						Atrule: {
 							...previousAtruleNode,
+							...(previousAtruleGenerate
+								? {
+										/**
+										 * @this {any}
+										 * @param {any} node
+										 */
+										generate(node) {
+											if (
+												node.name.toLowerCase() !==
+													"apply" ||
+												node.important !== true
+											) {
+												return previousAtruleGenerate.call(
+													this,
+													node,
+												);
+											}
+
+											this.token(
+												tokenTypes.AtKeyword,
+												`@${node.name}`,
+											);
+											if (node.prelude) {
+												this.node(node.prelude);
+											}
+											this.token(
+												tokenTypes.WhiteSpace,
+												" ",
+											);
+											this.tokenize("!important");
+											if (node.block) {
+												this.node(node.block);
+											} else {
+												this.token(
+													tokenTypes.Semicolon,
+													";",
+												);
+											}
+										},
+									}
+								: {}),
 							/** @this {any} */
 							parse(isDeclaration, options) {
 								try {

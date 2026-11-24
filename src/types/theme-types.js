@@ -5,10 +5,11 @@
 
 export const themeTypes = {
 	"tw-theme-spacing":
-		"<tw-theme-spacing-number> | <tw-theme-spacing-brackets>",
+		"<tw-theme-spacing-number> | <tw-theme-spacing-brackets> | <tw-theme-string>",
+	"tw-theme-string": "theme(<string>)",
 	"tw-theme-spacing-number": "theme(spacing '.' <integer>)",
 	"tw-theme-spacing-brackets": "theme(spacing '[' <number> ']' )",
 	"tw-theme-color":
-		"theme(colors '.' <ident-token> '.' [<ident-token> | <number>] [ / <percentage>]?)",
-	"tw-theme-screens": "theme(screens '.' <ident-token>)",
+		"theme(colors '.' <ident-token> '.' [<ident-token> | <number>] [ / <percentage>]?) | theme(<string> [ / <percentage>]?)",
+	"tw-theme-screens": "theme(screens '.' <ident-token>) | <tw-theme-string>",
 };

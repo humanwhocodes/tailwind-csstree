@@ -13,8 +13,58 @@ import assert from "node:assert";
 // Tests
 //-----------------------------------------------------------------------------
 
-export function createThemeFunctionTests({ parse, toPlainObject, lexer }) {
+export function createThemeFunctionTests({
+	parse,
+	generate,
+	toPlainObject,
+	lexer,
+}) {
 	describe("theme() function", () => {
+		describe("Round-trip", () => {
+			[
+				["color", '"colors.red.500"', '"colors.red.500"'],
+				["color", "'colors.red.500'", '"colors.red.500"'],
+				["color", '"colors.red.500" / 50%', '"colors.red.500"/50%'],
+				["margin", '"spacing.4"', '"spacing.4"'],
+				["margin", "'spacing[2.5]'", '"spacing[2.5]"'],
+				["color", "colors.red.500", "colors.red.500"],
+				["margin", "spacing.4", "spacing.4"],
+				["color", "colors.red.500 / 50%", "colors.red.500/50%"],
+				["margin", "spacing[2.5]", "spacing[2.5]"],
+			].forEach(([property, key, expected]) => {
+				it(`should parse, validate, and round-trip theme(${key})`, () => {
+					const errors = [];
+					const options = {
+						onParseError(error) {
+							errors.push(error.message);
+						},
+					};
+					const tree = parse(
+						`.x { ${property}: theme(${key}); }`,
+						options,
+					);
+					assert.deepStrictEqual(errors, []);
+					assert.strictEqual(
+						lexer.matchDeclaration(
+							tree.children.first.block.children.first,
+						).error,
+						null,
+					);
+					const output = generate(tree);
+					assert.strictEqual(
+						output,
+						`.x{${property}:theme(${expected})}`,
+					);
+					const reparsed = parse(output, options);
+					assert.deepStrictEqual(errors, []);
+					assert.deepStrictEqual(
+						toPlainObject(reparsed),
+						toPlainObject(tree),
+					);
+				});
+			});
+		});
+
 		describe("Parsing", () => {
 			it("should parse theme() with colors.green.500", () => {
 				const tree = toPlainObject(
